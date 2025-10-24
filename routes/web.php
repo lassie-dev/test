@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContractController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,16 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Contracts Routes
-    Route::get('/contracts', function () {
-        return Inertia::render('Contracts/Index', [
-            'contracts' => [],
-        ]);
-    })->name('contracts.index');
-
-    Route::get('/contracts/create', function () {
-        return Inertia::render('Contracts/Create');
-    })->name('contracts.create');
+    // Contracts Routes - Using proper controller
+    Route::resource('contracts', ContractController::class);
 });
 
 require __DIR__.'/auth.php';
