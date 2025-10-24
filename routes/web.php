@@ -2,29 +2,17 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContractController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Welcome page
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
-        'stats' => [
-            'contracts_month' => 12,
-            'revenue_month' => 15750000,
-            'inventory_low' => 3,
-            'pending_payments' => 5,
-        ],
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard (requires authentication and email verification)
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
