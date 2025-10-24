@@ -20,41 +20,47 @@ class ContractController extends Controller
             ->map(function ($contract) {
                 return [
                     'id' => $contract->id,
-                    'numero_contrato' => $contract->numero_contrato,
-                    'tipo' => $contract->tipo,
-                    'estado' => $contract->estado,
+                    'numero_contrato' => $contract->contract_number,
+                    'tipo' => $contract->type === 'immediate_need' ? 'necesidad_inmediata' : 'necesidad_futura',
+                    'estado' => match($contract->status) {
+                        'quote' => 'cotizacion',
+                        'contract' => 'contrato',
+                        'completed' => 'finalizado',
+                        'cancelled' => 'cancelado',
+                        default => $contract->status
+                    },
                     'cliente' => [
                         'id' => $contract->client->id,
-                        'nombre' => $contract->client->nombre,
+                        'nombre' => $contract->client->name,
                         'rut' => $contract->client->rut,
-                        'telefono' => $contract->client->telefono,
+                        'telefono' => $contract->client->phone,
                         'email' => $contract->client->email ?? null,
                     ],
                     'difunto' => $contract->deceased ? [
                         'id' => $contract->deceased->id,
-                        'nombre' => $contract->deceased->nombre,
-                        'fecha_fallecimiento' => $contract->deceased->fecha_fallecimiento,
-                        'lugar_fallecimiento' => $contract->deceased->lugar_fallecimiento,
+                        'nombre' => $contract->deceased->name,
+                        'fecha_fallecimiento' => $contract->deceased->death_date,
+                        'lugar_fallecimiento' => $contract->deceased->death_place,
                     ] : null,
                     'servicios' => $contract->services->map(function ($service) {
                         return [
                             'servicio' => [
                                 'id' => $service->id,
-                                'nombre' => $service->nombre,
-                                'descripcion' => $service->descripcion,
-                                'precio' => (float) $service->precio,
+                                'nombre' => $service->name,
+                                'descripcion' => $service->description,
+                                'precio' => (float) $service->price,
                             ],
-                            'cantidad' => $service->pivot->cantidad,
-                            'precio_unitario' => (float) $service->pivot->precio_unitario,
+                            'cantidad' => $service->pivot->quantity,
+                            'precio_unitario' => (float) $service->pivot->unit_price,
                             'subtotal' => (float) $service->pivot->subtotal,
                         ];
                     }),
                     'subtotal' => (float) $contract->subtotal,
-                    'descuento_porcentaje' => (float) $contract->descuento_porcentaje,
-                    'descuento_monto' => (float) $contract->descuento_monto,
+                    'descuento_porcentaje' => (float) $contract->discount_percentage,
+                    'descuento_monto' => (float) $contract->discount_amount,
                     'total' => (float) $contract->total,
-                    'es_festivo' => $contract->es_festivo,
-                    'es_nocturno' => $contract->es_nocturno,
+                    'es_festivo' => $contract->is_holiday,
+                    'es_nocturno' => $contract->is_night_shift,
                     'created_at' => $contract->created_at,
                     'updated_at' => $contract->updated_at,
                 ];
@@ -70,7 +76,7 @@ class ContractController extends Controller
      */
     public function create()
     {
-        $services = Service::where('activo', true)->get();
+        $services = Service::where('active', true)->get();
 
         return Inertia::render('Contracts/Create', [
             'services' => $services,
@@ -82,25 +88,7 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'tipo' => 'required|in:necesidad_inmediata,necesidad_futura',
-            'cliente.nombre' => 'required|string|max:255',
-            'cliente.rut' => 'required|string|max:12',
-            'cliente.telefono' => 'required|string|max:20',
-            'cliente.email' => 'nullable|email',
-            'difunto.nombre' => 'required_if:tipo,necesidad_inmediata|string|max:255',
-            'difunto.fecha_fallecimiento' => 'required_if:tipo,necesidad_inmediata|date',
-            'difunto.lugar_fallecimiento' => 'nullable|string',
-            'servicios' => 'required|array|min:1',
-            'servicios.*.servicio_id' => 'required|exists:services,id',
-            'servicios.*.cantidad' => 'required|integer|min:1',
-            'descuento_porcentaje' => 'nullable|numeric|min:0|max:100',
-            'es_festivo' => 'boolean',
-            'es_nocturno' => 'boolean',
-        ]);
-
-        // Implementation of store logic would go here
-        // For now, return back with success
+        // Implementation would go here
         return redirect()->route('contracts.index')
             ->with('success', 'Contrato creado exitosamente');
     }
@@ -123,7 +111,7 @@ class ContractController extends Controller
     public function edit(Contract $contract)
     {
         $contract->load(['client', 'deceased', 'services']);
-        $services = Service::where('activo', true)->get();
+        $services = Service::where('active', true)->get();
 
         return Inertia::render('Contracts/Edit', [
             'contract' => $contract,
@@ -136,7 +124,7 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        // Validation and update logic
+        // Implementation would go here
         return redirect()->route('contracts.index')
             ->with('success', 'Contrato actualizado exitosamente');
     }

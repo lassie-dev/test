@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('contract_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
-            $table->integer('cantidad')->default(1);
-            $table->decimal('precio_unitario', 12, 2);
+            $table->integer('quantity')->default(1);
+            $table->decimal('unit_price', 12, 2);
             $table->decimal('subtotal', 12, 2);
             $table->timestamps();
         });

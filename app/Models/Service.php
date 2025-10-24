@@ -8,21 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Service extends Model
 {
     protected $fillable = [
-        'nombre',
-        'descripcion',
-        'precio',
-        'activo',
+        'name',
+        'description',
+        'price',
+        'active',
     ];
 
     protected $casts = [
-        'precio' => 'decimal:2',
-        'activo' => 'boolean',
+        'price' => 'decimal:2',
+        'active' => 'boolean',
     ];
 
     public function contracts(): BelongsToMany
     {
         return $this->belongsToMany(Contract::class)
-            ->withPivot('cantidad', 'precio_unitario', 'subtotal')
+            ->withPivot('quantity', 'unit_price', 'subtotal')
             ->withTimestamps();
     }
 }

@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Deceased extends Model
 {
     protected $fillable = [
-        'nombre',
-        'fecha_fallecimiento',
-        'lugar_fallecimiento',
+        'name',
+        'death_date',
+        'death_place',
     ];
 
     protected $casts = [
-        'fecha_fallecimiento' => 'date',
+        'death_date' => 'date',
     ];
 
     public function contracts(): HasMany

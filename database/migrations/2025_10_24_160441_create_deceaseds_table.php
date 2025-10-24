@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('deceaseds', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->date('fecha_fallecimiento');
-            $table->string('lugar_fallecimiento')->nullable();
+            $table->string('name');
+            $table->date('death_date');
+            $table->string('death_place')->nullable();
             $table->timestamps();
         });
     }

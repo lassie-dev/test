@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->string('numero_contrato')->unique();
-            $table->enum('tipo', ['necesidad_inmediata', 'necesidad_futura']);
-            $table->enum('estado', ['cotizacion', 'contrato', 'finalizado', 'cancelado'])->default('cotizacion');
+            $table->string('contract_number')->unique();
+            $table->enum('type', ['immediate_need', 'future_need']);
+            $table->enum('status', ['quote', 'contract', 'completed', 'cancelled'])->default('quote');
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->foreignId('deceased_id')->nullable()->constrained()->onDelete('set null');
-            $table->foreignId('user_id')->constrained()->comment('Secretaria que creó el contrato');
+            $table->foreignId('user_id')->constrained()->comment('User who created the contract');
             $table->decimal('subtotal', 12, 2);
-            $table->decimal('descuento_porcentaje', 5, 2)->default(0);
-            $table->decimal('descuento_monto', 12, 2)->default(0);
+            $table->decimal('discount_percentage', 5, 2)->default(0);
+            $table->decimal('discount_amount', 12, 2)->default(0);
             $table->decimal('total', 12, 2);
-            $table->boolean('es_festivo')->default(false);
-            $table->boolean('es_nocturno')->default(false);
+            $table->boolean('is_holiday')->default(false);
+            $table->boolean('is_night_shift')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

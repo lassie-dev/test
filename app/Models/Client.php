@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Client extends Model
 {
     protected $fillable = [
-        'nombre',
+        'name',
         'rut',
-        'telefono',
+        'phone',
         'email',
-        'direccion',
+        'address',
     ];
 
     public function contracts(): HasMany

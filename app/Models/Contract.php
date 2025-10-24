@@ -12,27 +12,27 @@ class Contract extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'numero_contrato',
-        'tipo',
-        'estado',
+        'contract_number',
+        'type',
+        'status',
         'client_id',
         'deceased_id',
         'user_id',
         'subtotal',
-        'descuento_porcentaje',
-        'descuento_monto',
+        'discount_percentage',
+        'discount_amount',
         'total',
-        'es_festivo',
-        'es_nocturno',
+        'is_holiday',
+        'is_night_shift',
     ];
 
     protected $casts = [
         'subtotal' => 'decimal:2',
-        'descuento_porcentaje' => 'decimal:2',
-        'descuento_monto' => 'decimal:2',
+        'discount_percentage' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'total' => 'decimal:2',
-        'es_festivo' => 'boolean',
-        'es_nocturno' => 'boolean',
+        'is_holiday' => 'boolean',
+        'is_night_shift' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -56,22 +56,22 @@ class Contract extends Model
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class)
-            ->withPivot('cantidad', 'precio_unitario', 'subtotal')
+            ->withPivot('quantity', 'unit_price', 'subtotal')
             ->withTimestamps();
     }
 
     // Scopes
-    public function scopeNecesidadInmediata($query)
+    public function scopeImmediateNeed($query)
     {
-        return $query->where('tipo', 'necesidad_inmediata');
+        return $query->where('type', 'immediate_need');
     }
 
-    public function scopeNecesidadFutura($query)
+    public function scopeFutureNeed($query)
     {
-        return $query->where('tipo', 'necesidad_futura');
+        return $query->where('type', 'future_need');
     }
 
-    public function scopeDelMes($query)
+    public function scopeThisMonth($query)
     {
         return $query->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year);
