@@ -1,5 +1,294 @@
 # Funeral ERP - Proyecto de Sistema de Gestión Funeraria
 
+## 📋 Descripción del Negocio (Para Claude - Fácil de Entender)
+
+### ¿Qué es este sistema?
+Este es un **ERP (Sistema de Gestión Empresarial) para una funeraria chilena**. Una funeraria es una empresa que se encarga de todos los servicios relacionados con el fallecimiento de una persona: desde el traslado del cuerpo, preparación, velorio, hasta la cremación o sepultura.
+
+### ¿Cómo funciona el negocio funerario?
+
+#### 1. **Tipos de Clientes y Contratos**
+
+Existen **2 tipos de contratos**:
+
+**A) Necesidad Inmediata (Servicio Activo)**
+- El cliente llama porque acaba de fallecer un familiar
+- Necesita el servicio AHORA (urgente)
+- El contrato incluye:
+  - Datos del **difunto** (persona fallecida): nombre, fecha de fallecimiento, lugar
+  - Datos del **cliente** (familiar que contrata): nombre, RUT, teléfono, email
+  - Servicios funerarios inmediatos (traslado, velorio, cremación/sepultura)
+  - Productos necesarios (ataúd, urna, flores, etc.)
+
+**B) Necesidad Futura (Previsión/Plan)**
+- El cliente contrata servicios funerarios por adelantado para él mismo o un familiar
+- No hay un fallecimiento todavía
+- Es como un "seguro funerario"
+- Solo tiene datos del **cliente**
+- NO tiene datos del difunto (porque aún no ha fallecido nadie)
+- Cuando llegue el momento, se actualiza el contrato a "Necesidad Inmediata"
+
+#### 2. **Flujo de Trabajo Típico**
+
+**PASO 1: Llamada Inicial**
+- Una familia llama porque falleció un ser querido
+- La **secretaria** atiende la llamada (disponible 24/7)
+- Registra datos básicos: nombre del difunto, dirección, teléfono del familiar
+
+**PASO 2: Creación del Contrato**
+- La secretaria crea un contrato en el sistema
+- Selecciona servicios según lo que la familia necesite:
+  - **Servicios básicos**: Traslado del cuerpo, preparación, velorio, cremación/sepultura
+  - **Servicios adicionales**: Música, ceremonia religiosa, streaming online
+- Selecciona productos:
+  - Ataúd (diferentes calidades: básico, medio, premium)
+  - Urna (si es cremación)
+  - Flores, coronas
+  - Tarjetas de agradecimiento
+
+**PASO 3: Cotización y Descuentos**
+- El sistema calcula el **subtotal** (suma de todos los servicios y productos)
+- La secretaria puede aplicar **descuentos** según políticas de la empresa:
+  - Descuentos permitidos: 3%, 5%, 8%, 10%, 15%, 25%, 30%
+  - Razones: cliente recurrente, convenio con empresa, dificultad económica, etc.
+- Se calcula el **total final** = subtotal - descuento
+
+**PASO 4: Forma de Pago**
+- **Contado**: Pago inmediato (efectivo, tarjeta, transferencia)
+- **Crédito**: Pago en cuotas (la funeraria da facilidades de pago)
+  - Se registran las cuotas en el módulo de Pagos
+  - Se hace seguimiento de pagos pendientes
+
+**PASO 5: Asignación de Personal**
+- El sistema asigna automáticamente el personal necesario:
+  - **Conductor**: Traslada el cuerpo desde el lugar del fallecimiento
+  - **Auxiliares**: Ayudan en el traslado y preparación del cuerpo
+  - **Personal de velorio**: Atiende durante la ceremonia
+
+**PASO 6: Comunicación Automática (WhatsApp)**
+El sistema envía mensajes automáticos:
+- **Inmediato**: Al conductor con instrucciones (dirección, hora, detalles)
+- **4 horas después**: Tips a la familia (qué hacer durante el duelo)
+- **5 días después**: Tarjetas digitales de condolencia personalizadas
+- **8 días después**: Encuesta de satisfacción del servicio
+
+**PASO 7: Ejecución del Servicio**
+- El conductor va a recoger el cuerpo
+- Se prepara el cuerpo en la funeraria
+- Se realiza el velorio (ceremonia)
+- Se hace la cremación o sepultura
+- Personal marca cada etapa como completada en el sistema
+
+**PASO 8: Cierre y Liquidación**
+- Se marca el contrato como "Finalizado"
+- Se calculan automáticamente las **comisiones** del personal
+- La secretaria gana comisión por cada contrato (% del total)
+
+#### 3. **Sistema de Comisiones (Muy Importante)**
+
+Las **secretarias** ganan comisiones por cada contrato que crean. El porcentaje varía según:
+
+**Comisión Base: 5%**
+- Por cada contrato, la secretaria gana 5% del total
+
+**Comisión Nocturna: +2% adicional**
+- Si el servicio es entre 20:00 y 08:00 hrs
+- Total: 7% de comisión
+
+**Comisión por Día Festivo: +3% adicional**
+- Si el servicio es en día festivo (Navidad, Año Nuevo, etc.)
+- Total: 8% de comisión
+
+**Comisión Nocturna + Festivo: +5% adicional**
+- Si es de noche Y en día festivo
+- Total: 10% de comisión
+
+**Ejemplo:**
+- Contrato de $1.000.000 CLP
+- Servicio a las 22:00 hrs (nocturno) de un día normal
+- Comisión: $1.000.000 × 7% = $70.000 CLP para la secretaria
+
+#### 4. **Módulos del Sistema**
+
+**A) Contratos (Módulo Principal)**
+- Crear, editar, ver contratos
+- Gestionar servicios y productos
+- Aplicar descuentos
+- Cambiar estados: Cotización → Contrato → Finalizado / Cancelado
+
+**B) Inventario**
+- Control de stock de productos:
+  - Ataúdes (diferentes modelos)
+  - Urnas
+  - Flores
+  - Tarjetas
+- Alertas de stock bajo
+- Registro de entradas y salidas
+
+**C) Pagos**
+- Registrar pagos de clientes
+- Control de cuentas por cobrar
+- Pagos en cuotas (crédito)
+- Historial de pagos
+- Recordatorios de cuotas pendientes
+
+**D) Personal (Staff)**
+- Registro de empleados:
+  - Secretarias
+  - Conductores
+  - Auxiliares
+  - Personal administrativo
+- Turnos y disponibilidad
+- Datos de contacto
+
+**E) Liquidaciones (Payroll)**
+- Cálculo automático de sueldos
+- Comisiones de secretarias
+- Pagos de conductores y auxiliares
+- Generación de liquidaciones de sueldo
+- Historial de pagos
+
+**F) Reportes**
+- Ventas por período
+- Contratos por tipo
+- Comisiones pagadas
+- Productos más vendidos
+- Análisis de descuentos aplicados
+- Rentabilidad
+
+**G) Dashboard**
+- Resumen del día/mes
+- Contratos activos
+- Pagos pendientes
+- Stock crítico
+- Alertas importantes
+
+#### 5. **Roles de Usuario**
+
+**Propietario**
+- Acceso total al sistema
+- Ve todos los reportes financieros
+- Gestiona usuarios y permisos
+
+**Administrador**
+- Gestiona contratos, inventario, personal
+- Ve reportes
+- No puede eliminar datos críticos
+
+**Secretaria**
+- Crea y edita contratos
+- Registra pagos
+- Ve sus propias comisiones
+- NO ve reportes financieros generales
+
+**Conductor**
+- Ve los servicios asignados
+- Actualiza estado del servicio
+- NO ve precios ni comisiones
+
+**Auxiliar**
+- Solo ve los servicios en los que participa
+- NO puede modificar datos
+
+#### 6. **Características Especiales del Negocio Chileno**
+
+**Validación de RUT**
+- El RUT es el identificador único de personas en Chile (como DNI o SSN)
+- Formato: 12.345.678-9
+- El sistema valida que sea correcto matemáticamente
+
+**Moneda: Pesos Chilenos (CLP)**
+- Formato: $1.000.000 (con puntos separadores de miles)
+- Sin decimales (no se usan centavos)
+
+**Horario 24/7**
+- Las funerarias trabajan 24 horas, 7 días a la semana
+- Los fallecimientos pueden ocurrir a cualquier hora
+- Por eso hay comisiones especiales nocturnas
+
+**Sensibilidad Cultural**
+- Es un negocio delicado (trato con familias en duelo)
+- La interfaz debe ser sobria, profesional
+- Colores: tonos azul oscuro, gris, blanco (nada llamativo)
+- Textos respetuosos y empáticos
+
+#### 7. **Flujo de Datos Típico**
+
+```
+1. Cliente llama → 2. Secretaria crea contrato → 3. Selecciona servicios/productos
+→ 4. Aplica descuento (si corresponde) → 5. Define forma de pago
+→ 6. Sistema asigna personal → 7. Envía WhatsApp automático al conductor
+→ 8. Servicio se ejecuta → 9. Contrato se marca como finalizado
+→ 10. Sistema calcula comisiones → 11. Genera liquidaciones de sueldo
+→ 12. Envía encuesta de satisfacción a la familia
+```
+
+#### 8. **Conceptos Clave para el Desarrollo**
+
+**Estado del Contrato:**
+- **Cotización**: Solo es un presupuesto, aún no confirmado
+- **Contrato**: Ya confirmado, servicio activo
+- **Finalizado**: Servicio completado exitosamente
+- **Cancelado**: Se canceló antes de ejecutarse
+
+**Difunto vs Cliente:**
+- **Difunto**: La persona que falleció (solo en Necesidad Inmediata)
+- **Cliente**: La persona que contrata y paga (siempre existe)
+
+**Servicios vs Productos:**
+- **Servicios**: Acciones que se realizan (traslado, velorio, cremación) - NO se descuentan del inventario
+- **Productos**: Elementos físicos (ataúd, urna, flores) - SÍ se descuentan del inventario
+
+**Subtotal, Descuento, Total:**
+- **Subtotal**: Suma de todos los servicios y productos
+- **Descuento**: Porcentaje aplicado sobre el subtotal
+- **Total**: Subtotal - Descuento = Lo que el cliente paga
+
+#### 9. **Reglas de Negocio Importantes**
+
+1. **Un contrato de Necesidad Futura NO puede tener difunto** (aún no falleció nadie)
+2. **Un contrato de Necesidad Inmediata DEBE tener difunto** (ya falleció alguien)
+3. **Los descuentos solo pueden ser**: 0%, 3%, 5%, 8%, 10%, 15%, 25%, 30% (valores fijos)
+4. **Las comisiones se calculan sobre el total FINAL** (después del descuento)
+5. **Los productos se descuentan del inventario al crear el contrato**
+6. **Los servicios NO afectan el inventario** (son acciones, no productos)
+7. **No se puede eliminar un contrato finalizado**, solo cancelar
+8. **La secretaria que creó el contrato es la que recibe la comisión**
+
+#### 10. **Ejemplos Prácticos**
+
+**Ejemplo 1: Contrato de Necesidad Inmediata**
+```
+Cliente: María González (RUT 15.234.567-8, Tel: +56987654321)
+Difunto: Pedro González (falleció el 20/10/2025)
+Tipo: Necesidad Inmediata
+Servicios:
+  - Traslado: $50.000
+  - Velorio 24hrs: $200.000
+  - Cremación: $300.000
+Productos:
+  - Ataúd básico: $150.000
+  - Urna: $80.000
+Subtotal: $780.000
+Descuento: 10% (-$78.000)
+Total: $702.000
+Forma de Pago: Crédito (6 cuotas de $117.000)
+Hora: 15:00 (día normal)
+Comisión secretaria: 5% de $702.000 = $35.100
+```
+
+**Ejemplo 2: Contrato Nocturno + Festivo**
+```
+Cliente: Juan Pérez
+Difunto: Rosa Pérez
+Total: $1.500.000
+Hora: 23:00 del 25 de diciembre (Navidad)
+Comisión: 5% base + 2% nocturno + 3% festivo = 10%
+Comisión total: $150.000
+```
+
+---
+
 ## Stack Tecnológico
 
 ### Backend

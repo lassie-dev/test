@@ -13,6 +13,8 @@ import {
   FolderKanban,
   FileSpreadsheet,
   HelpCircle,
+  Wallet,
+  CircleDollarSign,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -25,9 +27,6 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -35,13 +34,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import Logo from '@/components/Logo';
-import { cn } from '@/lib/utils';
 
 const mainNavigation = [
   {
@@ -55,19 +47,45 @@ const mainNavigation = [
     icon: BarChart3,
   },
   {
+    name: 'Projects',
+    href: '/projects',
+    icon: FolderKanban,
+  },
+];
+
+const operationsNavigation = [
+  {
+    name: 'Inventory',
+    href: '/inventory',
+    icon: Package,
+  },
+  {
+    name: 'Payments',
+    href: '/payments',
+    icon: CreditCard,
+  },
+  {
+    name: 'Staff',
+    href: '/staff',
+    icon: Users,
+  },
+  {
+    name: 'Payroll',
+    href: '/payroll',
+    icon: Wallet,
+  },
+];
+
+const analyticsNavigation = [
+  {
     name: 'Analytics',
     href: '/analytics',
     icon: BarChart3,
   },
   {
-    name: 'Projects',
-    href: '/projects',
-    icon: FolderKanban,
-  },
-  {
-    name: 'Team',
-    href: '/staff',
-    icon: Users,
+    name: 'Reports',
+    href: '/reports',
+    icon: FileSpreadsheet,
   },
 ];
 
@@ -76,11 +94,6 @@ const documentNavigation = [
     name: 'Data Library',
     href: '/data-library',
     icon: Database,
-  },
-  {
-    name: 'Reports',
-    href: '/reports',
-    icon: FileSpreadsheet,
   },
   {
     name: 'Word Assistant',
@@ -151,6 +164,62 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {mainNavigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentUrl?.startsWith(item.href) || false;
+
+                return (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      tooltip={item.name}
+                    >
+                      <Link href={item.href}>
+                        <Icon className="h-4 w-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Operations Section */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Operations</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {operationsNavigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentUrl?.startsWith(item.href) || false;
+
+                return (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      tooltip={item.name}
+                    >
+                      <Link href={item.href}>
+                        <Icon className="h-4 w-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Analytics & Reports Section */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Analytics & Reports</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {analyticsNavigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentUrl?.startsWith(item.href) || false;
 

@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import {
   FileText,
   Package,
@@ -12,6 +12,8 @@ import {
   Bell,
   Settings,
   LogOut,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,14 +31,29 @@ interface MainLayoutProps {
   children: ReactNode;
 }
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Contratos', href: '/contracts', icon: FileText },
-  { name: 'Inventario', href: '/inventory', icon: Package },
-  { name: 'Pagos', href: '/payments', icon: CreditCard },
-  { name: 'Personal', href: '/staff', icon: Users },
-  { name: 'Liquidaciones', href: '/payroll', icon: DollarSign },
-  { name: 'Reportes', href: '/reports', icon: BarChart3 },
+const navigationSections = [
+  {
+    title: null, // No title for main section
+    items: [
+      { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: 'Operaciones',
+    items: [
+      { name: 'Contratos', href: '/contracts', icon: FileText },
+      { name: 'Inventario', href: '/inventory', icon: Package },
+      { name: 'Pagos', href: '/payments', icon: CreditCard },
+      { name: 'Personal', href: '/staff', icon: Users },
+      { name: 'Liquidaciones', href: '/payroll', icon: DollarSign },
+    ],
+  },
+  {
+    title: 'Análisis',
+    items: [
+      { name: 'Reportes', href: '/reports', icon: BarChart3 },
+    ],
+  },
 ];
 
 export default function MainLayout({ children }: MainLayoutProps) {
@@ -54,27 +71,38 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 px-3 py-4">
-          {navigation.map((item) => {
-            const Icon = item.icon;
-            const isActive = currentUrl?.startsWith(item.href) || false;
-            
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                )}
-              >
-                <Icon className="h-5 w-5" />
-                {item.name}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-3 py-4 space-y-6">
+          {navigationSections.map((section, sectionIdx) => (
+            <div key={sectionIdx}>
+              {section.title && (
+                <h3 className="mb-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  {section.title}
+                </h3>
+              )}
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentUrl?.startsWith(item.href) || false;
+
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                        isActive
+                          ? 'bg-primary-50 text-primary-700'
+                          : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      )}
+                    >
+                      <Icon className="h-5 w-5" />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
       </aside>
 
