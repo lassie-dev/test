@@ -85,7 +85,7 @@ funeral-erp/
 │   │   │   ├── ui/             # shadcn/ui components
 │   │   │   └── layouts/        # Layouts generales
 │   │   ├── features/           # ARQUITECTURA FEATURE-BASED
-│   │   │   ├── contratos/
+│   │   │   ├── contracts/
 │   │   │   │   ├── components/     # Componentes específicos de contratos
 │   │   │   │   ├── sections/       # Secciones de página
 │   │   │   │   ├── modals/         # Modales específicos
@@ -93,7 +93,7 @@ funeral-erp/
 │   │   │   │   ├── schemas.ts      # Schemas Zod + tipos inferidos
 │   │   │   │   ├── constants.ts    # Constantes del módulo
 │   │   │   │   └── functions.ts    # Funciones de utilidad
-│   │   │   ├── inventario/
+│   │   │   ├── inventory/
 │   │   │   │   ├── components/
 │   │   │   │   ├── sections/
 │   │   │   │   ├── modals/
@@ -101,22 +101,22 @@ funeral-erp/
 │   │   │   │   ├── schemas.ts
 │   │   │   │   ├── constants.ts
 │   │   │   │   └── functions.ts
-│   │   │   ├── pagos/
-│   │   │   ├── personal/
-│   │   │   ├── liquidaciones/
-│   │   │   ├── reportes/
+│   │   │   ├── payments/
+│   │   │   ├── staff/
+│   │   │   ├── payroll/
+│   │   │   ├── reports/
 │   │   │   └── dashboard/
 │   │   ├── pages/              # Páginas Inertia (orquestadoras)
-│   │   │   ├── Contratos/
+│   │   │   ├── Contracts/
 │   │   │   │   ├── Index.tsx
 │   │   │   │   ├── Crear.tsx
 │   │   │   │   ├── Editar.tsx
 │   │   │   │   └── Ver.tsx
-│   │   │   ├── Inventario/
-│   │   │   ├── Pagos/
-│   │   │   ├── Personal/
-│   │   │   ├── Liquidaciones/
-│   │   │   ├── Reportes/
+│   │   │   ├── Inventory/
+│   │   │   ├── Payments/
+│   │   │   ├── Staff/
+│   │   │   ├── Payroll/
+│   │   │   ├── Reports/
 │   │   │   └── Dashboard/
 │   │   ├── hooks/              # Custom React hooks globales
 │   │   ├── lib/                # Utilidades globales
@@ -141,6 +141,32 @@ funeral-erp/
 ```
 
 ### 3. Convenciones de Nomenclatura
+
+**IMPORTANTE: Nombres de Carpetas y Archivos**
+
+- **Git commits:** MUST be in English (e.g., "feat: Add contract management module")
+- **Folder names (features, pages):** MUST be in English (e.g., `contracts`, `inventory`, not `contratos`, `inventario`)
+- **File names:** MUST be in English when referring to technical concepts (e.g., `ContractController.php`, not `ContratoController.php`)
+- **User-facing text:** MUST be in Spanish (labels, buttons, messages, etc.)
+- **Code comments for business logic:** Can be in Spanish for clarity
+- **Technical variable/function names:** English (following industry standards)
+
+**Folder Naming Examples:**
+```
+✅ CORRECT:
+features/contracts/
+features/inventory/
+features/payments/
+pages/Contracts/
+pages/Inventory/
+
+❌ INCORRECT:
+features/contratos/
+features/inventario/
+features/pagos/
+pages/Contratos/
+pages/Inventario/
+```
 
 #### Backend (Laravel)
 ```php
@@ -214,7 +240,7 @@ Cada feature DEBE contener exactamente esta estructura:
 
 ```
 features/
-└── [feature-name]/
+└── [feature-name]/         # Feature name MUST be in English (e.g., contracts, inventory, payments)
     ├── components/          # Componentes React específicos del feature
     ├── sections/           # Secciones de página (bloques grandes)
     ├── modals/             # Modales específicos del feature
@@ -239,7 +265,7 @@ features/
 **Orden topológico:** De lo más básico a lo más complejo
 
 ```typescript
-// ✅ CORRECTO: features/contratos/types.ts
+// ✅ CORRECTO: features/contracts/types.ts
 
 // 1. Enums básicos (sin dependencias)
 export enum TipoContrato {
@@ -335,7 +361,7 @@ export interface TablaContratosProps {
 - NUNCA duplicar tipos que están en types.ts
 
 ```typescript
-// ✅ CORRECTO: features/contratos/schemas.ts
+// ✅ CORRECTO: features/contracts/schemas.ts
 import { z } from 'zod';
 import { TipoContrato } from './types';
 
@@ -398,7 +424,7 @@ export type DifuntoInput = z.infer<typeof difuntoSchema>;
 - Configuraciones estáticas
 
 ```typescript
-// ✅ CORRECTO: features/contratos/constants.ts
+// ✅ CORRECTO: features/contracts/constants.ts
 
 export const PORCENTAJES_DESCUENTO = [0, 3, 5, 8, 10, 15, 25, 30] as const;
 
@@ -441,7 +467,7 @@ export const COMISION_FESTIVO_EXTRA = 3;
 **Orden topológico:** De funciones básicas a complejas
 
 ```typescript
-// ✅ CORRECTO: features/contratos/functions.ts
+// ✅ CORRECTO: features/contracts/functions.ts
 import { Contrato, ContratoServicio } from './types';
 import { PORCENTAJES_DESCUENTO, COMISION_BASE_PORCENTAJE } from './constants';
 
@@ -543,13 +569,13 @@ export function formatearNumeroContrato(numero: number): string {
 ##### ❌ PROHIBIDO: Re-exportaciones
 
 ```typescript
-// ❌ INCORRECTO: features/contratos/index.ts
+// ❌ INCORRECTO: features/contracts/index.ts
 export * from './types';
 export * from './schemas';
 export * from './constants';
 export * from './functions';
 
-// ❌ INCORRECTO: features/contratos/components/index.ts
+// ❌ INCORRECTO: features/contracts/components/index.ts
 export { FormularioContrato } from './FormularioContrato';
 export { TablaContratos } from './TablaContratos';
 ```
@@ -557,12 +583,12 @@ export { TablaContratos } from './TablaContratos';
 ##### ✅ CORRECTO: Importaciones Directas
 
 ```typescript
-// ✅ CORRECTO: pages/Contratos/Crear.tsx
-import { Contrato, ContratoFormData } from '@/features/contratos/types';
-import { contratoFormSchema } from '@/features/contratos/schemas';
-import { PORCENTAJES_DESCUENTO } from '@/features/contratos/constants';
-import { calcularTotalesContrato } from '@/features/contratos/functions';
-import { FormularioContrato } from '@/features/contratos/components/FormularioContrato';
+// ✅ CORRECTO: pages/Contracts/Crear.tsx
+import { Contrato, ContratoFormData } from '@/features/contracts/types';
+import { contratoFormSchema } from '@/features/contracts/schemas';
+import { PORCENTAJES_DESCUENTO } from '@/features/contracts/constants';
+import { calcularTotalesContrato } from '@/features/contracts/functions';
+import { FormularioContrato } from '@/features/contracts/components/FormularioContrato';
 ```
 
 #### Uso de Utility Types
@@ -593,7 +619,7 @@ export interface ContratoFormData {
 #### Ejemplo Completo de Feature
 
 ```
-features/contratos/
+features/contracts/
 ├── components/
 │   ├── FormularioContrato.tsx
 │   ├── TablaContratos.tsx
@@ -862,7 +888,7 @@ public function store(StoreContractRequest $request)
 
 #### Recibir Datos en React
 ```jsx
-// Pages/Contratos/Index.jsx
+// Pages/Contracts/Index.jsx
 import { Head, router } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { TablaContratos } from '@/Components/Tables/TablaContratos';
@@ -959,7 +985,7 @@ class StoreContractRequest extends FormRequest
 
 #### Validación Frontend (React Hook Form + Zod)
 ```tsx
-// pages/Contratos/Crear.tsx
+// pages/Contracts/Crear.tsx
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from '@inertiajs/react';
@@ -969,9 +995,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { toast } from '@/components/ui/use-toast';
 
 // Importaciones directas desde el feature (NO re-exports)
-import { contratoFormSchema, ContratoFormInput } from '@/features/contratos/schemas';
-import { DEFAULT_CONTRATO_VALUES } from '@/features/contratos/constants';
-import { FormularioContrato } from '@/features/contratos/components/FormularioContrato';
+import { contratoFormSchema, ContratoFormInput } from '@/features/contracts/schemas';
+import { DEFAULT_CONTRATO_VALUES } from '@/features/contracts/constants';
+import { FormularioContrato } from '@/features/contracts/components/FormularioContrato';
 
 export default function Crear() {
   const form = useForm<ContratoFormInput>({
@@ -1017,7 +1043,7 @@ export default function Crear() {
 ```
 
 ```tsx
-// features/contratos/components/FormularioContrato.tsx
+// features/contracts/components/FormularioContrato.tsx
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -1258,7 +1284,7 @@ export function usePermisos() {
 ```
 
 ```tsx
-// features/contratos/components/ContratoActions.tsx
+// features/contracts/components/ContratoActions.tsx
 import { Button } from '@/components/ui/button';
 import { usePermisos } from '@/hooks/usePermisos';
 import { Contrato } from '../types';
@@ -1633,21 +1659,25 @@ php artisan queue:work --sleep=3 --tries=3 --daemon
 
 ## Estructura de Commits
 
+**IMPORTANT: All commit messages MUST be in English**
+
 ```
-feat: Agregar módulo de contratos funerarios
-fix: Corregir cálculo de comisiones nocturnas
-refactor: Mejorar estructura de formulario de contratos
-docs: Actualizar documentación de API
-test: Agregar tests para PayrollService
-style: Ajustar espaciado en tabla de inventario
+feat: Add funeral contract management module
+fix: Correct nocturnal commission calculation
+refactor: Improve contract form structure
+docs: Update API documentation
+test: Add tests for PayrollService
+style: Adjust spacing in inventory table
 ```
 
 ---
 
 ## Notas Finales
 
-- **Todo en español:** Textos, comentarios en código de negocio, commits en español
-- **Código en inglés:** Nombres de variables, funciones, clases (estándar de la industria)
+- **User-facing text in Spanish:** All UI text, labels, buttons, messages must be in Spanish
+- **Code in English:** Variable names, function names, class names, folder names (industry standard)
+- **Git commits in English:** All commit messages must be in English
+- **Folder structure in English:** features/, pages/ subdirectories must use English names
 - **UI limpia:** Fondo blanco, diseño minimalista, profesional
 - **Mobile responsive:** Todas las vistas deben funcionar en móvil
 - **Accesibilidad:** Usar etiquetas semánticas, aria-labels cuando sea necesario
