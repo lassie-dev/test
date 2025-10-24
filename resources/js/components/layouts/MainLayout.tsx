@@ -21,6 +21,14 @@ import {
   Home,
   Circle,
   LucideIcon,
+  // New elegant icons
+  LayoutGrid,
+  FileSignature,
+  Archive,
+  Wallet,
+  UsersRound,
+  Receipt,
+  TrendingUp,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -68,7 +76,7 @@ const navigationSections: NavigationSection[] = [
   {
     title: null,
     items: [
-      { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { name: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
     ],
   },
   {
@@ -78,38 +86,38 @@ const navigationSections: NavigationSection[] = [
       {
         name: 'Contratos',
         href: '/contracts',
-        icon: FileText,
+        icon: FileSignature,
         permissions: ['view_contracts'],
         children: [
-          { name: 'Nuevo Contrato', href: '/contracts/create', icon: FileText },
+          { name: 'Nuevo Contrato', href: '/contracts/create', icon: FileSignature },
           { name: 'Lista de Contratos', href: '/contracts', icon: FileText },
-          { name: 'Contratos Archivados', href: '/contracts/archived', icon: FileText },
+          { name: 'Contratos Archivados', href: '/contracts/archived', icon: Archive },
         ]
       },
       {
         name: 'Inventario',
         href: '/inventory',
-        icon: Package,
+        icon: Archive,
         permissions: ['view_inventory'],
         badge: 5,
       },
       {
         name: 'Pagos',
         href: '/payments',
-        icon: CreditCard,
+        icon: Wallet,
         permissions: ['view_payments'],
         badge: 12,
       },
       {
         name: 'Personal',
         href: '/staff',
-        icon: Users,
+        icon: UsersRound,
         permissions: ['view_staff'],
       },
       {
         name: 'Liquidaciones',
         href: '/payroll',
-        icon: DollarSign,
+        icon: Receipt,
         permissions: ['view_payroll'],
       },
     ],
@@ -118,7 +126,7 @@ const navigationSections: NavigationSection[] = [
     title: 'Análisis',
     permissions: ['view_reports'],
     items: [
-      { name: 'Reportes', href: '/reports', icon: BarChart3 },
+      { name: 'Reportes', href: '/reports', icon: TrendingUp },
     ],
   },
 ];
@@ -289,7 +297,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           {searchFilteredSections.map((section: NavigationSection, sectionIdx: number) => (
             <div key={sectionIdx}>
               {section.title && !isCollapsed && (
-                <h3 className="mb-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <h3 className="mb-2 px-3 text-xs font-semibold text-text-muted uppercase tracking-wider">
                   {section.title}
                 </h3>
               )}
@@ -308,8 +316,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
                           className={cn(
                             'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors flex-1',
                             isActive
-                              ? 'bg-primary-50 text-primary-700'
-                              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                              ? 'bg-primary-50 text-text-accent'
+                              : 'text-text-secondary hover:bg-gray-100 hover:text-text-primary'
                           )}
                           title={isCollapsed ? item.name : undefined}
                         >
@@ -355,8 +363,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
                                 className={cn(
                                   'flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors',
                                   isChildActive
-                                    ? 'bg-primary-50 text-primary-700 font-medium'
-                                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                    ? 'bg-primary-50 text-text-accent font-medium'
+                                    : 'text-text-muted hover:bg-gray-100 hover:text-text-secondary'
                                 )}
                               >
                                 <ChildIcon className="h-4 w-4 flex-shrink-0" />
@@ -374,15 +382,88 @@ export default function MainLayout({ children }: MainLayoutProps) {
           ))}
         </nav>
 
-        {/* Keyboard shortcuts hint */}
-        {!isCollapsed && (
-          <div className="p-3 border-t border-gray-200 text-xs text-gray-500">
-            <div className="flex items-center gap-2">
-              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded">Esc</kbd>
-              <span>Cerrar menú</span>
-            </div>
-          </div>
-        )}
+        {/* User Profile Footer */}
+        <div className="border-t border-gray-200 p-3">
+          {!isCollapsed ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-gray-100 transition-colors">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-semibold flex-shrink-0">
+                    {auth?.user?.name?.charAt(0) || 'U'}
+                  </div>
+                  <div className="flex-1 text-left overflow-hidden">
+                    <div className="font-medium text-text-primary truncate">
+                      {auth?.user?.name || 'Usuario'}
+                    </div>
+                    <div className="text-xs text-text-subtle truncate">
+                      {auth?.user?.email || 'usuario@ejemplo.com'}
+                    </div>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Configuración
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="flex w-full items-center gap-2 text-error"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Cerrar Sesión
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-full flex items-center justify-center rounded-lg p-2 hover:bg-gray-100 transition-colors">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-semibold">
+                    {auth?.user?.name?.charAt(0) || 'U'}
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium text-text-primary">{auth?.user?.name || 'Usuario'}</p>
+                    <p className="text-xs text-text-subtle">{auth?.user?.email || 'usuario@ejemplo.com'}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Configuración
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="flex w-full items-center gap-2 text-error"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Cerrar Sesión
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -460,14 +541,14 @@ export default function MainLayout({ children }: MainLayoutProps) {
                       <ChevronRight className="h-4 w-4 text-gray-400 mx-2" />
                     )}
                     {isLast ? (
-                      <span className="flex items-center gap-2 text-gray-900 font-medium">
+                      <span className="flex items-center gap-2 text-text-primary font-medium">
                         <CrumbIcon className="h-4 w-4" />
                         {crumb.name}
                       </span>
                     ) : (
                       <Link
                         href={crumb.href}
-                        className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors"
+                        className="flex items-center gap-2 text-text-muted hover:text-text-secondary transition-colors"
                       >
                         <CrumbIcon className="h-4 w-4" />
                         {crumb.name}

@@ -15,11 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seed branches first
+        $this->call([
+            BranchSeeder::class,
+        ]);
 
+        // Create Admin user
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Administrator',
+            'email' => 'admin@funeraria.cl',
+            'password' => bcrypt('password'),
+            'branch_id' => 1, // Casa Matriz
+        ]);
+
+        // Create Secretary user
+        User::factory()->create([
+            'name' => 'Secretary',
+            'email' => 'secretary@funeraria.cl',
+            'password' => bcrypt('password'),
+            'branch_id' => 1, // Casa Matriz
         ]);
     }
 }

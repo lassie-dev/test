@@ -15,9 +15,15 @@ export default {
     	extend: {
     		fontFamily: {
     			sans: [
+    				'Inter',
     				'Figtree',
                     ...defaultTheme.fontFamily.sans
-                ]
+                ],
+    			display: [
+    				'Crimson Pro',
+    				'Georgia',
+    				...defaultTheme.fontFamily.serif
+    			]
     		},
     		colors: {
     			background: '#FFFFFF',
@@ -44,6 +50,14 @@ export default {
     				'700': '#586329',
     				'800': '#484f24',
     				'900': '#3c4222'
+    			},
+    			text: {
+    				primary: '#2d2d2d',
+    				secondary: '#3a4a3d',
+    				muted: '#5a6b5d',
+    				subtle: '#7a8a7d',
+    				accent: '#2f5e35',
+    				inverse: '#f8faf8'
     			},
     			success: '#4a9452',
     			warning: '#f59e0b',

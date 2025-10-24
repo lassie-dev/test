@@ -18,6 +18,7 @@ class Contract extends Model
         'client_id',
         'deceased_id',
         'user_id',
+        'branch_id',
         'subtotal',
         'discount_percentage',
         'discount_amount',
@@ -60,6 +61,11 @@ class Contract extends Model
             ->withTimestamps();
     }
 
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     // Scopes
     public function scopeImmediateNeed($query)
     {
@@ -75,5 +81,10 @@ class Contract extends Model
     {
         return $query->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year);
+    }
+
+    public function scopeForBranch($query, $branchId)
+    {
+        return $query->where('branch_id', $branchId);
     }
 }
