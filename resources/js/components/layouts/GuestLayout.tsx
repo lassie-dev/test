@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Link } from '@inertiajs/react';
+import Logo from '@/components/Logo';
 
 interface GuestLayoutProps {
   children: ReactNode;
@@ -11,9 +12,9 @@ export default function GuestLayout({ children }: GuestLayoutProps) {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <Link href="/">
-            <h1 className="text-4xl font-bold text-primary-600">Funeral ERP</h1>
-            <p className="mt-2 text-sm text-gray-600">Sistema de Gestión Funeraria</p>
+          <Link href="/" className="inline-block">
+            <Logo className="mx-auto mb-2" />
+            <p className="mt-4 text-sm text-gray-600">Sistema de Gestión Funeraria</p>
           </Link>
         </div>
 
@@ -24,7 +25,7 @@ export default function GuestLayout({ children }: GuestLayoutProps) {
 
         {/* Footer */}
         <p className="mt-8 text-center text-sm text-gray-600">
-          &copy; {new Date().getFullYear()} Funeral ERP. Todos los derechos reservados.
+          &copy; {new Date().getFullYear()} Nuevo Amanecer. Todos los derechos reservados.
         </p>
       </div>
     </div>

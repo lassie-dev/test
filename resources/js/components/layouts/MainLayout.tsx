@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import Logo from '@/components/Logo';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -39,7 +40,9 @@ const navigation = [
 ];
 
 export default function MainLayout({ children }: MainLayoutProps) {
-  const { auth, url } = usePage<any>().props;
+  const page = usePage<any>();
+  const { auth } = page.props;
+  const currentUrl = page.url;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -47,14 +50,14 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200">
         {/* Logo */}
         <div className="flex h-16 items-center border-b border-gray-200 px-6">
-          <h1 className="text-xl font-bold text-primary-600">Funeral ERP</h1>
+          <Logo size="md" />
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 space-y-1 px-3 py-4">
           {navigation.map((item) => {
             const Icon = item.icon;
-            const isActive = url.startsWith(item.href);
+            const isActive = currentUrl?.startsWith(item.href) || false;
             
             return (
               <Link

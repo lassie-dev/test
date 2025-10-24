@@ -19,7 +19,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
   return (
     <GuestLayout>
-      <Head title="Recuperar Contraseña" />
+      <Head title="Recuperar Contraseña - Nuevo Amanecer" />
 
       <div className="space-y-6">
         {/* Header */}

@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: ['class'],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -11,49 +12,55 @@ export default {
     ],
 
     theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-            colors: {
-                // Fondo principal: blanco limpio
-                background: '#FFFFFF',
-
-                // Acentos primarios (funerario - sobrio y profesional)
-                primary: {
-                    50: '#f5f7fa',
-                    100: '#eaeef4',
-                    200: '#d1dbe6',
-                    300: '#a8bcd1',
-                    400: '#7998b8',
-                    500: '#567a9e',  // Principal
-                    600: '#446184',
-                    700: '#38506c',
-                    800: '#31445b',
-                    900: '#2d3c4d',
-                },
-
-                // Secundario (dorado elegante - para detalles importantes)
-                secondary: {
-                    50: '#faf9f5',
-                    100: '#f4f1e6',
-                    200: '#e6dfc7',
-                    300: '#d4c79f',
-                    400: '#c0aa75',
-                    500: '#b09355',  // Principal
-                    600: '#a37d49',
-                    700: '#88653e',
-                    800: '#6f5337',
-                    900: '#5c442f',
-                },
-
-                // Estados
-                success: '#10b981',  // Verde
-                warning: '#f59e0b',  // Ámbar
-                error: '#ef4444',    // Rojo
-                info: '#3b82f6',     // Azul
-            },
-        },
+    	extend: {
+    		fontFamily: {
+    			sans: [
+    				'Figtree',
+                    ...defaultTheme.fontFamily.sans
+                ]
+    		},
+    		colors: {
+    			background: '#FFFFFF',
+    			primary: {
+    				'50': '#f0f7f0',
+    				'100': '#dceede',
+    				'200': '#b9debb',
+    				'300': '#8fc994',
+    				'400': '#66b26e',
+    				'500': '#4a9452',
+    				'600': '#3a7640',
+    				'700': '#2f5e35',
+    				'800': '#27492c',
+    				'900': '#1f3a24'
+    			},
+    			secondary: {
+    				'50': '#f7f8f0',
+    				'100': '#eef1dc',
+    				'200': '#dde3b9',
+    				'300': '#c5d089',
+    				'400': '#aaba5e',
+    				'500': '#8fa03f',
+    				'600': '#6f7f30',
+    				'700': '#586329',
+    				'800': '#484f24',
+    				'900': '#3c4222'
+    			},
+    			success: '#4a9452',
+    			warning: '#f59e0b',
+    			error: '#ef4444',
+    			info: '#3a7640',
+    			sidebar: {
+    				DEFAULT: 'hsl(var(--sidebar-background))',
+    				foreground: 'hsl(var(--sidebar-foreground))',
+    				primary: 'hsl(var(--sidebar-primary))',
+    				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+    				accent: 'hsl(var(--sidebar-accent))',
+    				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+    				border: 'hsl(var(--sidebar-border))',
+    				ring: 'hsl(var(--sidebar-ring))'
+    			}
+    		}
+    	}
     },
 
     plugins: [forms],

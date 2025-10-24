@@ -28,7 +28,7 @@ export default function Login({
 
   return (
     <GuestLayout>
-      <Head title="Iniciar Sesión" />
+      <Head title="Iniciar Sesión - Nuevo Amanecer" />
 
       <div className="space-y-6">
         {/* Header */}
