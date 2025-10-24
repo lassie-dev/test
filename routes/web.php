@@ -26,6 +26,31 @@ Route::middleware('auth')->group(function () {
 
     // Contracts Routes - Using proper controller
     Route::resource('contracts', ContractController::class);
+
+    // Inventory
+    Route::get('/inventory', function () {
+        return inertia('Inventory/Index');
+    })->name('inventory.index');
+
+    // Payments
+    Route::get('/payments', function () {
+        return inertia('Payments/Index');
+    })->name('payments.index');
+
+    // Staff
+    Route::get('/staff', function () {
+        return inertia('Staff/Index');
+    })->name('staff.index');
+
+    // Payroll
+    Route::get('/payroll', function () {
+        return inertia('Payroll/Index');
+    })->name('payroll.index');
+
+    // Reports
+    Route::get('/reports', function () {
+        return inertia('Reports/Index');
+    })->name('reports.index');
 });
 
 require __DIR__.'/auth.php';
