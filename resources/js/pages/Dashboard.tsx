@@ -1,6 +1,11 @@
 import { Head, Link, router } from '@inertiajs/react';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import RevenueTrendsChart from '@/components/charts/RevenueTrendsChart';
+import ContractStatusChart from '@/components/charts/ContractStatusChart';
+import ServicesTimelineChart from '@/components/charts/ServicesTimelineChart';
+import PaymentStatusChart from '@/components/charts/PaymentStatusChart';
+import BranchPerformanceChart from '@/components/charts/BranchPerformanceChart';
 import {
   FileSignature,
   Wallet,
@@ -44,10 +49,53 @@ interface Branch {
   city: string | null;
 }
 
+interface RevenueDataPoint {
+  month: string;
+  revenue: number;
+  previous_revenue: number;
+}
+
+interface ContractStatusData {
+  status: string;
+  current_month: number;
+  previous_month: number;
+  label: string;
+  color: string;
+}
+
+interface ServicesTimelineData {
+  date: string;
+  scheduled: number;
+  completed: number;
+}
+
+interface PaymentStatusData {
+  status: string;
+  value: number;
+  label: string;
+  color: string;
+}
+
+interface BranchPerformanceData {
+  branch_name: string;
+  revenue: number;
+  contracts: number;
+  services: number;
+}
+
+interface ChartsData {
+  revenue_trends: RevenueDataPoint[];
+  contract_status: ContractStatusData[];
+  services_timeline: ServicesTimelineData[];
+  payment_status: PaymentStatusData[];
+  branch_performance: BranchPerformanceData[];
+}
+
 interface DashboardProps {
   stats: DashboardStats;
   recent_contracts: Contract[];
   upcoming_services: Contract[];
+  charts: ChartsData;
   branches: Branch[];
   current_branch: Branch | null;
   is_admin: boolean;
@@ -57,13 +105,20 @@ export default function Dashboard({
   stats,
   recent_contracts = [],
   upcoming_services = [],
+  charts,
   branches = [],
   current_branch = null,
   is_admin = false
 }: DashboardProps) {
 
-  const handleBranchChange = (branchId: number) => {
-    router.get('/', { branch_id: branchId }, { preserveState: true });
+  const handleBranchChange = (value: string) => {
+    // If empty string or "0", pass 0 to indicate "all branches"
+    // Otherwise pass the actual branch ID
+    const branchId = value === '' || value === '0' ? 0 : parseInt(value, 10);
+    router.get('/dashboard', { branch_id: branchId }, {
+      preserveState: true,
+      preserveScroll: true,
+    });
   };
   const cardData = [
     {
@@ -162,11 +217,11 @@ export default function Dashboard({
                 <span>Sucursal:</span>
               </div>
               <select
-                value={current_branch?.id || ''}
-                onChange={(e) => handleBranchChange(Number(e.target.value))}
+                value={current_branch?.id || '0'}
+                onChange={(e) => handleBranchChange(e.target.value)}
                 className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
               >
-                <option value="">Todas las sucursales</option>
+                <option value="0">Todas las sucursales</option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.id}>
                     {branch.name} {branch.city ? `- ${branch.city}` : ''}
@@ -210,6 +265,37 @@ export default function Dashboard({
               </Link>
             );
           })}
+        </div>
+
+        {/* Charts Section */}
+        <div className="space-y-6">
+          {/* Revenue Trends Chart */}
+          {charts.revenue_trends.length > 0 && (
+            <RevenueTrendsChart data={charts.revenue_trends} />
+          )}
+
+          {/* Two Column Charts */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Contract Status Chart */}
+            {charts.contract_status.length > 0 && (
+              <ContractStatusChart data={charts.contract_status} />
+            )}
+
+            {/* Payment Status Chart */}
+            {charts.payment_status.length > 0 && (
+              <PaymentStatusChart data={charts.payment_status} />
+            )}
+          </div>
+
+          {/* Services Timeline Chart */}
+          {charts.services_timeline.length > 0 && (
+            <ServicesTimelineChart data={charts.services_timeline} />
+          )}
+
+          {/* Branch Performance Chart - Only for Admins */}
+          {is_admin && charts.branch_performance.length > 0 && (
+            <BranchPerformanceChart data={charts.branch_performance} />
+          )}
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
