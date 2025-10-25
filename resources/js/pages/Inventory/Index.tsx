@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 export default function Index() {
   return (
     <MainLayout>
-      <Head title="Inventario" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

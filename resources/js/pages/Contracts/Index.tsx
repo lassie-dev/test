@@ -52,7 +52,7 @@ export default function Index({ contracts, filters }: ContractsIndexProps) {
 
   return (
     <MainLayout>
-      <Head title="Contratos" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

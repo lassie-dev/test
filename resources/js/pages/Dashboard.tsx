@@ -57,7 +57,7 @@ export default function Dashboard({
 
   return (
     <MainLayout>
-      <Head title="Dashboard" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header with Branch Selector */}

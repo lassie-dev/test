@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 export default function Index() {
   return (
     <MainLayout>
-      <Head title="Pagos" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

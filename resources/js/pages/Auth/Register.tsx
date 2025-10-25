@@ -21,7 +21,7 @@ export default function Register() {
 
   return (
     <GuestLayout>
-      <Head title="Registro - Nuevo Amanecer" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

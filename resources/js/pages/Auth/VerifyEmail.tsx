@@ -15,7 +15,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
 
   return (
     <GuestLayout>
-      <Head title="Verificar Email" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

@@ -63,6 +63,16 @@ export default {
     			warning: '#f59e0b',
     			error: '#ef4444',
     			info: '#3a7640',
+    			// Dropdown and popover colors
+    			popover: {
+    				DEFAULT: '#FFFFFF',
+    				foreground: '#2d2d2d'
+    			},
+    			'muted-foreground': '#5a6b5d',
+    			accent: {
+    				DEFAULT: '#f0f7f0',
+    				foreground: '#2f5e35'
+    			},
     			sidebar: {
     				DEFAULT: 'hsl(var(--sidebar-background))',
     				foreground: 'hsl(var(--sidebar-foreground))',

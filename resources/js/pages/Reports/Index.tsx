@@ -60,7 +60,7 @@ export default function Index() {
 
   return (
     <MainLayout>
-      <Head title="Reportes" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

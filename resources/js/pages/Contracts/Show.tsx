@@ -53,7 +53,7 @@ export default function Show({ contract }: ShowProps) {
 
   return (
     <MainLayout>
-      <Head title={`Contrato ${contract.numero_contrato}`} />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}

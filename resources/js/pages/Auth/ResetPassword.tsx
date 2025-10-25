@@ -27,7 +27,7 @@ export default function ResetPassword({
 
   return (
     <GuestLayout>
-      <Head title="Restablecer Contraseña" />
+      <Head />
 
       <div className="space-y-6">
         {/* Header */}
