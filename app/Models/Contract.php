@@ -17,6 +17,7 @@ class Contract extends Model
         'status',
         'client_id',
         'deceased_id',
+        'service_date',
         'user_id',
         'branch_id',
         'subtotal',
@@ -28,6 +29,7 @@ class Contract extends Model
     ];
 
     protected $casts = [
+        'service_date' => 'datetime',
         'subtotal' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
         'discount_amount' => 'decimal:2',

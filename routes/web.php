@@ -4,6 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 // Welcome page
@@ -23,29 +28,19 @@ Route::middleware('auth')->group(callback: function () {
     Route::resource('contracts', ContractController::class);
 
     // Inventory
-    Route::get('/inventory', function () {
-        return inertia('Inventory/Index');
-    })->name('inventory.index');
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
 
     // Payments
-    Route::get('/payments', function () {
-        return inertia('Payments/Index');
-    })->name('payments.index');
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 
     // Staff
-    Route::get('/staff', function () {
-        return inertia('Staff/Index');
-    })->name('staff.index');
+    Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
 
     // Payroll
-    Route::get('/payroll', function () {
-        return inertia('Payroll/Index');
-    })->name('payroll.index');
+    Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
 
     // Reports
-    Route::get('/reports', function () {
-        return inertia('Reports/Index');
-    })->name('reports.index');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });
 
 require __DIR__.'/auth.php';
