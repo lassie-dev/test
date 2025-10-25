@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/components/layouts/GuestLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,7 @@ export default function Login({
   status?: string;
   canResetPassword: boolean;
 }) {
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     email: '',
     password: '',
@@ -33,9 +35,9 @@ export default function Login({
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Iniciar Sesión</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('auth.login')}</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Ingresa a tu cuenta para continuar
+            {t('auth.loginSubtitle')}
           </p>
         </div>
 
@@ -51,7 +53,7 @@ export default function Login({
           {/* Email Field */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-gray-700">
-              Correo Electrónico
+              {t('auth.email')}
             </Label>
             <Input
               id="email"
@@ -59,7 +61,7 @@ export default function Login({
               value={data.email}
               onChange={(e) => setData('email', e.target.value)}
               className="border-gray-300"
-              placeholder="tu@email.com"
+              placeholder={t('auth.emailPlaceholder')}
               autoComplete="username"
               autoFocus
             />
@@ -71,7 +73,7 @@ export default function Login({
           {/* Password Field */}
           <div className="space-y-2">
             <Label htmlFor="password" className="text-gray-700">
-              Contraseña
+              {t('auth.password')}
             </Label>
             <Input
               id="password"
@@ -79,7 +81,7 @@ export default function Login({
               value={data.password}
               onChange={(e) => setData('password', e.target.value)}
               className="border-gray-300"
-              placeholder="••••••••"
+              placeholder={t('auth.passwordPlaceholder')}
               autoComplete="current-password"
             />
             {errors.password && (
@@ -99,7 +101,7 @@ export default function Login({
                 htmlFor="remember"
                 className="text-sm font-normal text-gray-700 cursor-pointer"
               >
-                Recordarme
+                {t('auth.rememberMe')}
               </Label>
             </div>
 
@@ -108,7 +110,7 @@ export default function Login({
                 href={route('password.request')}
                 className="text-sm text-primary-600 hover:text-primary-700 hover:underline"
               >
-                ¿Olvidaste tu contraseña?
+                {t('auth.forgotPassword')}
               </Link>
             )}
           </div>
@@ -120,18 +122,18 @@ export default function Login({
             disabled={processing}
           >
             <LogIn className="h-4 w-4" />
-            {processing ? 'Ingresando...' : 'Iniciar Sesión'}
+            {processing ? t('common.entering') : t('auth.login')}
           </Button>
         </form>
 
         {/* Register Link */}
         <div className="text-center text-sm text-gray-600">
-          ¿No tienes cuenta?{' '}
+          {t('auth.noAccount')}{' '}
           <Link
             href={route('register')}
             className="font-medium text-primary-600 hover:text-primary-700 hover:underline"
           >
-            Regístrate aquí
+            {t('auth.registerHere')}
           </Link>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ export default function DeleteUserForm({
 }: {
     className?: string;
 }) {
+    const { t } = useTranslation();
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const passwordInput = useRef<HTMLInputElement>(null);
 
@@ -51,36 +53,30 @@ export default function DeleteUserForm({
         <section className={`space-y-6 ${className}`}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">
-                    Delete Account
+                    {t('profile.deleteAccount')}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
+                    {t('profile.deleteAccountDescription')}
                 </p>
             </header>
 
             <Button variant="destructive" onClick={confirmUserDeletion}>
-                Delete Account
+                {t('profile.deleteAccount')}
             </Button>
 
             <Dialog open={confirmingUserDeletion} onOpenChange={setConfirmingUserDeletion}>
                 <DialogContent>
                     <form onSubmit={deleteUser}>
                         <DialogHeader>
-                            <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
+                            <DialogTitle>{t('profile.deleteAccountConfirm')}</DialogTitle>
                             <DialogDescription>
-                                Once your account is deleted, all of its resources and
-                                data will be permanently deleted. Please enter your
-                                password to confirm you would like to permanently delete
-                                your account.
+                                {t('profile.deleteAccountWarning')}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="mt-6">
-                            <Label htmlFor="password" className="sr-only">Password</Label>
+                            <Label htmlFor="password" className="sr-only">{t('profile.passwordLabel')}</Label>
 
                             <Input
                                 id="password"
@@ -92,7 +88,7 @@ export default function DeleteUserForm({
                                     setData('password', e.target.value)
                                 }
                                 className="mt-1 block w-full"
-                                placeholder="Password"
+                                placeholder={t('profile.passwordPlaceholder')}
                             />
 
                             {errors.password && (
@@ -102,11 +98,11 @@ export default function DeleteUserForm({
 
                         <DialogFooter className="mt-6">
                             <Button type="button" variant="outline" onClick={closeModal}>
-                                Cancel
+                                {t('common.cancel')}
                             </Button>
 
                             <Button type="submit" variant="destructive" disabled={processing}>
-                                Delete Account
+                                {t('profile.deleteAccount')}
                             </Button>
                         </DialogFooter>
                     </form>

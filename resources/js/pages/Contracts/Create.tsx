@@ -1,5 +1,6 @@
 import { Head, useForm, router } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,7 @@ interface ServiceItem {
 }
 
 export default function Create({ services }: CreateProps) {
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     // Contract basic info
     type: 'necesidad_inmediata' as string,
@@ -73,7 +75,7 @@ export default function Create({ services }: CreateProps) {
 
     // Validate RUT on blur
     if (value && !validarRut(value)) {
-      setRutError('RUT inválido');
+      setRutError(t('validation.invalidRut'));
     } else {
       setRutError('');
     }
@@ -171,10 +173,10 @@ export default function Create({ services }: CreateProps) {
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              <h1 className="text-3xl font-bold text-gray-900">Crear Contrato</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{t('contracts.create')}</h1>
             </div>
             <p className="mt-2 text-sm text-gray-600">
-              Complete la información para crear un nuevo contrato funerario
+              {t('contracts.complete')}
             </p>
           </div>
         </div>
@@ -183,13 +185,13 @@ export default function Create({ services }: CreateProps) {
           {/* Contract Basic Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Información del Contrato</CardTitle>
-              <CardDescription>Datos básicos del contrato</CardDescription>
+              <CardTitle>{t('contracts.contractInfo')}</CardTitle>
+              <CardDescription>{t('contracts.basicInfo')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Tipo de Contrato</Label>
+                  <Label htmlFor="type">{t('contracts.type')}</Label>
                   <Select
                     value={data.type}
                     onValueChange={(value) => setData('type', value)}
@@ -200,7 +202,7 @@ export default function Create({ services }: CreateProps) {
                     <SelectContent position="popper">
                       {TIPOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                          {t(option.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -209,7 +211,7 @@ export default function Create({ services }: CreateProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="status">Estado</Label>
+                  <Label htmlFor="status">{t('contracts.status')}</Label>
                   <Select
                     value={data.status}
                     onValueChange={(value) => setData('status', value)}
@@ -220,7 +222,7 @@ export default function Create({ services }: CreateProps) {
                     <SelectContent position="popper">
                       {ESTADOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                          {t(option.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -237,7 +239,7 @@ export default function Create({ services }: CreateProps) {
                     onCheckedChange={(checked) => setData('is_holiday', checked as boolean)}
                   />
                   <Label htmlFor="is_holiday" className="font-normal cursor-pointer">
-                    Día Festivo (+3% comisión)
+                    {t('contracts.holiday')}
                   </Label>
                 </div>
 
@@ -248,7 +250,7 @@ export default function Create({ services }: CreateProps) {
                     onCheckedChange={(checked) => setData('is_night_shift', checked as boolean)}
                   />
                   <Label htmlFor="is_night_shift" className="font-normal cursor-pointer">
-                    Turno Nocturno (+2% comisión)
+                    {t('contracts.nightShift')}
                   </Label>
                 </div>
               </div>
@@ -258,31 +260,31 @@ export default function Create({ services }: CreateProps) {
           {/* Client Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Información del Cliente</CardTitle>
-              <CardDescription>Datos del cliente contratante</CardDescription>
+              <CardTitle>{t('contracts.clientInfo')}</CardTitle>
+              <CardDescription>{t('contracts.clientData')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="client_name">Nombre Completo *</Label>
+                  <Label htmlFor="client_name">{t('contracts.clientNameRequired')}</Label>
                   <Input
                     id="client_name"
                     value={data.client_name}
                     onChange={(e) => setData('client_name', e.target.value)}
-                    placeholder="Juan Pérez González"
+                    placeholder={t('contracts.clientNamePlaceholder')}
                     required
                   />
                   {errors.client_name && <p className="text-sm text-destructive">{errors.client_name}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="client_rut">RUT *</Label>
+                  <Label htmlFor="client_rut">{t('contracts.clientRutRequired')}</Label>
                   <Input
                     id="client_rut"
                     value={data.client_rut}
                     onChange={(e) => handleRutChange(e.target.value)}
                     onBlur={handleRutBlur}
-                    placeholder="12.345.678-9"
+                    placeholder={t('contracts.clientRutPlaceholder')}
                     required
                   />
                   {(rutError || errors.client_rut) && (
@@ -291,38 +293,38 @@ export default function Create({ services }: CreateProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="client_phone">Teléfono *</Label>
+                  <Label htmlFor="client_phone">{t('contracts.clientPhoneRequired')}</Label>
                   <Input
                     id="client_phone"
                     type="tel"
                     value={data.client_phone}
                     onChange={(e) => setData('client_phone', e.target.value)}
-                    placeholder="+56 9 1234 5678"
+                    placeholder={t('contracts.clientPhonePlaceholder')}
                     required
                   />
                   {errors.client_phone && <p className="text-sm text-destructive">{errors.client_phone}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="client_email">Email</Label>
+                  <Label htmlFor="client_email">{t('contracts.clientEmail')}</Label>
                   <Input
                     id="client_email"
                     type="email"
                     value={data.client_email}
                     onChange={(e) => setData('client_email', e.target.value)}
-                    placeholder="cliente@ejemplo.com"
+                    placeholder={t('contracts.clientEmailPlaceholder')}
                   />
                   {errors.client_email && <p className="text-sm text-destructive">{errors.client_email}</p>}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="client_address">Dirección</Label>
+                <Label htmlFor="client_address">{t('contracts.clientAddress')}</Label>
                 <Input
                   id="client_address"
                   value={data.client_address}
                   onChange={(e) => setData('client_address', e.target.value)}
-                  placeholder="Calle Principal 123, Ciudad"
+                  placeholder={t('contracts.clientAddressPlaceholder')}
                 />
                 {errors.client_address && <p className="text-sm text-destructive">{errors.client_address}</p>}
               </div>
@@ -333,25 +335,25 @@ export default function Create({ services }: CreateProps) {
           {data.type === 'necesidad_inmediata' && (
             <Card>
               <CardHeader>
-                <CardTitle>Información del Difunto</CardTitle>
-                <CardDescription>Datos del fallecido</CardDescription>
+                <CardTitle>{t('contracts.deceasedInfo')}</CardTitle>
+                <CardDescription>{t('contracts.deceasedData')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="deceased_name">Nombre Completo *</Label>
+                    <Label htmlFor="deceased_name">{t('contracts.deceasedNameRequired')}</Label>
                     <Input
                       id="deceased_name"
                       value={data.deceased_name}
                       onChange={(e) => setData('deceased_name', e.target.value)}
-                      placeholder="María González López"
+                      placeholder={t('contracts.deceasedNamePlaceholder')}
                       required={data.type === 'necesidad_inmediata'}
                     />
                     {errors.deceased_name && <p className="text-sm text-destructive">{errors.deceased_name}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="deceased_death_date">Fecha de Fallecimiento *</Label>
+                    <Label htmlFor="deceased_death_date">{t('contracts.deceasedDeathDateRequired')}</Label>
                     <Input
                       id="deceased_death_date"
                       type="date"
@@ -364,12 +366,12 @@ export default function Create({ services }: CreateProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="deceased_death_place">Lugar de Fallecimiento</Label>
+                  <Label htmlFor="deceased_death_place">{t('contracts.deceasedDeathPlace')}</Label>
                   <Input
                     id="deceased_death_place"
                     value={data.deceased_death_place}
                     onChange={(e) => setData('deceased_death_place', e.target.value)}
-                    placeholder="Hospital Regional, Ciudad"
+                    placeholder={t('contracts.deceasedDeathPlacePlaceholder')}
                   />
                   {errors.deceased_death_place && <p className="text-sm text-destructive">{errors.deceased_death_place}</p>}
                 </div>
@@ -380,20 +382,20 @@ export default function Create({ services }: CreateProps) {
           {/* Services */}
           <Card>
             <CardHeader>
-              <CardTitle>Servicios</CardTitle>
-              <CardDescription>Agregue los servicios incluidos en el contrato</CardDescription>
+              <CardTitle>{t('contracts.services')}</CardTitle>
+              <CardDescription>{t('contracts.servicesDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Add Service */}
               <div className="flex gap-4">
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="service">Servicio</Label>
+                  <Label htmlFor="service">{t('contracts.service')}</Label>
                   <Select
                     value={selectedService?.toString()}
                     onValueChange={(value) => setSelectedService(parseInt(value))}
                   >
                     <SelectTrigger id="service">
-                      <SelectValue placeholder="Seleccionar servicio" />
+                      <SelectValue placeholder={t('contracts.selectServicePlaceholder')} />
                     </SelectTrigger>
                     <SelectContent position="popper">
                       {services.map((service) => (
@@ -406,7 +408,7 @@ export default function Create({ services }: CreateProps) {
                 </div>
 
                 <div className="w-32 space-y-2">
-                  <Label htmlFor="quantity">Cantidad</Label>
+                  <Label htmlFor="quantity">{t('common.quantity')}</Label>
                   <Input
                     id="quantity"
                     type="number"
@@ -424,7 +426,7 @@ export default function Create({ services }: CreateProps) {
                     className="gap-2"
                   >
                     <Plus className="h-4 w-4" />
-                    Agregar
+                    {t('common.add')}
                   </Button>
                 </div>
               </div>
@@ -436,11 +438,11 @@ export default function Create({ services }: CreateProps) {
                     <table className="w-full">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-2 text-left text-sm font-medium">Servicio</th>
-                          <th className="px-4 py-2 text-right text-sm font-medium">Cantidad</th>
-                          <th className="px-4 py-2 text-right text-sm font-medium">Precio Unit.</th>
-                          <th className="px-4 py-2 text-right text-sm font-medium">Subtotal</th>
-                          <th className="px-4 py-2 text-right text-sm font-medium">Acción</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium">{t('contracts.service')}</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium">{t('common.quantity')}</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium">{t('contracts.unitPrice')}</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium">{t('contracts.subtotal')}</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium">{t('common.action')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -485,11 +487,11 @@ export default function Create({ services }: CreateProps) {
           {/* Totals */}
           <Card>
             <CardHeader>
-              <CardTitle>Totales</CardTitle>
+              <CardTitle>{t('contracts.totals')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="discount_percentage">Descuento</Label>
+                <Label htmlFor="discount_percentage">{t('contracts.discount')}</Label>
                 <Select
                   value={data.discount_percentage.toString()}
                   onValueChange={(value) => setData('discount_percentage', parseInt(value))}
@@ -509,14 +511,14 @@ export default function Create({ services }: CreateProps) {
 
               <div className="space-y-2 border-t pt-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="text-gray-600">{t('common.subtotal')}:</span>
                   <span className="font-medium">{formatearMoneda(totals.subtotal)}</span>
                 </div>
 
                 {totals.descuentoMonto > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      Descuento ({data.discount_percentage}%):
+                      {t('contracts.discountAmount', { percent: data.discount_percentage })}:
                     </span>
                     <span className="font-medium text-destructive">
                       -{formatearMoneda(totals.descuentoMonto)}
@@ -525,7 +527,7 @@ export default function Create({ services }: CreateProps) {
                 )}
 
                 <div className="flex justify-between border-t pt-2">
-                  <span className="text-lg font-semibold">Total:</span>
+                  <span className="text-lg font-semibold">{t('common.total')}:</span>
                   <span className="text-lg font-bold text-primary">
                     {formatearMoneda(totals.total)}
                   </span>
@@ -542,10 +544,10 @@ export default function Create({ services }: CreateProps) {
               onClick={handleCancel}
               disabled={processing}
             >
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={processing || rutError !== '' || data.services.length === 0}>
-              {processing ? 'Guardando...' : 'Crear Contrato'}
+              {processing ? t('common.saving') : t('contracts.create')}
             </Button>
           </div>
         </form>

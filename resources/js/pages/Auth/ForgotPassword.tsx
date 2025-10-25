@@ -1,5 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/components/layouts/GuestLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Mail } from 'lucide-react';
 
 export default function ForgotPassword({ status }: { status?: string }) {
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     email: '',
   });
@@ -24,9 +26,9 @@ export default function ForgotPassword({ status }: { status?: string }) {
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">¿Olvidaste tu Contraseña?</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('auth.forgotPasswordTitle')}</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+            {t('auth.forgotPasswordSubtitle')}
           </p>
         </div>
 
@@ -42,7 +44,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
           {/* Email Field */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-gray-700">
-              Correo Electrónico
+              {t('auth.email')}
             </Label>
             <Input
               id="email"
@@ -50,7 +52,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
               value={data.email}
               onChange={(e) => setData('email', e.target.value)}
               className="border-gray-300"
-              placeholder="tu@email.com"
+              placeholder={t('auth.emailPlaceholder')}
               autoFocus
             />
             {errors.email && (
@@ -65,7 +67,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             disabled={processing}
           >
             <Mail className="h-4 w-4" />
-            {processing ? 'Enviando...' : 'Enviar Enlace de Recuperación'}
+            {processing ? t('common.sending') : t('auth.sendResetLink')}
           </Button>
         </form>
       </div>

@@ -6,6 +6,7 @@ import ContractStatusChart from '@/features/dashboard/components/ContractStatusC
 import ServicesTimelineChart from '@/features/dashboard/components/ServicesTimelineChart';
 import PaymentStatusChart from '@/features/dashboard/components/PaymentStatusChart';
 import BranchPerformanceChart from '@/features/dashboard/components/BranchPerformanceChart';
+import { useTranslation } from 'react-i18next';
 import {
   FileSignature,
   Calendar,
@@ -44,6 +45,7 @@ export default function Dashboard({
   current_branch = null,
   is_admin = false
 }: DashboardProps) {
+  const { t } = useTranslation();
   const statCards = generateStatCards(stats);
 
   // Use mock data for charts
@@ -63,9 +65,9 @@ export default function Dashboard({
         {/* Header with Branch Selector */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold font-display text-text-primary">Panel de Control</h1>
+            <h1 className="text-3xl font-bold font-display text-text-primary">{t('dashboard.title')}</h1>
             <p className="mt-2 text-sm text-text-muted">
-              Resumen general de servicios funerarios y operaciones
+              {t('dashboard.subtitle')}
             </p>
           </div>
 
@@ -74,14 +76,14 @@ export default function Dashboard({
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-sm text-text-muted">
                 <Building2 className="h-4 w-4" />
-                <span>Sucursal:</span>
+                <span>{t('dashboard.branch')}</span>
               </div>
               <select
                 value={current_branch?.id || ALL_BRANCHES_VALUE}
                 onChange={(e) => handleBranchChange(e.target.value)}
                 className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
               >
-                <option value={ALL_BRANCHES_VALUE}>Todas las sucursales</option>
+                <option value={ALL_BRANCHES_VALUE}>{t('dashboard.allBranches')}</option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.id}>
                     {branch.name} {branch.city ? `- ${branch.city}` : ''}
@@ -111,7 +113,7 @@ export default function Dashboard({
                 <Card className="border-gray-200 bg-white hover:border-primary-300 transition-all cursor-pointer h-full">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-text-secondary">
-                      {card.title}
+                      {t(card.title)}
                     </CardTitle>
                     <div className={`rounded-lg p-2 ${card.bgColor}`}>
                       <Icon className={`h-5 w-5 ${card.color}`} />
@@ -119,7 +121,7 @@ export default function Dashboard({
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-text-primary">{card.value}</div>
-                    <p className="text-xs text-text-subtle mt-1">{card.description}</p>
+                    <p className="text-xs text-text-subtle mt-1">{t(card.description)}</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -164,13 +166,13 @@ export default function Dashboard({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-text-primary">Contratos Recientes</CardTitle>
+                  <CardTitle className="text-text-primary">{t('dashboard.recentContracts')}</CardTitle>
                   <CardDescription className="text-text-subtle">
-                    Últimos contratos registrados
+                    {t('dashboard.lastRegisteredContracts')}
                   </CardDescription>
                 </div>
                 <Link href="/contracts" className="text-text-accent hover:text-text-primary text-sm font-medium flex items-center gap-1">
-                  Ver todos
+                  {t('common.viewAll')}
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -192,7 +194,7 @@ export default function Dashboard({
                               {contract.deceased_name}
                             </p>
                             <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badge.className}`}>
-                              {badge.label}
+                              {t(badge.label)}
                             </span>
                           </div>
                           <p className="text-xs text-text-muted">
@@ -214,7 +216,7 @@ export default function Dashboard({
               ) : (
                 <div className="text-center py-8">
                   <FileSignature className="mx-auto h-12 w-12 text-text-subtle" />
-                  <p className="mt-2 text-sm text-text-muted">No hay contratos recientes</p>
+                  <p className="mt-2 text-sm text-text-muted">{t('dashboard.noRecentContracts')}</p>
                 </div>
               )}
             </CardContent>
@@ -225,13 +227,13 @@ export default function Dashboard({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-text-primary">Servicios Próximos</CardTitle>
+                  <CardTitle className="text-text-primary">{t('dashboard.upcomingServices')}</CardTitle>
                   <CardDescription className="text-text-subtle">
-                    Ceremonias programadas
+                    {t('dashboard.scheduledCeremonies')}
                   </CardDescription>
                 </div>
                 <Link href="/contracts?view=calendar" className="text-text-accent hover:text-text-primary text-sm font-medium flex items-center gap-1">
-                  Calendario
+                  {t('dashboard.calendar')}
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -272,7 +274,7 @@ export default function Dashboard({
               ) : (
                 <div className="text-center py-8">
                   <Calendar className="mx-auto h-12 w-12 text-text-subtle" />
-                  <p className="mt-2 text-sm text-text-muted">No hay servicios programados</p>
+                  <p className="mt-2 text-sm text-text-muted">{t('dashboard.noScheduledServices')}</p>
                 </div>
               )}
             </CardContent>
@@ -282,9 +284,9 @@ export default function Dashboard({
         {/* Quick Actions */}
         <Card className="border-gray-200 bg-white">
           <CardHeader>
-            <CardTitle className="text-text-primary">Acciones Rápidas</CardTitle>
+            <CardTitle className="text-text-primary">{t('dashboard.quickActions')}</CardTitle>
             <CardDescription className="text-text-subtle">
-              Accesos directos a tareas comunes
+              {t('dashboard.commonTaskShortcuts')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -301,8 +303,8 @@ export default function Dashboard({
                       <Icon className={`h-5 w-5 ${action.iconColor}`} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-text-primary">{action.title}</p>
-                      <p className="text-xs text-text-subtle">{action.description}</p>
+                      <p className="text-sm font-medium text-text-primary">{t(action.title)}</p>
+                      <p className="text-xs text-text-subtle">{t(action.description)}</p>
                     </div>
                   </Link>
                 );

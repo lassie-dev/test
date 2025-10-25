@@ -1,5 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/components/layouts/GuestLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,7 @@ export default function ResetPassword({
   token: string;
   email: string;
 }) {
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     token: token,
     email: email,
@@ -32,9 +34,9 @@ export default function ResetPassword({
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Restablecer Contraseña</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('auth.resetPassword')}</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Ingresa tu nueva contraseña
+            {t('auth.resetPasswordSubtitle')}
           </p>
         </div>
 
@@ -43,7 +45,7 @@ export default function ResetPassword({
           {/* Email Field */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-gray-700">
-              Correo Electrónico
+              {t('auth.email')}
             </Label>
             <Input
               id="email"
@@ -61,7 +63,7 @@ export default function ResetPassword({
           {/* Password Field */}
           <div className="space-y-2">
             <Label htmlFor="password" className="text-gray-700">
-              Nueva Contraseña
+              {t('auth.newPassword')}
             </Label>
             <Input
               id="password"
@@ -80,7 +82,7 @@ export default function ResetPassword({
           {/* Password Confirmation Field */}
           <div className="space-y-2">
             <Label htmlFor="password_confirmation" className="text-gray-700">
-              Confirmar Contraseña
+              {t('auth.confirmPassword')}
             </Label>
             <Input
               id="password_confirmation"
@@ -102,7 +104,7 @@ export default function ResetPassword({
             disabled={processing}
           >
             <Key className="h-4 w-4" />
-            {processing ? 'Restableciendo...' : 'Restablecer Contraseña'}
+            {processing ? t('common.resetting') : t('auth.resetPassword')}
           </Button>
         </form>
       </div>

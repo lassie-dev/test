@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -36,6 +37,7 @@ interface ContractsTableProps {
 }
 
 export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps) {
+  const { t } = useTranslation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [contractToDelete, setContractToDelete] = useState<Contrato | null>(null);
 
@@ -70,15 +72,15 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
           <Plus className="h-6 w-6 text-gray-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900">
-          No hay contratos registrados
+          {t('contracts.noContracts')}
         </h3>
         <p className="mt-2 text-sm text-gray-600">
-          Comienza creando tu primer contrato funerario.
+          {t('contracts.noContractsDescription')}
         </p>
         {onCreateClick && (
           <Button onClick={onCreateClick} className="mt-4 gap-2">
             <Plus className="h-4 w-4" />
-            Crear Primer Contrato
+            {t('contracts.createFirstContract')}
           </Button>
         )}
       </div>
@@ -90,14 +92,14 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Número</TableHead>
-            <TableHead>Cliente</TableHead>
-            <TableHead>Difunto</TableHead>
-            <TableHead>Tipo</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Total</TableHead>
-            <TableHead>Fecha</TableHead>
-            <TableHead className="text-right">Acciones</TableHead>
+            <TableHead>{t('contracts.number')}</TableHead>
+            <TableHead>{t('contracts.client')}</TableHead>
+            <TableHead>{t('contracts.deceased')}</TableHead>
+            <TableHead>{t('contracts.type')}</TableHead>
+            <TableHead>{t('contracts.status')}</TableHead>
+            <TableHead>{t('contracts.total')}</TableHead>
+            <TableHead>{t('contracts.date')}</TableHead>
+            <TableHead className="text-right">{t('common.actions')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -130,7 +132,7 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
                     variant="ghost"
                     size="icon"
                     onClick={() => handleView(contrato.id)}
-                    title="Ver detalles"
+                    title={t('contracts.viewDetails')}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
@@ -138,7 +140,7 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(contrato.id)}
-                    title="Editar"
+                    title={t('common.edit')}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -147,7 +149,7 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
                     size="icon"
                     className="text-destructive hover:text-destructive"
                     onClick={() => handleDeleteClick(contrato)}
-                    title="Eliminar"
+                    title={t('common.delete')}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -161,22 +163,22 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar contrato?</AlertDialogTitle>
+            <AlertDialogTitle>{t('contracts.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Estás seguro de que deseas eliminar el contrato{' '}
+              {t('contracts.deleteConfirm')}{' '}
               <span className="font-semibold">{contractToDelete?.numero_contrato}</span>
-              {' '}del cliente{' '}
+              {' '}{t('contracts.ofClient')}{' '}
               <span className="font-semibold">{contractToDelete?.cliente.nombre}</span>?
-              Esta acción no se puede deshacer.
+              {' '}{t('contracts.deleteWarning')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Eliminar
+              {t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

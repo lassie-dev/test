@@ -13,8 +13,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Filter, Package, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 export default function Index() {
+  const { t } = useTranslation();
   return (
     <MainLayout>
       <Head />
@@ -23,14 +25,14 @@ export default function Index() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Inventario</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('inventory.title')}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Gestiona el inventario de productos y servicios funerarios
+              {t('inventory.subtitle')}
             </p>
           </div>
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
-            Agregar Producto
+            {t('inventory.addProduct')}
           </Button>
         </div>
 
@@ -38,34 +40,34 @@ export default function Index() {
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Productos</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('inventory.totalProducts')}</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Productos registrados</p>
+              <p className="text-xs text-muted-foreground">{t('inventory.registeredProducts')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Stock Bajo</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('inventory.lowStock')}</CardTitle>
               <AlertTriangle className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Productos con stock mínimo</p>
+              <p className="text-xs text-muted-foreground">{t('inventory.lowStockProducts')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('inventory.totalValue')}</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">Valor del inventario</p>
+              <p className="text-xs text-muted-foreground">{t('inventory.inventoryValue')}</p>
             </CardContent>
           </Card>
         </div>
@@ -76,11 +78,11 @@ export default function Index() {
             <div className="flex gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <Input placeholder="Buscar productos..." className="pl-9" />
+                <Input placeholder={t('inventory.searchPlaceholder')} className="pl-9" />
               </div>
               <Button variant="outline" className="gap-2">
                 <Filter className="h-4 w-4" />
-                Filtros
+                {t('common.filters')}
               </Button>
             </div>
           </CardContent>
@@ -89,7 +91,7 @@ export default function Index() {
         {/* Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Lista de Productos</CardTitle>
+            <CardTitle>{t('inventory.list')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -97,14 +99,14 @@ export default function Index() {
                 <Package className="h-6 w-6 text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                No hay productos registrados
+                {t('inventory.noProducts')}
               </h3>
               <p className="mt-2 text-sm text-gray-600">
-                Comienza agregando productos a tu inventario.
+                {t('inventory.noProductsDescription')}
               </p>
               <Button className="mt-4 gap-2">
                 <Plus className="h-4 w-4" />
-                Agregar Primer Producto
+                {t('inventory.createFirstProduct')}
               </Button>
             </div>
           </CardContent>

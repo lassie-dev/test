@@ -1,300 +1,300 @@
-# Funeral ERP - Proyecto de Sistema de Gestión Funeraria
+# Funeral ERP - Funeral Management System Project
 
-## 📋 Descripción del Negocio (Para Claude - Fácil de Entender)
+## 📋 Business Description (For Claude - Easy to Understand)
 
-### ¿Qué es este sistema?
-Este es un **ERP (Sistema de Gestión Empresarial) para una funeraria chilena**. Una funeraria es una empresa que se encarga de todos los servicios relacionados con el fallecimiento de una persona: desde el traslado del cuerpo, preparación, velorio, hasta la cremación o sepultura.
+### What is this system?
+This is an **ERP (Enterprise Resource Planning System) for a Chilean funeral home**. A funeral home is a business that handles all services related to a person's passing: from body transportation, preparation, wake, to cremation or burial.
 
-### ¿Cómo funciona el negocio funerario?
+### How does the funeral business work?
 
-#### 1. **Tipos de Clientes y Contratos**
+#### 1. **Types of Clients and Contracts**
 
-Existen **2 tipos de contratos**:
+There are **2 types of contracts**:
 
-**A) Necesidad Inmediata (Servicio Activo)**
-- El cliente llama porque acaba de fallecer un familiar
-- Necesita el servicio AHORA (urgente)
-- El contrato incluye:
-  - Datos del **difunto** (persona fallecida): nombre, fecha de fallecimiento, lugar
-  - Datos del **cliente** (familiar que contrata): nombre, RUT, teléfono, email
-  - Servicios funerarios inmediatos (traslado, velorio, cremación/sepultura)
-  - Productos necesarios (ataúd, urna, flores, etc.)
+**A) Immediate Need (Active Service)**
+- Client calls because a family member has just passed away
+- They need the service NOW (urgent)
+- The contract includes:
+  - **Deceased** data (person who passed away): name, date of death, place
+  - **Client** data (family member who contracts): name, RUT, phone, email
+  - Immediate funeral services (transportation, wake, cremation/burial)
+  - Necessary products (casket, urn, flowers, etc.)
 
-**B) Necesidad Futura (Previsión/Plan)**
-- El cliente contrata servicios funerarios por adelantado para él mismo o un familiar
-- No hay un fallecimiento todavía
-- Es como un "seguro funerario"
-- Solo tiene datos del **cliente**
-- NO tiene datos del difunto (porque aún no ha fallecido nadie)
-- Cuando llegue el momento, se actualiza el contrato a "Necesidad Inmediata"
+**B) Future Need (Pre-need/Plan)**
+- Client contracts funeral services in advance for themselves or a family member
+- No death has occurred yet
+- It's like "funeral insurance"
+- Only has **client** data
+- NO deceased data (because no one has passed away yet)
+- When the time comes, the contract is updated to "Immediate Need"
 
-#### 2. **Flujo de Trabajo Típico**
+#### 2. **Typical Workflow**
 
-**PASO 1: Llamada Inicial**
-- Una familia llama porque falleció un ser querido
-- La **secretaria** atiende la llamada (disponible 24/7)
-- Registra datos básicos: nombre del difunto, dirección, teléfono del familiar
+**STEP 1: Initial Call**
+- A family calls because a loved one has passed away
+- The **secretary** answers the call (available 24/7)
+- Registers basic data: deceased's name, address, family member's phone
 
-**PASO 2: Creación del Contrato**
-- La secretaria crea un contrato en el sistema
-- Selecciona servicios según lo que la familia necesite:
-  - **Servicios básicos**: Traslado del cuerpo, preparación, velorio, cremación/sepultura
-  - **Servicios adicionales**: Música, ceremonia religiosa, streaming online
-- Selecciona productos:
-  - Ataúd (diferentes calidades: básico, medio, premium)
-  - Urna (si es cremación)
-  - Flores, coronas
-  - Tarjetas de agradecimiento
+**STEP 2: Contract Creation**
+- The secretary creates a contract in the system
+- Selects services according to the family's needs:
+  - **Basic services**: Body transportation, preparation, wake, cremation/burial
+  - **Additional services**: Music, religious ceremony, online streaming
+- Selects products:
+  - Casket (different qualities: basic, medium, premium)
+  - Urn (if cremation)
+  - Flowers, wreaths
+  - Thank you cards
 
-**PASO 3: Cotización y Descuentos**
-- El sistema calcula el **subtotal** (suma de todos los servicios y productos)
-- La secretaria puede aplicar **descuentos** según políticas de la empresa:
-  - Descuentos permitidos: 3%, 5%, 8%, 10%, 15%, 25%, 30%
-  - Razones: cliente recurrente, convenio con empresa, dificultad económica, etc.
-- Se calcula el **total final** = subtotal - descuento
+**STEP 3: Quotation and Discounts**
+- The system calculates the **subtotal** (sum of all services and products)
+- The secretary can apply **discounts** according to company policies:
+  - Allowed discounts: 3%, 5%, 8%, 10%, 15%, 25%, 30%
+  - Reasons: returning client, company agreement, financial hardship, etc.
+- The **final total** is calculated = subtotal - discount
 
-**PASO 4: Forma de Pago**
-- **Contado**: Pago inmediato (efectivo, tarjeta, transferencia)
-- **Crédito**: Pago en cuotas (la funeraria da facilidades de pago)
-  - Se registran las cuotas en el módulo de Pagos
-  - Se hace seguimiento de pagos pendientes
+**STEP 4: Payment Method**
+- **Cash**: Immediate payment (cash, card, transfer)
+- **Credit**: Payment in installments (the funeral home provides payment facilities)
+  - Installments are registered in the Payments module
+  - Pending payments are tracked
 
-**PASO 5: Asignación de Personal**
-- El sistema asigna automáticamente el personal necesario:
-  - **Conductor**: Traslada el cuerpo desde el lugar del fallecimiento
-  - **Auxiliares**: Ayudan en el traslado y preparación del cuerpo
-  - **Personal de velorio**: Atiende durante la ceremonia
+**STEP 5: Staff Assignment**
+- The system automatically assigns the necessary staff:
+  - **Driver**: Transports the body from the place of death
+  - **Assistants**: Help in transportation and body preparation
+  - **Wake staff**: Attends during the ceremony
 
-**PASO 6: Comunicación Automática (WhatsApp)**
-El sistema envía mensajes automáticos:
-- **Inmediato**: Al conductor con instrucciones (dirección, hora, detalles)
-- **4 horas después**: Tips a la familia (qué hacer durante el duelo)
-- **5 días después**: Tarjetas digitales de condolencia personalizadas
-- **8 días después**: Encuesta de satisfacción del servicio
+**STEP 6: Automatic Communication (WhatsApp)**
+The system sends automatic messages:
+- **Immediate**: To the driver with instructions (address, time, details)
+- **4 hours later**: Tips to the family (what to do during grief)
+- **5 days later**: Personalized digital condolence cards
+- **8 days later**: Service satisfaction survey
 
-**PASO 7: Ejecución del Servicio**
-- El conductor va a recoger el cuerpo
-- Se prepara el cuerpo en la funeraria
-- Se realiza el velorio (ceremonia)
-- Se hace la cremación o sepultura
-- Personal marca cada etapa como completada en el sistema
+**STEP 7: Service Execution**
+- The driver goes to pick up the body
+- The body is prepared at the funeral home
+- The wake (ceremony) is held
+- Cremation or burial is done
+- Staff marks each stage as completed in the system
 
-**PASO 8: Cierre y Liquidación**
-- Se marca el contrato como "Finalizado"
-- Se calculan automáticamente las **comisiones** del personal
-- La secretaria gana comisión por cada contrato (% del total)
+**STEP 8: Closure and Liquidation**
+- The contract is marked as "Finished"
+- Staff **commissions** are automatically calculated
+- The secretary earns commission per contract (% of total)
 
-#### 3. **Sistema de Comisiones (Muy Importante)**
+#### 3. **Commission System (Very Important)**
 
-Las **secretarias** ganan comisiones por cada contrato que crean. El porcentaje varía según:
+**Secretaries** earn commissions for each contract they create. The percentage varies according to:
 
-**Comisión Base: 5%**
-- Por cada contrato, la secretaria gana 5% del total
+**Base Commission: 5%**
+- For each contract, the secretary earns 5% of the total
 
-**Comisión Nocturna: +2% adicional**
-- Si el servicio es entre 20:00 y 08:00 hrs
-- Total: 7% de comisión
+**Night Commission: +2% additional**
+- If the service is between 8:00 PM and 8:00 AM
+- Total: 7% commission
 
-**Comisión por Día Festivo: +3% adicional**
-- Si el servicio es en día festivo (Navidad, Año Nuevo, etc.)
-- Total: 8% de comisión
+**Holiday Commission: +3% additional**
+- If the service is on a holiday (Christmas, New Year, etc.)
+- Total: 8% commission
 
-**Comisión Nocturna + Festivo: +5% adicional**
-- Si es de noche Y en día festivo
-- Total: 10% de comisión
+**Night + Holiday Commission: +5% additional**
+- If it's at night AND on a holiday
+- Total: 10% commission
 
-**Ejemplo:**
-- Contrato de $1.000.000 CLP
-- Servicio a las 22:00 hrs (nocturno) de un día normal
-- Comisión: $1.000.000 × 7% = $70.000 CLP para la secretaria
+**Example:**
+- Contract of $1,000,000 CLP
+- Service at 10:00 PM (night) on a regular day
+- Commission: $1,000,000 × 7% = $70,000 CLP for the secretary
 
-#### 4. **Módulos del Sistema**
+#### 4. **System Modules**
 
-**A) Contratos (Módulo Principal)**
-- Crear, editar, ver contratos
-- Gestionar servicios y productos
-- Aplicar descuentos
-- Cambiar estados: Cotización → Contrato → Finalizado / Cancelado
+**A) Contracts (Main Module)**
+- Create, edit, view contracts
+- Manage services and products
+- Apply discounts
+- Change states: Quotation → Contract → Finished / Canceled
 
-**B) Inventario**
-- Control de stock de productos:
-  - Ataúdes (diferentes modelos)
-  - Urnas
-  - Flores
-  - Tarjetas
-- Alertas de stock bajo
-- Registro de entradas y salidas
+**B) Inventory**
+- Product stock control:
+  - Caskets (different models)
+  - Urns
+  - Flowers
+  - Cards
+- Low stock alerts
+- Entry and exit records
 
-**C) Pagos**
-- Registrar pagos de clientes
-- Control de cuentas por cobrar
-- Pagos en cuotas (crédito)
-- Historial de pagos
-- Recordatorios de cuotas pendientes
+**C) Payments**
+- Register client payments
+- Accounts receivable control
+- Installment payments (credit)
+- Payment history
+- Pending installment reminders
 
-**D) Personal (Staff)**
-- Registro de empleados:
-  - Secretarias
-  - Conductores
-  - Auxiliares
-  - Personal administrativo
-- Turnos y disponibilidad
-- Datos de contacto
+**D) Staff (Personnel)**
+- Employee records:
+  - Secretaries
+  - Drivers
+  - Assistants
+  - Administrative staff
+- Shifts and availability
+- Contact information
 
-**E) Liquidaciones (Payroll)**
-- Cálculo automático de sueldos
-- Comisiones de secretarias
-- Pagos de conductores y auxiliares
-- Generación de liquidaciones de sueldo
-- Historial de pagos
+**E) Payroll (Liquidations)**
+- Automatic salary calculation
+- Secretary commissions
+- Driver and assistant payments
+- Payroll generation
+- Payment history
 
-**F) Reportes**
-- Ventas por período
-- Contratos por tipo
-- Comisiones pagadas
-- Productos más vendidos
-- Análisis de descuentos aplicados
-- Rentabilidad
+**F) Reports**
+- Sales by period
+- Contracts by type
+- Commissions paid
+- Best-selling products
+- Applied discounts analysis
+- Profitability
 
 **G) Dashboard**
-- Resumen del día/mes
-- Contratos activos
-- Pagos pendientes
-- Stock crítico
-- Alertas importantes
+- Daily/monthly summary
+- Active contracts
+- Pending payments
+- Critical stock
+- Important alerts
 
-#### 5. **Roles de Usuario**
+#### 5. **User Roles**
 
-**Propietario**
-- Acceso total al sistema
-- Ve todos los reportes financieros
-- Gestiona usuarios y permisos
+**Owner**
+- Full system access
+- Views all financial reports
+- Manages users and permissions
 
-**Administrador**
-- Gestiona contratos, inventario, personal
-- Ve reportes
-- No puede eliminar datos críticos
+**Administrator**
+- Manages contracts, inventory, personnel
+- Views reports
+- Cannot delete critical data
 
-**Secretaria**
-- Crea y edita contratos
-- Registra pagos
-- Ve sus propias comisiones
-- NO ve reportes financieros generales
+**Secretary**
+- Creates and edits contracts
+- Registers payments
+- Views their own commissions
+- Does NOT view general financial reports
 
-**Conductor**
-- Ve los servicios asignados
-- Actualiza estado del servicio
-- NO ve precios ni comisiones
+**Driver**
+- Views assigned services
+- Updates service status
+- Does NOT view prices or commissions
 
-**Auxiliar**
-- Solo ve los servicios en los que participa
-- NO puede modificar datos
+**Assistant**
+- Only views services they participate in
+- Cannot modify data
 
-#### 6. **Características Especiales del Negocio Chileno**
+#### 6. **Special Characteristics of Chilean Business**
 
-**Validación de RUT**
-- El RUT es el identificador único de personas en Chile (como DNI o SSN)
-- Formato: 12.345.678-9
-- El sistema valida que sea correcto matemáticamente
+**RUT Validation**
+- RUT is the unique identifier for people in Chile (like DNI or SSN)
+- Format: 12.345.678-9
+- The system validates that it's mathematically correct
 
-**Moneda: Pesos Chilenos (CLP)**
-- Formato: $1.000.000 (con puntos separadores de miles)
-- Sin decimales (no se usan centavos)
+**Currency: Chilean Pesos (CLP)**
+- Format: $1.000.000 (with dots as thousand separators)
+- No decimals (cents not used)
 
-**Horario 24/7**
-- Las funerarias trabajan 24 horas, 7 días a la semana
-- Los fallecimientos pueden ocurrir a cualquier hora
-- Por eso hay comisiones especiales nocturnas
+**24/7 Schedule**
+- Funeral homes work 24 hours, 7 days a week
+- Deaths can occur at any time
+- That's why there are special night commissions
 
-**Sensibilidad Cultural**
-- Es un negocio delicado (trato con familias en duelo)
-- La interfaz debe ser sobria, profesional
-- Colores: tonos azul oscuro, gris, blanco (nada llamativo)
-- Textos respetuosos y empáticos
+**Cultural Sensitivity**
+- It's a delicate business (dealing with grieving families)
+- Interface should be sober, professional
+- Colors: dark blue, gray, white tones (nothing flashy)
+- Respectful and empathetic texts
 
-#### 7. **Flujo de Datos Típico**
+#### 7. **Typical Data Flow**
 
 ```
-1. Cliente llama → 2. Secretaria crea contrato → 3. Selecciona servicios/productos
-→ 4. Aplica descuento (si corresponde) → 5. Define forma de pago
-→ 6. Sistema asigna personal → 7. Envía WhatsApp automático al conductor
-→ 8. Servicio se ejecuta → 9. Contrato se marca como finalizado
-→ 10. Sistema calcula comisiones → 11. Genera liquidaciones de sueldo
-→ 12. Envía encuesta de satisfacción a la familia
+1. Client calls → 2. Secretary creates contract → 3. Selects services/products
+→ 4. Applies discount (if applicable) → 5. Defines payment method
+→ 6. System assigns staff → 7. Sends automatic WhatsApp to driver
+→ 8. Service is executed → 9. Contract is marked as finished
+→ 10. System calculates commissions → 11. Generates payroll
+→ 12. Sends satisfaction survey to family
 ```
 
-#### 8. **Conceptos Clave para el Desarrollo**
+#### 8. **Key Concepts for Development**
 
-**Estado del Contrato:**
-- **Cotización**: Solo es un presupuesto, aún no confirmado
-- **Contrato**: Ya confirmado, servicio activo
-- **Finalizado**: Servicio completado exitosamente
-- **Cancelado**: Se canceló antes de ejecutarse
+**Contract Status:**
+- **Quotation**: Just a budget, not yet confirmed
+- **Contract**: Already confirmed, active service
+- **Finished**: Service completed successfully
+- **Canceled**: Canceled before execution
 
-**Difunto vs Cliente:**
-- **Difunto**: La persona que falleció (solo en Necesidad Inmediata)
-- **Cliente**: La persona que contrata y paga (siempre existe)
+**Deceased vs Client:**
+- **Deceased**: The person who passed away (only in Immediate Need)
+- **Client**: The person who contracts and pays (always exists)
 
-**Servicios vs Productos:**
-- **Servicios**: Acciones que se realizan (traslado, velorio, cremación) - NO se descuentan del inventario
-- **Productos**: Elementos físicos (ataúd, urna, flores) - SÍ se descuentan del inventario
+**Services vs Products:**
+- **Services**: Actions performed (transportation, wake, cremation) - NOT deducted from inventory
+- **Products**: Physical items (casket, urn, flowers) - YES deducted from inventory
 
-**Subtotal, Descuento, Total:**
-- **Subtotal**: Suma de todos los servicios y productos
-- **Descuento**: Porcentaje aplicado sobre el subtotal
-- **Total**: Subtotal - Descuento = Lo que el cliente paga
+**Subtotal, Discount, Total:**
+- **Subtotal**: Sum of all services and products
+- **Discount**: Percentage applied to subtotal
+- **Total**: Subtotal - Discount = What the client pays
 
-#### 9. **Reglas de Negocio Importantes**
+#### 9. **Important Business Rules**
 
-1. **Un contrato de Necesidad Futura NO puede tener difunto** (aún no falleció nadie)
-2. **Un contrato de Necesidad Inmediata DEBE tener difunto** (ya falleció alguien)
-3. **Los descuentos solo pueden ser**: 0%, 3%, 5%, 8%, 10%, 15%, 25%, 30% (valores fijos)
-4. **Las comisiones se calculan sobre el total FINAL** (después del descuento)
-5. **Los productos se descuentan del inventario al crear el contrato**
-6. **Los servicios NO afectan el inventario** (son acciones, no productos)
-7. **No se puede eliminar un contrato finalizado**, solo cancelar
-8. **La secretaria que creó el contrato es la que recibe la comisión**
+1. **A Future Need contract CANNOT have deceased** (no one has passed away yet)
+2. **An Immediate Need contract MUST have deceased** (someone has already passed away)
+3. **Discounts can only be**: 0%, 3%, 5%, 8%, 10%, 15%, 25%, 30% (fixed values)
+4. **Commissions are calculated on the FINAL total** (after discount)
+5. **Products are deducted from inventory when creating the contract**
+6. **Services DO NOT affect inventory** (they are actions, not products)
+7. **A finished contract cannot be deleted**, only canceled
+8. **The secretary who created the contract receives the commission**
 
-#### 10. **Ejemplos Prácticos**
+#### 10. **Practical Examples**
 
-**Ejemplo 1: Contrato de Necesidad Inmediata**
+**Example 1: Immediate Need Contract**
 ```
-Cliente: María González (RUT 15.234.567-8, Tel: +56987654321)
-Difunto: Pedro González (falleció el 20/10/2025)
-Tipo: Necesidad Inmediata
-Servicios:
-  - Traslado: $50.000
-  - Velorio 24hrs: $200.000
-  - Cremación: $300.000
-Productos:
-  - Ataúd básico: $150.000
-  - Urna: $80.000
-Subtotal: $780.000
-Descuento: 10% (-$78.000)
-Total: $702.000
-Forma de Pago: Crédito (6 cuotas de $117.000)
-Hora: 15:00 (día normal)
-Comisión secretaria: 5% de $702.000 = $35.100
+Client: María González (RUT 15.234.567-8, Tel: +56987654321)
+Deceased: Pedro González (passed away on 10/20/2025)
+Type: Immediate Need
+Services:
+  - Transportation: $50,000
+  - 24hr Wake: $200,000
+  - Cremation: $300,000
+Products:
+  - Basic casket: $150,000
+  - Urn: $80,000
+Subtotal: $780,000
+Discount: 10% (-$78,000)
+Total: $702,000
+Payment Method: Credit (6 installments of $117,000)
+Time: 3:00 PM (regular day)
+Secretary commission: 5% of $702,000 = $35,100
 ```
 
-**Ejemplo 2: Contrato Nocturno + Festivo**
+**Example 2: Night + Holiday Contract**
 ```
-Cliente: Juan Pérez
-Difunto: Rosa Pérez
-Total: $1.500.000
-Hora: 23:00 del 25 de diciembre (Navidad)
-Comisión: 5% base + 2% nocturno + 3% festivo = 10%
-Comisión total: $150.000
+Client: Juan Pérez
+Deceased: Rosa Pérez
+Total: $1,500,000
+Time: 11:00 PM on December 25 (Christmas)
+Commission: 5% base + 2% night + 3% holiday = 10%
+Total commission: $150,000
 ```
 
 ---
 
-## Stack Tecnológico
+## Technology Stack
 
 ### Backend
 - **Framework:** Laravel 11.x
 - **PHP Version:** 8.2+
-- **Database:** MySQL 8.0+ 
+- **Database:** MySQL 8.0+
 - **Authentication:** Laravel Sanctum
 - **Queue System:** Redis + Laravel Queue
 - **Storage:** Laravel Storage (S3 compatible)
@@ -319,48 +319,201 @@ Comisión total: $150.000
 
 ---
 
-## Convenciones del Proyecto
+## Project Conventions
 
-### 1. Idioma y Localización
+### 1. Language and Localization (i18n)
 
-**CRÍTICO: Todo el texto visible para el usuario DEBE estar en español.**
+**CRITICAL: The application supports Spanish (default) and English through react-i18next.**
 
-```javascript
-// ✅ CORRECTO
-<Button>Guardar Contrato</Button>
-<Label>Nombre del Difunto</Label>
-const errorMessage = "El campo es requerido";
+#### i18n System Overview
 
-// ❌ INCORRECTO
-<Button>Save Contract</Button>
-<Label>Deceased Name</Label>
-const errorMessage = "Field is required";
+The application uses **react-i18next** for internationalization:
+- **Default language:** Spanish (es)
+- **Available languages:** Spanish (es), English (en)
+- **User preference:** Saved in localStorage
+- **Language switcher:** Available in the top navigation bar
+
+#### Translation Files
+
+All translations are stored in JSON files:
+- **Spanish:** `/resources/js/locales/es.json` (default, always complete)
+- **English:** `/resources/js/locales/en.json` (must match Spanish keys)
+
+#### How to Use Translations in Components
+
+**MANDATORY: ALL user-facing text MUST use the translation system.**
+
+```tsx
+// ✅ CORRECT: Using i18n
+import { useTranslation } from 'react-i18next';
+
+export default function MyComponent() {
+  const { t } = useTranslation();
+
+  return (
+    <div>
+      <Button>{t('common.save')}</Button>
+      <Label>{t('contracts.clientName')}</Label>
+      <p>{t('validation.required')}</p>
+    </div>
+  );
+}
+
+// ❌ INCORRECT: Hardcoded text (DO NOT DO THIS)
+export default function MyComponent() {
+  return (
+    <div>
+      <Button>Guardar</Button>
+      <Label>Nombre del Cliente</Label>
+      <p>El campo es requerido</p>
+    </div>
+  );
+}
 ```
 
-**Archivos de traducción:**
-- Backend: `lang/es/*.php`
-- Frontend: Texto directo en español (no usar i18n innecesariamente)
-- Base de datos: Comentarios en español, nombres de tablas en inglés
+#### Translation Key Naming Convention
 
-### 2. Estructura del Proyecto
+Translation keys follow a **namespace.key** pattern:
+
+```typescript
+// Structure: namespace.descriptiveKey
+
+// ✅ CORRECT Examples:
+t('common.save')                    // "Guardar" / "Save"
+t('contracts.create')               // "Crear Contrato" / "Create Contract"
+t('contracts.clientName')           // "Nombre del Cliente" / "Client Name"
+t('validation.required')            // "El campo es requerido" / "Field is required"
+t('validation.minLength', { min: 3 }) // "Debe tener al menos 3 caracteres" / "Must be at least 3 characters"
+
+// ❌ INCORRECT Examples:
+t('save')                           // Too generic, no namespace
+t('contracts.nombre_cliente')       // Use camelCase, not snake_case
+t('CONTRACTS.CREATE')               // Use camelCase, not SCREAMING_CASE
+```
+
+#### Available Namespaces
+
+- **common:** General-purpose translations (save, cancel, delete, edit, loading, etc.)
+- **nav:** Navigation menu items
+- **contracts:** Contract-related translations
+- **inventory:** Inventory-related translations
+- **payments:** Payment-related translations
+- **staff:** Staff-related translations
+- **validation:** Form validation messages
+
+#### Adding New Translations
+
+**IMPORTANT: Always add to BOTH language files simultaneously.**
+
+1. **Add to es.json:**
+```json
+{
+  "myFeature": {
+    "title": "Mi Función",
+    "description": "Descripción de mi función",
+    "saveButton": "Guardar Cambios"
+  }
+}
+```
+
+2. **Add to en.json (same structure):**
+```json
+{
+  "myFeature": {
+    "title": "My Feature",
+    "description": "Description of my feature",
+    "saveButton": "Save Changes"
+  }
+}
+```
+
+3. **Use in component:**
+```tsx
+const { t } = useTranslation();
+
+<h1>{t('myFeature.title')}</h1>
+<p>{t('myFeature.description')}</p>
+<Button>{t('myFeature.saveButton')}</Button>
+```
+
+#### Dynamic Select Options
+
+For dropdown options, use `labelKey` instead of hardcoded labels:
+
+```typescript
+// ✅ CORRECT: constants.ts
+export const MY_OPTIONS = [
+  { value: 'option1', labelKey: 'myFeature.option1' },
+  { value: 'option2', labelKey: 'myFeature.option2' },
+] as const;
+
+// Component usage:
+{MY_OPTIONS.map((option) => (
+  <SelectItem key={option.value} value={option.value}>
+    {t(option.labelKey)}
+  </SelectItem>
+))}
+
+// ❌ INCORRECT: Hardcoded labels
+export const MY_OPTIONS = [
+  { value: 'option1', label: 'Opción 1' },  // Won't translate
+  { value: 'option2', label: 'Opción 2' },  // Won't translate
+] as const;
+```
+
+#### Translation Variables (Interpolation)
+
+Use `{{variable}}` syntax for dynamic values:
+
+```json
+{
+  "validation": {
+    "minLength": "Debe tener al menos {{min}} caracteres",
+    "maxLength": "No puede exceder {{max}} caracteres",
+    "between": "Debe estar entre {{min}} y {{max}}"
+  }
+}
+```
+
+```tsx
+// Usage:
+t('validation.minLength', { min: 3 })
+t('validation.between', { min: 1, max: 100 })
+```
+
+#### Backend Translations
+
+- Backend: `lang/es/*.php` (Laravel translation files)
+- Database: Comments in Spanish, table names in English
+
+#### Important Rules
+
+1. **NEVER hardcode user-facing text** - Always use `t('namespace.key')`
+2. **ALWAYS add to both es.json and en.json** - Keep files in sync
+3. **Use camelCase for keys** - e.g., `clientName`, not `client_name`
+4. **Use namespaces** - Group related translations logically
+5. **Default language is Spanish** - Spanish must always be complete
+6. **Test both languages** - Use the language switcher to verify translations
+
+### 2. Project Structure
 
 ```
 funeral-erp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/          # Controladores Inertia
+│   │   ├── Controllers/
 │   │   ├── Middleware/
-│   │   └── Requests/             # Form Requests con validación
-│   ├── Models/                   # Eloquent Models
-│   ├── Services/                 # Lógica de negocio
+│   │   └── Requests/
+│   ├── Models/
+│   ├── Services/
 │   │   ├── ContractService.php
 │   │   ├── PayrollService.php
 │   │   ├── InventoryService.php
 │   │   └── WhatsAppService.php
-│   ├── Jobs/                     # Trabajos en cola
+│   ├── Jobs/
 │   │   ├── SendWhatsAppMessage.php
 │   │   └── UpdateInventoryJob.php
-│   └── Enums/                    # Enumeraciones
+│   └── Enums/
 │       ├── ContractType.php
 │       ├── UserRole.php
 │       └── PaymentStatus.php
@@ -370,19 +523,11 @@ funeral-erp/
 │   └── factories/
 ├── resources/
 │   ├── js/
-│   │   ├── components/          # Componentes globales reutilizables
-│   │   │   ├── ui/             # shadcn/ui components
-│   │   │   └── layouts/        # Layouts generales
-│   │   ├── features/           # ARQUITECTURA FEATURE-BASED
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   └── layouts/
+│   │   ├── features/
 │   │   │   ├── contracts/
-│   │   │   │   ├── components/     # Componentes específicos de contratos
-│   │   │   │   ├── sections/       # Secciones de página
-│   │   │   │   ├── modals/         # Modales específicos
-│   │   │   │   ├── types.ts        # Definiciones de tipos TypeScript
-│   │   │   │   ├── schemas.ts      # Schemas Zod + tipos inferidos
-│   │   │   │   ├── constants.ts    # Constantes del módulo
-│   │   │   │   └── functions.ts    # Funciones de utilidad
-│   │   │   ├── inventory/
 │   │   │   │   ├── components/
 │   │   │   │   ├── sections/
 │   │   │   │   ├── modals/
@@ -390,48 +535,41 @@ funeral-erp/
 │   │   │   │   ├── schemas.ts
 │   │   │   │   ├── constants.ts
 │   │   │   │   └── functions.ts
+│   │   │   ├── inventory/
 │   │   │   ├── payments/
 │   │   │   ├── staff/
 │   │   │   ├── payroll/
 │   │   │   ├── reports/
 │   │   │   └── dashboard/
-│   │   ├── pages/              # Páginas Inertia (orquestadoras)
+│   │   ├── pages/
 │   │   │   ├── Contracts/
-│   │   │   │   ├── Index.tsx
-│   │   │   │   ├── Crear.tsx
-│   │   │   │   ├── Editar.tsx
-│   │   │   │   └── Ver.tsx
 │   │   │   ├── Inventory/
 │   │   │   ├── Payments/
 │   │   │   ├── Staff/
 │   │   │   ├── Payroll/
 │   │   │   ├── Reports/
 │   │   │   └── Dashboard/
-│   │   ├── hooks/              # Custom React hooks globales
-│   │   ├── lib/                # Utilidades globales
-│   │   │   ├── utils.ts
-│   │   │   └── cn.ts
-│   │   └── types/              # Tipos TypeScript globales
-│   │       ├── inertia.d.ts
-│   │       └── global.d.ts
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   └── types/
 │   └── css/
-│       └── app.css             # Tailwind imports
+│       └── app.css
 ├── routes/
-│   ├── web.php                 # Rutas Inertia
-│   └── api.php                 # API routes (si necesario)
+│   ├── web.php
+│   └── api.php
 ├── tests/
 │   ├── Feature/
 │   └── Unit/
 └── storage/
     └── app/
-        ├── documents/          # PDFs, contratos
-        ├── photos/             # Fotos de difuntos
-        └── backups/            # Backups automáticos
+        ├── documents/
+        ├── photos/
+        └── backups/
 ```
 
-### 3. Convenciones de Nomenclatura
+### 3. Naming Conventions
 
-**IMPORTANTE: Nombres de Carpetas y Archivos**
+**IMPORTANT: Folder and File Names**
 
 - **Git commits:** MUST be in English (e.g., "feat: Add contract management module")
 - **Folder names (features, pages):** MUST be in English (e.g., `contracts`, `inventory`, not `contratos`, `inventario`)
@@ -459,24 +597,24 @@ pages/Inventario/
 
 #### Backend (Laravel)
 ```php
-// Modelos: Singular, PascalCase
+// Models: Singular, PascalCase
 class Contract extends Model {}
 class Employee extends Model {}
 
-// Tablas: Plural, snake_case
+// Tables: Plural, snake_case
 Schema::create('contracts', function() {});
 Schema::create('inventory_items', function() {});
 
-// Controladores: Singular + Controller
+// Controllers: Singular + Controller
 class ContractController extends Controller {}
 
-// Servicios: Singular + Service
+// Services: Singular + Service
 class ContractService {}
 
-// Jobs: Verbo + Sustantivo + Job
+// Jobs: Verb + Noun + Job
 class SendWhatsAppMessageJob {}
 
-// Métodos: camelCase, verbos descriptivos en español
+// Methods: camelCase, descriptive verbs in Spanish
 public function crearContrato() {}
 public function actualizarInventario() {}
 public function calcularComisiones() {}
@@ -484,79 +622,79 @@ public function calcularComisiones() {}
 
 #### Frontend (React/TypeScript)
 ```typescript
-// Componentes: PascalCase
+// Components: PascalCase
 const FormularioContrato = () => {}
 const TablaInventario = () => {}
 
-// Archivos de componentes: PascalCase.tsx
+// Component files: PascalCase.tsx
 FormularioContrato.tsx
 TablaInventario.tsx
 
-// Páginas Inertia: PascalCase.tsx
+// Inertia Pages: PascalCase.tsx
 pages/Contratos/Crear.tsx
 pages/Contratos/Editar.tsx
 pages/Contratos/Index.tsx
 
-// Hooks personalizados: camelCase con prefijo 'use'
+// Custom hooks: camelCase with 'use' prefix
 const useContrato = () => {}
 const usePermisos = () => {}
 
-// Utilidades: camelCase
+// Utilities: camelCase
 const formatearMoneda = () => {}
 const calcularDescuento = () => {}
 
-// Constantes: SCREAMING_SNAKE_CASE
+// Constants: SCREAMING_SNAKE_CASE
 const PORCENTAJES_DESCUENTO = [3, 5, 8, 10, 15, 25, 30];
 
-// Tipos TypeScript: PascalCase
+// TypeScript types: PascalCase
 type Contrato = { ... }
 interface Cliente { ... }
 
-// Archivos de tipos: lowercase con extensión .ts
+// Type files: lowercase with .ts extension
 types.ts
 schemas.ts
 constants.ts
 functions.ts
 ```
 
-### 3.1. Arquitectura Feature-Based (OBLIGATORIO)
+### 3.1. Feature-Based Architecture (MANDATORY)
 
-**CRÍTICO: Todo el código frontend DEBE organizarse por funcionalidad dentro de `resources/js/features/[feature-name]`**
+**CRITICAL: All frontend code MUST be organized by functionality within `resources/js/features/[feature-name]`**
 
-#### Estructura de un Feature
+#### Feature Structure
 
-Cada feature DEBE contener exactamente esta estructura:
+Each feature MUST contain exactly this structure:
 
 ```
 features/
-└── [feature-name]/         # Feature name MUST be in English (e.g., contracts, inventory, payments)
-    ├── components/          # Componentes React específicos del feature
-    ├── sections/           # Secciones de página (bloques grandes)
-    ├── modals/             # Modales específicos del feature
-    ├── types.ts            # TODAS las definiciones de tipos TypeScript
-    ├── schemas.ts          # TODOS los schemas Zod + tipos inferidos
-    ├── constants.ts        # TODAS las constantes
-    └── functions.ts        # TODAS las funciones utilitarias
+└── [feature-name]/
+    ├── components/
+    ├── sections/
+    ├── modals/
+    ├── types.ts
+    ├── schemas.ts
+    ├── constants.ts
+    └── functions.ts
 ```
 
-#### Reglas de Organización de Archivos
+#### File Organization Rules
 
-##### **1. types.ts - Definiciones de Tipos**
+##### **1. types.ts - Type Definitions**
 
-**DEBE contener:**
-- Todas las interfaces
-- Todos los tipos TypeScript
-- Todos los enums de TypeScript
-- Tipos de props de componentes
-- Tipos de estado
-- Tipos de respuestas API
+**MUST contain:**
+- All interfaces
+- All TypeScript types
+- All TypeScript enums
+- Component prop types
+- State types
+- API response types
 
-**Orden topológico:** De lo más básico a lo más complejo
+**Topological order:** From most basic to most complex
 
 ```typescript
-// ✅ CORRECTO: features/contracts/types.ts
+// ✅ CORRECT: features/contracts/types.ts
 
-// 1. Enums básicos (sin dependencias)
+// 1. Basic enums (no dependencies)
 export enum TipoContrato {
   NECESIDAD_INMEDIATA = 'necesidad_inmediata',
   NECESIDAD_FUTURA = 'necesidad_futura',
@@ -569,11 +707,11 @@ export enum EstadoContrato {
   CANCELADO = 'cancelado',
 }
 
-// 2. Tipos básicos (sin dependencias complejas)
+// 2. Basic types (no complex dependencies)
 export type Rut = string;
 export type Telefono = string;
 
-// 3. Interfaces básicas
+// 3. Basic interfaces
 export interface Cliente {
   id: number;
   nombre: string;
@@ -596,7 +734,7 @@ export interface Servicio {
   precio: number;
 }
 
-// 4. Interfaces que dependen de tipos básicos
+// 4. Interfaces that depend on basic types
 export interface ContratoServicio {
   servicio: Servicio;
   cantidad: number;
@@ -604,7 +742,7 @@ export interface ContratoServicio {
   subtotal: number;
 }
 
-// 5. Interfaces complejas (dependen de otras)
+// 5. Complex interfaces (depend on others)
 export interface Contrato {
   id: number;
   numero_contrato: string;
@@ -623,12 +761,12 @@ export interface Contrato {
   updated_at: Date;
 }
 
-// 6. Tipos derivados usando utility types
+// 6. Derived types using utility types
 export type ContratoFormData = Omit<Contrato, 'id' | 'numero_contrato' | 'created_at' | 'updated_at'>;
 export type ContratoPartial = Partial<Contrato>;
 export type ContratoPicker = Pick<Contrato, 'id' | 'numero_contrato' | 'cliente' | 'total'>;
 
-// 7. Props de componentes
+// 7. Component props
 export interface FormularioContratoProps {
   contrato?: ContratoPartial;
   onSubmit: (data: ContratoFormData) => void;
@@ -642,19 +780,19 @@ export interface TablaContratosProps {
 }
 ```
 
-##### **2. schemas.ts - Schemas Zod**
+##### **2. schemas.ts - Zod Schemas**
 
-**DEBE contener:**
-- Todos los schemas de validación Zod
-- Tipos inferidos desde los schemas
-- NUNCA duplicar tipos que están en types.ts
+**MUST contain:**
+- All Zod validation schemas
+- Types inferred from schemas
+- NEVER duplicate types that are in types.ts
 
 ```typescript
-// ✅ CORRECTO: features/contracts/schemas.ts
+// ✅ CORRECT: features/contracts/schemas.ts
 import { z } from 'zod';
 import { TipoContrato } from './types';
 
-// Schemas básicos
+// Basic schemas
 export const rutSchema = z
   .string()
   .regex(/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/, 'Formato de RUT inválido');
@@ -663,7 +801,7 @@ export const telefonoSchema = z
   .string()
   .min(8, 'Teléfono debe tener al menos 8 dígitos');
 
-// Schema de cliente
+// Client schema
 export const clienteSchema = z.object({
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
   rut: rutSchema,
@@ -671,21 +809,21 @@ export const clienteSchema = z.object({
   email: z.string().email('Email inválido').optional(),
 });
 
-// Schema de difunto
+// Deceased schema
 export const difuntoSchema = z.object({
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
   fecha_fallecimiento: z.date(),
   lugar_fallecimiento: z.string().optional(),
 });
 
-// Schema de servicio en contrato
+// Service in contract schema
 export const contratoServicioSchema = z.object({
   servicio_id: z.number(),
   cantidad: z.number().min(1, 'La cantidad debe ser al menos 1'),
   precio_unitario: z.number().positive('El precio debe ser positivo'),
 });
 
-// Schema principal de contrato
+// Main contract schema
 export const contratoFormSchema = z.object({
   tipo: z.nativeEnum(TipoContrato),
   cliente: clienteSchema,
@@ -695,25 +833,22 @@ export const contratoFormSchema = z.object({
   forma_pago: z.enum(['contado', 'credito']),
 });
 
-// Tipos inferidos desde schemas (SOLO cuando sea necesario)
+// Types inferred from schemas (ONLY when necessary)
 export type ContratoFormInput = z.infer<typeof contratoFormSchema>;
 export type ClienteInput = z.infer<typeof clienteSchema>;
 export type DifuntoInput = z.infer<typeof difuntoSchema>;
-
-// ❌ INCORRECTO: NO duplicar tipos que ya existen en types.ts
-// export type Contrato = z.infer<typeof contratoSchema>; // ¡NO HACER ESTO!
 ```
 
-##### **3. constants.ts - Constantes**
+##### **3. constants.ts - Constants**
 
-**DEBE contener:**
-- Todas las constantes del módulo
-- Arrays de opciones
-- Valores por defecto
-- Configuraciones estáticas
+**MUST contain:**
+- All module constants
+- Option arrays
+- Default values
+- Static configurations
 
 ```typescript
-// ✅ CORRECTO: features/contracts/constants.ts
+// ✅ CORRECT: features/contracts/constants.ts
 
 export const PORCENTAJES_DESCUENTO = [0, 3, 5, 8, 10, 15, 25, 30] as const;
 
@@ -745,22 +880,22 @@ export const COMISION_NOCTURNA_EXTRA = 2;
 export const COMISION_FESTIVO_EXTRA = 3;
 ```
 
-##### **4. functions.ts - Funciones Utilitarias**
+##### **4. functions.ts - Utility Functions**
 
-**DEBE contener:**
-- Todas las funciones de utilidad del módulo
-- Funciones que usan types, schemas o constants
-- Lógica de negocio del frontend
-- Transformaciones de datos
+**MUST contain:**
+- All module utility functions
+- Functions that use types, schemas or constants
+- Frontend business logic
+- Data transformations
 
-**Orden topológico:** De funciones básicas a complejas
+**Topological order:** From basic to complex functions
 
 ```typescript
-// ✅ CORRECTO: features/contracts/functions.ts
+// ✅ CORRECT: features/contracts/functions.ts
 import { Contrato, ContratoServicio } from './types';
 import { PORCENTAJES_DESCUENTO, COMISION_BASE_PORCENTAJE } from './constants';
 
-// 1. Funciones básicas (sin dependencias)
+// 1. Basic functions (no dependencies)
 export function formatearRut(rut: string): string {
   const limpio = rut.replace(/[^0-9kK]/g, '');
   const cuerpo = limpio.slice(0, -1);
@@ -789,7 +924,7 @@ export function validarRut(rut: string): boolean {
   return dv === dvCalculado;
 }
 
-// 2. Funciones de cálculo (usan constantes)
+// 2. Calculation functions (use constants)
 export function calcularSubtotal(servicios: ContratoServicio[]): number {
   return servicios.reduce((acc, item) => acc + item.subtotal, 0);
 }
@@ -805,7 +940,7 @@ export function calcularTotal(subtotal: number, descuentoMonto: number): number 
   return Math.max(0, subtotal - descuentoMonto);
 }
 
-// 3. Funciones complejas (usan tipos y otras funciones)
+// 3. Complex functions (use types and other functions)
 export function calcularTotalesContrato(
   servicios: ContratoServicio[],
   descuentoPorcentaje: number
@@ -837,7 +972,7 @@ export function calcularComisionSecretaria(
   return (contrato.total * porcentajeComision) / 100;
 }
 
-// 4. Funciones de transformación
+// 4. Transformation functions
 export function contratoToFormData(contrato: Contrato): Partial<Contrato> {
   return {
     tipo: contrato.tipo,
@@ -851,28 +986,36 @@ export function contratoToFormData(contrato: Contrato): Partial<Contrato> {
 export function formatearNumeroContrato(numero: number): string {
   return `CTR-${numero.toString().padStart(6, '0')}`;
 }
+
+export function formatearMoneda(valor: number): string {
+  return new Intl.NumberFormat('es-CL', {
+    style: 'currency',
+    currency: 'CLP',
+    minimumFractionDigits: 0,
+  }).format(valor);
+}
 ```
 
-#### Reglas Críticas de Separación
+#### Critical Separation Rules
 
-##### ❌ PROHIBIDO: Re-exportaciones
+##### ❌ FORBIDDEN: Re-exports
 
 ```typescript
-// ❌ INCORRECTO: features/contracts/index.ts
+// ❌ INCORRECT: features/contracts/index.ts
 export * from './types';
 export * from './schemas';
 export * from './constants';
 export * from './functions';
 
-// ❌ INCORRECTO: features/contracts/components/index.ts
+// ❌ INCORRECT: features/contracts/components/index.ts
 export { FormularioContrato } from './FormularioContrato';
 export { TablaContratos } from './TablaContratos';
 ```
 
-##### ✅ CORRECTO: Importaciones Directas
+##### ✅ CORRECT: Direct Imports
 
 ```typescript
-// ✅ CORRECTO: pages/Contracts/Crear.tsx
+// ✅ CORRECT: pages/Contracts/Crear.tsx
 import { Contrato, ContratoFormData } from '@/features/contracts/types';
 import { contratoFormSchema } from '@/features/contracts/schemas';
 import { PORCENTAJES_DESCUENTO } from '@/features/contracts/constants';
@@ -880,32 +1023,32 @@ import { calcularTotalesContrato } from '@/features/contracts/functions';
 import { FormularioContrato } from '@/features/contracts/components/FormularioContrato';
 ```
 
-#### Uso de Utility Types
+#### Using Utility Types
 
-**OBLIGATORIO:** Usar utility types de TypeScript para simplificar código
+**MANDATORY:** Use TypeScript utility types to simplify code
 
 ```typescript
-// ✅ CORRECTO: Usar utility types
+// ✅ CORRECT: Use utility types
 export type ContratoFormData = Omit<Contrato, 'id' | 'numero_contrato' | 'created_at' | 'updated_at'>;
 export type ContratoPartial = Partial<Contrato>;
 export type ContratoPicker = Pick<Contrato, 'id' | 'numero_contrato' | 'total'>;
 export type ContratoReadonly = Readonly<Contrato>;
 
-// Para hacer campos opcionales específicos
+// To make specific fields optional
 export type ContratoConDifuntoOpcional = Omit<Contrato, 'difunto'> & {
   difunto?: Difunto;
 };
 
-// ❌ INCORRECTO: Duplicar toda la interfaz
+// ❌ INCORRECT: Duplicate entire interface
 export interface ContratoFormData {
   tipo: TipoContrato;
   estado: EstadoContrato;
   cliente: Cliente;
-  // ... duplicando todo manualmente
+  // ... duplicating everything manually
 }
 ```
 
-#### Ejemplo Completo de Feature
+#### Complete Feature Example
 
 ```
 features/contracts/
@@ -921,1002 +1064,31 @@ features/contracts/
 ├── modals/
 │   ├── ConfirmarEliminacionModal.tsx
 │   └── AplicarDescuentoModal.tsx
-├── types.ts              # Todos los tipos
-├── schemas.ts            # Todos los schemas Zod
-├── constants.ts          # Todas las constantes
-└── functions.ts          # Todas las funciones
+├── types.ts
+├── schemas.ts
+├── constants.ts
+└── functions.ts
 ```
 
-#### Checklist de Validación
-
-Antes de crear o modificar un feature, verificar:
-
-- [ ] ¿Todos los tipos están en `types.ts`?
-- [ ] ¿Todos los schemas Zod están en `schemas.ts`?
-- [ ] ¿Todas las constantes están en `constants.ts`?
-- [ ] ¿Todas las funciones están en `functions.ts`?
-- [ ] ¿No hay re-exportaciones en ningún archivo?
-- [ ] ¿Los archivos están organizados en orden topológico?
-- [ ] ¿Se usan utility types (Omit, Pick, Partial) donde es posible?
-- [ ] ¿No hay duplicación de tipos entre archivos?
-- [ ] ¿Cada archivo tiene una responsabilidad clara?
-
-### 4. Diseño de UI - Lineamientos Obligatorios
-
-#### Paleta de Colores
-```javascript
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        // Fondo principal: blanco limpio
-        background: '#FFFFFF',
-
-        // Acentos primarios (funerario - sobrio y profesional)
-        primary: {
-          50: '#f5f7fa',
-          100: '#eaeef4',
-          200: '#d1dbe6',
-          300: '#a8bcd1',
-          400: '#7998b8',
-          500: '#567a9e',  // Principal
-          600: '#446184',
-          700: '#38506c',
-          800: '#31445b',
-          900: '#2d3c4d',
-        },
-
-        // Secundario (dorado elegante - para detalles importantes)
-        secondary: {
-          50: '#faf9f5',
-          100: '#f4f1e6',
-          200: '#e6dfc7',
-          300: '#d4c79f',
-          400: '#c0aa75',
-          500: '#b09355',  // Principal
-          600: '#a37d49',
-          700: '#88653e',
-          800: '#6f5337',
-          900: '#5c442f',
-        },
-
-        // Estados
-        success: '#10b981',  // Verde
-        warning: '#f59e0b',  // Ámbar
-        error: '#ef4444',    // Rojo
-        info: '#3b82f6',     // Azul
-
-        // Grises (para textos y bordes)
-        gray: {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827',
-        }
-      }
-    }
-  }
-}
-```
-
-#### Principios de Diseño
-
-1. **Fondo Blanco Limpio**
-   - Fondo principal: `bg-white`
-   - Secciones alternadas: `bg-gray-50` (muy sutil)
-   - Tarjetas: `bg-white` con `border` y sombra sutil
-
-2. **Jerarquía Visual Clara**
-   ```jsx
-   // Títulos principales
-   <h1 className="text-3xl font-bold text-gray-900">
-
-   // Subtítulos
-   <h2 className="text-xl font-semibold text-gray-800">
-
-   // Texto normal
-   <p className="text-base text-gray-700">
-
-   // Texto secundario
-   <span className="text-sm text-gray-500">
-   ```
-
-3. **Espaciado Consistente**
-   - Padding de contenedores principales: `p-6` o `p-8`
-   - Espaciado entre elementos: `space-y-4` o `gap-4`
-   - Margen de secciones: `mb-6` o `mb-8`
-
-4. **Bordes y Sombras Sutiles**
-   ```jsx
-   // Tarjetas
-   className="bg-white border border-gray-200 rounded-lg shadow-sm"
-
-   // Modales
-   className="bg-white rounded-xl shadow-xl border border-gray-200"
-
-   // Inputs
-   className="border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-   ```
-
-5. **Componentes shadcn/ui**
-   - Usar siempre los componentes de shadcn/ui como base
-   - Personalizar con clases de Tailwind según necesidad
-   - Mantener consistencia visual en toda la aplicación
-
-#### Ejemplo de Layout Principal
-```jsx
-import { Head } from '@inertiajs/react';
-import { SidebarNav } from '@/Components/Layouts/SidebarNav';
-import { TopBar } from '@/Components/Layouts/TopBar';
-
-export default function MainLayout({ children, title }) {
-  return (
-    <div className="min-h-screen bg-white">
-      <Head title={title} />
-
-      {/* Barra superior */}
-      <TopBar className="border-b border-gray-200 bg-white" />
-
-      <div className="flex">
-        {/* Sidebar */}
-        <SidebarNav className="w-64 border-r border-gray-200 bg-gray-50" />
-
-        {/* Contenido principal */}
-        <main className="flex-1 p-8 bg-white">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-```
-
-### 5. Arquitectura de Componentes
-
-#### shadcn/ui Components Setup
-```bash
-# Instalar shadcn/ui CLI
-npx shadcn-ui@latest init
-
-# Componentes esenciales a instalar
-npx shadcn-ui@latest add button
-npx shadcn-ui@latest add input
-npx shadcn-ui@latest add form
-npx shadcn-ui@latest add dialog
-npx shadcn-ui@latest add select
-npx shadcn-ui@latest add table
-npx shadcn-ui@latest add card
-npx shadcn-ui@latest add badge
-npx shadcn-ui@latest add alert
-npx shadcn-ui@latest add tabs
-npx shadcn-ui@latest add dropdown-menu
-npx shadcn-ui@latest add calendar
-npx shadcn-ui@latest add popover
-npx shadcn-ui@latest add toast
-npx shadcn-ui@latest add sheet
-```
-
-#### Estructura de Componentes Personalizados
-```jsx
-// Ejemplo: FormularioContrato.jsx
-import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-
-export function FormularioContrato({ contrato, onSubmit }) {
-  return (
-    <Card className="bg-white border border-gray-200 shadow-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-gray-900">
-          Nuevo Contrato Funerario
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={onSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="difunto" className="text-gray-700">
-              Nombre del Difunto
-            </Label>
-            <Input
-              id="difunto"
-              placeholder="Ingrese el nombre completo"
-              className="border-gray-300"
-            />
-          </div>
-
-          <Button type="submit" className="bg-primary-600 hover:bg-primary-700">
-            Guardar Contrato
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
-}
-```
-
-### 6. Patrones de Datos con Inertia.js
-
-#### Pasar Datos desde Laravel
-```php
-// ContractController.php
-use Inertia\Inertia;
-
-public function index()
-{
-    return Inertia::render('Contratos/Index', [
-        'contratos' => Contract::with(['cliente', 'difunto'])
-            ->latest()
-            ->paginate(20),
-        'estadisticas' => [
-            'total_mes' => Contract::whereMonth('created_at', now())->count(),
-            'ingresos_mes' => Contract::whereMonth('created_at', now())->sum('total'),
-        ],
-        'filtros' => request()->only(['tipo', 'estado', 'fecha']),
-    ]);
-}
-
-public function store(StoreContractRequest $request)
-{
-    $contrato = app(ContractService::class)->crearContrato($request->validated());
-
-    return redirect()
-        ->route('contratos.show', $contrato)
-        ->with('success', 'Contrato creado exitosamente');
-}
-```
-
-#### Recibir Datos en React
-```jsx
-// Pages/Contracts/Index.jsx
-import { Head, router } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
-import { TablaContratos } from '@/Components/Tables/TablaContratos';
-import { EstadisticasCard } from '@/Components/Dashboard/EstadisticasCard';
-
-export default function Index({ contratos, estadisticas, filtros }) {
-  const handleCrearContrato = () => {
-    router.visit(route('contratos.create'));
-  };
-
-  return (
-    <>
-      <Head title="Contratos Funerarios" />
-
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Contratos Funerarios
-          </h1>
-          <Button
-            onClick={handleCrearContrato}
-            className="bg-primary-600 hover:bg-primary-700"
-          >
-            Nuevo Contrato
-          </Button>
-        </div>
-
-        {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <EstadisticasCard
-            titulo="Contratos del Mes"
-            valor={estadisticas.total_mes}
-            icono="FileText"
-          />
-          <EstadisticasCard
-            titulo="Ingresos del Mes"
-            valor={`$${estadisticas.ingresos_mes.toLocaleString('es-CL')}`}
-            icono="DollarSign"
-          />
-        </div>
-
-        {/* Tabla */}
-        <TablaContratos
-          contratos={contratos}
-          filtros={filtros}
-        />
-      </div>
-    </>
-  );
-}
-```
-
-### 7. Manejo de Formularios
-
-#### Validación Backend
-```php
-// app/Http/Requests/StoreContractRequest.php
-namespace App\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
-
-class StoreContractRequest extends FormRequest
-{
-    public function rules()
-    {
-        return [
-            'tipo_contrato' => 'required|in:necesidad_inmediata,necesidad_futura',
-            'cliente.nombre' => 'required|string|max:255',
-            'cliente.rut' => 'required|string|cl_rut',
-            'cliente.telefono' => 'required|string',
-            'difunto.nombre' => 'required_if:tipo_contrato,necesidad_inmediata',
-            'difunto.fecha_fallecimiento' => 'required_if:tipo_contrato,necesidad_inmediata|date',
-            'servicios' => 'required|array|min:1',
-            'servicios.*.id' => 'required|exists:servicios,id',
-            'servicios.*.cantidad' => 'required|integer|min:1',
-            'descuento' => 'nullable|in:0,3,5,8,10,15,25,30',
-            'forma_pago' => 'required|in:contado,credito',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'tipo_contrato.required' => 'Debe seleccionar el tipo de contrato',
-            'cliente.nombre.required' => 'El nombre del cliente es obligatorio',
-            'cliente.rut.cl_rut' => 'El RUT ingresado no es válido',
-            'difunto.nombre.required_if' => 'El nombre del difunto es obligatorio para contratos de necesidad inmediata',
-            'servicios.required' => 'Debe seleccionar al menos un servicio',
-        ];
-    }
-}
-```
-
-#### Validación Frontend (React Hook Form + Zod)
-```tsx
-// pages/Contracts/Crear.tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { toast } from '@/components/ui/use-toast';
-
-// Importaciones directas desde el feature (NO re-exports)
-import { contratoFormSchema, ContratoFormInput } from '@/features/contracts/schemas';
-import { DEFAULT_CONTRATO_VALUES } from '@/features/contracts/constants';
-import { FormularioContrato } from '@/features/contracts/components/FormularioContrato';
-
-export default function Crear() {
-  const form = useForm<ContratoFormInput>({
-    resolver: zodResolver(contratoFormSchema),
-    defaultValues: {
-      tipo: DEFAULT_CONTRATO_VALUES.tipo,
-      cliente: { nombre: '', rut: '', telefono: '' },
-      descuento: DEFAULT_CONTRATO_VALUES.descuento,
-      forma_pago: DEFAULT_CONTRATO_VALUES.forma_pago,
-    }
-  });
-
-  const onSubmit = (data: ContratoFormInput) => {
-    router.post(route('contratos.store'), data, {
-      onSuccess: () => {
-        toast({
-          title: 'Éxito',
-          description: 'Contrato creado exitosamente',
-        });
-      },
-      onError: (errors) => {
-        Object.keys(errors).forEach((key) => {
-          form.setError(key as any, { message: errors[key] });
-        });
-      }
-    });
-  };
-
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">
-        Crear Nuevo Contrato
-      </h1>
-
-      <FormularioContrato
-        form={form}
-        onSubmit={onSubmit}
-        isLoading={form.formState.isSubmitting}
-      />
-    </div>
-  );
-}
-```
-
-```tsx
-// features/contracts/components/FormularioContrato.tsx
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UseFormReturn } from 'react-hook-form';
-
-// Importaciones directas desde el feature
-import { ContratoFormInput } from '../schemas';
-import { TIPOS_CONTRATO_OPTIONS, PORCENTAJES_DESCUENTO } from '../constants';
-
-interface FormularioContratoProps {
-  form: UseFormReturn<ContratoFormInput>;
-  onSubmit: (data: ContratoFormInput) => void;
-  isLoading?: boolean;
-}
-
-export function FormularioContrato({ form, onSubmit, isLoading }: FormularioContratoProps) {
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Tipo de Contrato */}
-        <FormField
-          control={form.control}
-          name="tipo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-gray-700">Tipo de Contrato</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue placeholder="Seleccione tipo de contrato" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {TIPOS_CONTRATO_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Nombre del Cliente */}
-        <FormField
-          control={form.control}
-          name="cliente.nombre"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-gray-700">Nombre del Cliente</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Ingrese el nombre completo"
-                  className="border-gray-300"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* RUT */}
-        <FormField
-          control={form.control}
-          name="cliente.rut"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-gray-700">RUT</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="12.345.678-9"
-                  className="border-gray-300"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="bg-primary-600 hover:bg-primary-700"
-        >
-          {isLoading ? 'Guardando...' : 'Crear Contrato'}
-        </Button>
-      </form>
-    </Form>
-  );
-}
-```
-
-### 8. Autenticación y Autorización
-
-#### Roles y Permisos
-```php
-// app/Enums/UserRole.php
-namespace App\Enums;
-
-enum UserRole: string
-{
-    case PROPIETARIO = 'propietario';
-    case ADMINISTRADOR = 'administrador';
-    case SECRETARIA = 'secretaria';
-    case CONDUCTOR = 'conductor';
-    case AUXILIAR = 'auxiliar';
-
-    public function label(): string
-    {
-        return match($this) {
-            self::PROPIETARIO => 'Propietario',
-            self::ADMINISTRADOR => 'Administrador',
-            self::SECRETARIA => 'Secretaria',
-            self::CONDUCTOR => 'Conductor',
-            self::AUXILIAR => 'Auxiliar',
-        };
-    }
-
-    public function permisos(): array
-    {
-        return match($this) {
-            self::PROPIETARIO => ['*'],
-            self::ADMINISTRADOR => [
-                'contratos.*',
-                'inventario.*',
-                'personal.*',
-                'reportes.*',
-            ],
-            self::SECRETARIA => [
-                'contratos.create',
-                'contratos.update',
-                'contratos.view',
-                'pagos.*',
-            ],
-            self::CONDUCTOR => [
-                'servicios.view',
-                'servicios.update_status',
-            ],
-            self::AUXILIAR => [
-                'servicios.view',
-            ],
-        };
-    }
-}
-```
-
-#### Middleware de Permisos
-```php
-// app/Http/Middleware/CheckPermission.php
-namespace App\Http\Middleware;
-
-use Closure;
-use Illuminate\Http\Request;
-
-class CheckPermission
-{
-    public function handle(Request $request, Closure $next, string $permission)
-    {
-        if (!$request->user()->tienePermiso($permission)) {
-            abort(403, 'No tienes permiso para acceder a esta sección');
-        }
-
-        return $next($request);
-    }
-}
-```
-
-#### Compartir Usuario en Inertia
-```php
-// app/Http/Middleware/HandleInertiaRequests.php
-public function share(Request $request): array
-{
-    return array_merge(parent::share($request), [
-        'auth' => [
-            'usuario' => $request->user() ? [
-                'id' => $request->user()->id,
-                'nombre' => $request->user()->nombre,
-                'email' => $request->user()->email,
-                'rol' => $request->user()->rol,
-                'permisos' => $request->user()->rol->permisos(),
-            ] : null,
-        ],
-        'flash' => [
-            'success' => fn () => $request->session()->get('success'),
-            'error' => fn () => $request->session()->get('error'),
-        ],
-    ]);
-}
-```
-
-#### Hook de Permisos en React
-```typescript
-// hooks/usePermisos.ts
-import { usePage } from '@inertiajs/react';
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  email: string;
-  rol: string;
-  permisos: string[];
-}
-
-interface PageProps {
-  auth: {
-    usuario: Usuario | null;
-  };
-}
-
-export function usePermisos() {
-  const { auth } = usePage<PageProps>().props;
-
-  const tienePermiso = (permiso: string): boolean => {
-    if (!auth.usuario) return false;
-    if (auth.usuario.permisos.includes('*')) return true;
-
-    return auth.usuario.permisos.some(p => {
-      if (p === permiso) return true;
-      if (p.endsWith('.*')) {
-        const prefix = p.slice(0, -2);
-        return permiso.startsWith(prefix);
-      }
-      return false;
-    });
-  };
-
-  const esRol = (rol: string): boolean => {
-    return auth.usuario?.rol === rol;
-  };
-
-  return { tienePermiso, esRol, usuario: auth.usuario };
-}
-```
-
-```tsx
-// features/contracts/components/ContratoActions.tsx
-import { Button } from '@/components/ui/button';
-import { usePermisos } from '@/hooks/usePermisos';
-import { Contrato } from '../types';
-
-interface ContratoActionsProps {
-  contrato: Contrato;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
-}
-
-export function ContratoActions({ contrato, onEdit, onDelete }: ContratoActionsProps) {
-  const { tienePermiso } = usePermisos();
-
-  return (
-    <div className="flex gap-2">
-      {tienePermiso('contratos.update') && (
-        <Button
-          onClick={() => onEdit(contrato.id)}
-          className="bg-primary-600 hover:bg-primary-700"
-        >
-          Editar
-        </Button>
-      )}
-      {tienePermiso('contratos.delete') && (
-        <Button
-          variant="destructive"
-          onClick={() => onDelete(contrato.id)}
-        >
-          Eliminar
-        </Button>
-      )}
-    </div>
-  );
-}
-```
-
-### 9. Trabajo con Colas y Jobs
-
-#### Configuración de WhatsApp Automatizado
-```php
-// app/Jobs/SendWhatsAppMessageJob.php
-namespace App\Jobs;
-
-use App\Services\WhatsAppService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-
-class SendWhatsAppMessageJob implements ShouldQueue
-{
-    use InteractsWithQueue, Queueable;
-
-    public function __construct(
-        public string $telefono,
-        public string $plantilla,
-        public array $parametros,
-    ) {}
-
-    public function handle(WhatsAppService $whatsapp)
-    {
-        $whatsapp->enviarMensaje(
-            $this->telefono,
-            $this->plantilla,
-            $this->parametros
-        );
-    }
-}
-
-// Programar mensajes automáticos
-// app/Services/ContractService.php
-public function programarMensajesAutomaticos(Contract $contrato)
-{
-    // Mensaje al conductor (inmediato)
-    SendWhatsAppMessageJob::dispatch(
-        $contrato->conductor->telefono,
-        'instrucciones_servicio',
-        ['nombre' => $contrato->difunto->nombre, 'direccion' => $contrato->direccion_velorio]
-    );
-
-    // Tips a la familia (4 horas después)
-    SendWhatsAppMessageJob::dispatch(
-        $contrato->cliente->telefono,
-        'tips_familia',
-        ['nombre_familia' => $contrato->cliente->nombre]
-    )->delay(now()->addHours(4));
-
-    // Tarjetas digitales (5 días)
-    SendWhatsAppMessageJob::dispatch(
-        $contrato->cliente->telefono,
-        'tarjetas_digitales',
-        ['url_tarjeta' => $contrato->url_tarjeta_digital]
-    )->delay(now()->addDays(5));
-
-    // Encuesta (8 días)
-    SendWhatsAppMessageJob::dispatch(
-        $contrato->cliente->telefono,
-        'encuesta_servicio',
-        ['url_encuesta' => route('encuestas.show', $contrato)]
-    )->delay(now()->addDays(8));
-}
-```
-
-### 10. Testing
-
-#### Tests de Feature (Laravel)
-```php
-// tests/Feature/ContractTest.php
-namespace Tests\Feature;
-
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Contract;
-
-class ContractTest extends TestCase
-{
-    public function test_secretaria_puede_crear_contrato()
-    {
-        $secretaria = User::factory()->secretaria()->create();
-
-        $response = $this->actingAs($secretaria)
-            ->post(route('contratos.store'), [
-                'tipo_contrato' => 'necesidad_inmediata',
-                'cliente' => [
-                    'nombre' => 'Juan Pérez',
-                    'rut' => '12.345.678-9',
-                    'telefono' => '+56912345678',
-                ],
-                'difunto' => [
-                    'nombre' => 'María Pérez',
-                    'fecha_fallecimiento' => now(),
-                ],
-                'servicios' => [
-                    ['id' => 1, 'cantidad' => 1],
-                ],
-            ]);
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('contracts', [
-            'tipo_contrato' => 'necesidad_inmediata',
-        ]);
-    }
-
-    public function test_calculo_de_comisiones_es_correcto()
-    {
-        $contrato = Contract::factory()->create([
-            'total' => 1000000,
-            'created_at' => now()->setHour(22), // Horario nocturno
-        ]);
-
-        $comision = app(PayrollService::class)->calcularComision($contrato);
-
-        // Comisión nocturna debe ser mayor
-        $this->assertGreaterThan(50000, $comision);
-    }
-}
-```
-
-### 11. Utilidades Comunes
-
-#### Formateo de Moneda (Chile)
-```javascript
-// resources/js/Lib/utils.js
-export function formatearMoneda(valor) {
-  return new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: 'CLP',
-    minimumFractionDigits: 0,
-  }).format(valor);
-}
-
-export function formatearRut(rut) {
-  // 12345678-9 -> 12.345.678-9
-  const limpio = rut.replace(/[^0-9kK]/g, '');
-  const cuerpo = limpio.slice(0, -1);
-  const dv = limpio.slice(-1);
-
-  return cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + dv;
-}
-
-export function formatearFecha(fecha) {
-  return format(new Date(fecha), "dd 'de' MMMM 'de' yyyy", { locale: es });
-}
-
-export function formatearFechaHora(fecha) {
-  return format(new Date(fecha), "dd/MM/yyyy HH:mm", { locale: es });
-}
-```
-
-#### Validador de RUT Chileno
-```php
-// app/Rules/ChileanRut.php
-namespace App\Rules;
-
-use Illuminate\Contracts\Validation\Rule;
-
-class ChileanRut implements Rule
-{
-    public function passes($attribute, $value)
-    {
-        $rut = preg_replace('/[^0-9kK]/', '', $value);
-        $cuerpo = substr($rut, 0, -1);
-        $dv = strtoupper(substr($rut, -1));
-
-        $suma = 0;
-        $multiplo = 2;
-
-        for ($i = strlen($cuerpo) - 1; $i >= 0; $i--) {
-            $suma += $multiplo * $cuerpo[$i];
-            $multiplo = $multiplo < 7 ? $multiplo + 1 : 2;
-        }
-
-        $dvEsperado = 11 - ($suma % 11);
-        $dvEsperado = $dvEsperado == 11 ? '0' : ($dvEsperado == 10 ? 'K' : (string)$dvEsperado);
-
-        return $dv === $dvEsperado;
-    }
-
-    public function message()
-    {
-        return 'El RUT ingresado no es válido.';
-    }
-}
-```
-
-### 12. Base de Datos - Convenciones
-
-#### Migraciones Importantes
-```php
-// Estructura de tabla contratos
-Schema::create('contracts', function (Blueprint $table) {
-    $table->id();
-    $table->string('numero_contrato')->unique();
-    $table->enum('tipo', ['necesidad_inmediata', 'necesidad_futura']);
-    $table->foreignId('cliente_id')->constrained('clients');
-    $table->foreignId('difunto_id')->nullable()->constrained('deceased');
-    $table->foreignId('secretaria_id')->constrained('users');
-    $table->decimal('subtotal', 12, 2);
-    $table->decimal('descuento_porcentaje', 5, 2)->default(0);
-    $table->decimal('descuento_monto', 12, 2)->default(0);
-    $table->decimal('total', 12, 2);
-    $table->enum('estado', ['cotizacion', 'contrato', 'finalizado', 'cancelado']);
-    $table->boolean('es_festivo')->default(false);
-    $table->boolean('es_nocturno')->default(false);
-    $table->timestamps();
-    $table->softDeletes();
-});
-```
-
-#### Relaciones Eloquent
-```php
-// app/Models/Contract.php
-class Contract extends Model
-{
-    protected $casts = [
-        'tipo' => ContractType::class,
-        'estado' => ContractStatus::class,
-        'es_festivo' => 'boolean',
-        'es_nocturno' => 'boolean',
-        'created_at' => 'datetime',
-    ];
-
-    public function cliente()
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function difunto()
-    {
-        return $this->belongsTo(Deceased::class);
-    }
-
-    public function secretaria()
-    {
-        return $this->belongsTo(User::class, 'secretaria_id');
-    }
-
-    public function servicios()
-    {
-        return $this->belongsToMany(Service::class, 'contract_services')
-            ->withPivot('cantidad', 'precio_unitario', 'subtotal');
-    }
-
-    public function productos()
-    {
-        return $this->belongsToMany(Product::class, 'contract_products')
-            ->withPivot('cantidad', 'precio_unitario', 'subtotal');
-    }
-
-    // Scopes
-    public function scopeNecesidadInmediata($query)
-    {
-        return $query->where('tipo', ContractType::NECESIDAD_INMEDIATA);
-    }
-
-    public function scopeDelMes($query)
-    {
-        return $query->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year);
-    }
-}
-```
-
-### 13. Seguridad
-
-- **Sanitización de inputs:** Laravel hace sanitización automática
-- **CSRF Protection:** Inertia maneja tokens automáticamente
-- **SQL Injection:** Usar Eloquent ORM siempre
-- **XSS Prevention:** React escapa automáticamente
-- **Rate Limiting:** Aplicar en rutas sensibles
-- **Validación en ambos lados:** Backend (obligatorio) + Frontend (UX)
-
-```php
-// routes/web.php
-Route::middleware(['auth', 'throttle:60,1'])->group(function () {
-    Route::resource('contratos', ContractController::class);
-});
-```
-
-### 14. Performance
-
-- **Eager Loading:** Usar `with()` para evitar N+1 queries
-- **Paginación:** Siempre paginar listados grandes
-- **Cache:** Redis para datos frecuentes
-- **Lazy Loading:** React.lazy() para páginas grandes
-- **Debounce:** En búsquedas y filtros
-
-```jsx
-// Ejemplo de búsqueda con debounce
-import { useDebouncedCallback } from 'use-debounce';
-
-const buscarContratos = useDebouncedCallback((termino) => {
-  router.get(route('contratos.index'), { busqueda: termino }, {
-    preserveState: true,
-    preserveScroll: true,
-  });
-}, 500);
-```
+#### Validation Checklist
+
+Before creating or modifying a feature, verify:
+
+- [ ] Are all types in `types.ts`?
+- [ ] Are all Zod schemas in `schemas.ts`?
+- [ ] Are all constants in `constants.ts`?
+- [ ] Are all functions in `functions.ts`?
+- [ ] Are there no re-exports in any file?
+- [ ] Are files organized in topological order?
+- [ ] Are utility types (Omit, Pick, Partial) used where possible?
+- [ ] Is there no type duplication between files?
+- [ ] Does each file have a clear responsibility?
 
 ---
 
-## Comandos Útiles
+## Useful Commands
 
-### Desarrollo
+### Development
 ```bash
 # Backend
 php artisan serve
@@ -1932,21 +1104,21 @@ php artisan test
 php artisan test --filter=ContractTest
 ```
 
-### Producción
+### Production
 ```bash
-# Optimización
+# Optimization
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 npm run build
 
-# Queue con Supervisor
+# Queue with Supervisor
 php artisan queue:work --sleep=3 --tries=3 --daemon
 ```
 
 ---
 
-## Estructura de Commits
+## Commit Structure
 
 **IMPORTANT: All commit messages MUST be in English**
 
@@ -1961,330 +1133,24 @@ style: Adjust spacing in inventory table
 
 ---
 
-## Notas Finales
+## Final Notes
 
-- **User-facing text in Spanish:** All UI text, labels, buttons, messages must be in Spanish
+- **i18n System (MANDATORY):** ALL user-facing text must use `t('namespace.key')` - never hardcode text
+- **Bilingual Support:** Application supports Spanish (default) and English via language switcher
+- **Translation Files:** Always add to both `es.json` and `en.json` simultaneously
+- **Default Language:** Spanish - must always be complete and accurate
 - **Code in English:** Variable names, function names, class names, folder names (industry standard)
 - **Git commits in English:** All commit messages must be in English
 - **Folder structure in English:** features/, pages/ subdirectories must use English names
-- **UI limpia:** Fondo blanco, diseño minimalista, profesional
-- **Mobile responsive:** Todas las vistas deben funcionar en móvil
-- **Accesibilidad:** Usar etiquetas semánticas, aria-labels cuando sea necesario
-- **Documentación inline:** Comentar lógica de negocio compleja
+- **Translation Keys:** Use camelCase with namespace prefix (e.g., `contracts.clientName`)
+- **Select Options:** Use `labelKey` instead of `label` for dropdown options
+- **Clean UI:** White background, minimalist design, professional
+- **Mobile responsive:** All views must work on mobile
+- **Accessibility:** Use semantic tags, aria-labels when necessary
+- **Inline documentation:** Comment complex business logic
 
 ---
 
-## Guía Rápida: Crear un Nuevo Feature
-
-### Paso 1: Crear la Estructura de Carpetas
-
-```bash
-mkdir -p resources/js/features/[nombre-feature]/{components,sections,modals}
-touch resources/js/features/[nombre-feature]/{types.ts,schemas.ts,constants.ts,functions.ts}
-```
-
-### Paso 2: Definir Tipos (types.ts)
-
-```typescript
-// En orden topológico: básico → complejo
-export enum MiEnum { ... }
-export type TipoBasico = string;
-export interface InterfazBasica { ... }
-export interface InterfazCompleja { ... }
-export type TipoDerivado = Omit<InterfazCompleja, 'campo'>;
-export interface PropsComponente { ... }
-```
-
-### Paso 3: Crear Schemas (schemas.ts)
-
-```typescript
-import { z } from 'zod';
-import { MiEnum } from './types';
-
-export const miSchema = z.object({ ... });
-export type MiFormInput = z.infer<typeof miSchema>;
-```
-
-### Paso 4: Definir Constantes (constants.ts)
-
-```typescript
-export const MI_CONSTANTE = 'valor' as const;
-export const OPCIONES = [
-  { value: 'a', label: 'A' },
-  { value: 'b', label: 'B' },
-] as const;
-```
-
-### Paso 5: Crear Funciones (functions.ts)
-
-```typescript
-import { MiTipo } from './types';
-import { MI_CONSTANTE } from './constants';
-
-export function funcionBasica() { ... }
-export function funcionCompleja(param: MiTipo) { ... }
-```
-
-### Paso 6: Crear Componentes
-
-```tsx
-// features/[nombre-feature]/components/MiComponente.tsx
-import { MiTipo, MiProps } from '../types';
-import { MI_CONSTANTE } from '../constants';
-import { miFuncion } from '../functions';
-
-export function MiComponente({ prop }: MiProps) {
-  // Implementación
-}
-```
-
-### Paso 7: Crear Página Inertia
-
-```tsx
-// pages/[NombreFeature]/Index.tsx
-import { Head } from '@inertiajs/react';
-import { MiTipo } from '@/features/[nombre-feature]/types';
-import { MiComponente } from '@/features/[nombre-feature]/components/MiComponente';
-
-export default function Index({ datos }: { datos: MiTipo[] }) {
-  return (
-    <>
-      <Head title="Mi Feature" />
-      <MiComponente datos={datos} />
-    </>
-  );
-}
-```
-
----
-
-## Checklist Pre-Commit
-
-Antes de hacer commit, verificar:
-
-### Frontend
-- [ ] ¿Todo el código TypeScript está en la carpeta `features/[nombre-feature]`?
-- [ ] ¿Todos los tipos están en `types.ts`?
-- [ ] ¿Todos los schemas están en `schemas.ts`?
-- [ ] ¿Todas las constantes están en `constants.ts`?
-- [ ] ¿Todas las funciones están en `functions.ts`?
-- [ ] ¿No hay archivos `index.ts` con re-exportaciones?
-- [ ] ¿Las importaciones son directas (no re-exports)?
-- [ ] ¿Se usan utility types donde corresponde?
-- [ ] ¿Todo el texto visible está en español?
-- [ ] ¿Los componentes usan la paleta de colores correcta (bg-white)?
-- [ ] ¿Los componentes son responsive?
-
-### Backend
-- [ ] ¿Los Form Requests tienen validación y mensajes en español?
-- [ ] ¿Los servicios tienen la lógica de negocio separada de los controladores?
-- [ ] ¿Se usa Eager Loading para evitar N+1 queries?
-- [ ] ¿Los métodos tienen nombres descriptivos en español?
-
-### General
-- [ ] ¿El commit message está en español?
-- [ ] ¿No hay console.log() olvidados?
-- [ ] ¿No hay código comentado innecesario?
-
----
-
-## Errores Comunes a Evitar
-
-### ❌ ERROR 1: Re-exportaciones
-```typescript
-// ❌ NO HACER
-// features/contratos/index.ts
-export * from './types';
-export * from './schemas';
-```
-
-**Solución:** Eliminar el archivo `index.ts` e importar directamente.
-
-### ❌ ERROR 2: Tipos Duplicados
-```typescript
-// ❌ NO HACER
-// En types.ts
-export interface Contrato { ... }
-
-// En schemas.ts
-export type Contrato = z.infer<typeof contratoSchema>; // ¡Duplicado!
-```
-
-**Solución:** Solo definir tipos en `types.ts`. En `schemas.ts` solo inferir tipos específicos de formularios.
-
-### ❌ ERROR 3: Constantes en Componentes
-```tsx
-// ❌ NO HACER
-export function MiComponente() {
-  const OPCIONES = ['a', 'b', 'c']; // ¡Debe estar en constants.ts!
-}
-```
-
-**Solución:** Mover todas las constantes a `constants.ts`.
-
-### ❌ ERROR 4: Funciones en Componentes
-```tsx
-// ❌ NO HACER
-export function MiComponente() {
-  const calcularTotal = (items) => { ... }; // ¡Debe estar en functions.ts!
-}
-```
-
-**Solución:** Solo dejar funciones específicas del componente (handlers de eventos). Lógica reutilizable va en `functions.ts`.
-
-### ❌ ERROR 5: Texto en Inglés
-```tsx
-// ❌ NO HACER
-<Button>Save</Button>
-
-// ✅ CORRECTO
-<Button>Guardar</Button>
-```
-
-### ❌ ERROR 6: No Usar Utility Types
-```typescript
-// ❌ NO HACER
-export interface ContratoFormData {
-  tipo: TipoContrato;
-  cliente: Cliente;
-  // ... duplicando toda la interfaz manualmente
-}
-
-// ✅ CORRECTO
-export type ContratoFormData = Omit<Contrato, 'id' | 'created_at' | 'updated_at'>;
-```
-
----
-
-## Recursos de Referencia
-
-### Documentación Oficial
-- [Laravel 11](https://laravel.com/docs/11.x)
-- [Inertia.js](https://inertiajs.com/)
-- [React 18](https://react.dev/)
-- [TailwindCSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [React Hook Form](https://react-hook-form.com/)
-- [Zod](https://zod.dev/)
-
-### TypeScript Utility Types
-- `Partial<T>` - Hace todos los campos opcionales
-- `Required<T>` - Hace todos los campos obligatorios
-- `Readonly<T>` - Hace todos los campos de solo lectura
-- `Pick<T, K>` - Selecciona solo ciertos campos
-- `Omit<T, K>` - Excluye ciertos campos
-- `Record<K, T>` - Objeto con claves K y valores T
-- `Exclude<T, U>` - Excluye tipos de una unión
-- `Extract<T, U>` - Extrae tipos de una unión
-- `NonNullable<T>` - Excluye null y undefined
-- `ReturnType<T>` - Obtiene el tipo de retorno de una función
-
----
-
-## Estructura de Carpetas Completa de Referencia
-
-```
-funeral-erp/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── ContractController.php
-│   │   │   ├── InventoryController.php
-│   │   │   └── ...
-│   │   ├── Middleware/
-│   │   │   └── CheckPermission.php
-│   │   └── Requests/
-│   │       ├── StoreContractRequest.php
-│   │       └── ...
-│   ├── Models/
-│   │   ├── User.php
-│   │   ├── Contract.php
-│   │   ├── Client.php
-│   │   └── ...
-│   ├── Services/
-│   │   ├── ContractService.php
-│   │   ├── PayrollService.php
-│   │   └── ...
-│   ├── Jobs/
-│   │   └── SendWhatsAppMessageJob.php
-│   └── Enums/
-│       ├── UserRole.php
-│       ├── ContractType.php
-│       └── ...
-├── resources/
-│   ├── js/
-│   │   ├── components/              # Componentes globales
-│   │   │   ├── ui/                  # shadcn/ui
-│   │   │   │   ├── button.tsx
-│   │   │   │   ├── input.tsx
-│   │   │   │   ├── form.tsx
-│   │   │   │   └── ...
-│   │   │   └── layouts/
-│   │   │       ├── MainLayout.tsx
-│   │   │       ├── TopBar.tsx
-│   │   │       └── SidebarNav.tsx
-│   │   ├── features/                # FEATURES (feature-based)
-│   │   │   ├── contratos/
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── FormularioContrato.tsx
-│   │   │   │   │   ├── TablaContratos.tsx
-│   │   │   │   │   └── ContratoCard.tsx
-│   │   │   │   ├── sections/
-│   │   │   │   │   ├── ContratoHeader.tsx
-│   │   │   │   │   └── ResumenFinanciero.tsx
-│   │   │   │   ├── modals/
-│   │   │   │   │   └── ConfirmarEliminacionModal.tsx
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── schemas.ts
-│   │   │   │   ├── constants.ts
-│   │   │   │   └── functions.ts
-│   │   │   ├── inventario/
-│   │   │   │   ├── components/
-│   │   │   │   ├── sections/
-│   │   │   │   ├── modals/
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── schemas.ts
-│   │   │   │   ├── constants.ts
-│   │   │   │   └── functions.ts
-│   │   │   ├── pagos/
-│   │   │   ├── personal/
-│   │   │   ├── liquidaciones/
-│   │   │   ├── reportes/
-│   │   │   └── dashboard/
-│   │   ├── pages/                   # Páginas Inertia
-│   │   │   ├── Contratos/
-│   │   │   │   ├── Index.tsx
-│   │   │   │   ├── Crear.tsx
-│   │   │   │   ├── Editar.tsx
-│   │   │   │   └── Ver.tsx
-│   │   │   ├── Inventario/
-│   │   │   ├── Dashboard/
-│   │   │   └── ...
-│   │   ├── hooks/                   # Hooks globales
-│   │   │   ├── usePermisos.ts
-│   │   │   └── useAuth.ts
-│   │   ├── lib/                     # Utilidades globales
-│   │   │   ├── utils.ts
-│   │   │   └── cn.ts
-│   │   └── types/                   # Tipos globales
-│   │       ├── inertia.d.ts
-│   │       └── global.d.ts
-│   └── css/
-│       └── app.css
-├── routes/
-│   ├── web.php
-│   └── api.php
-├── database/
-│   ├── migrations/
-│   ├── seeders/
-│   └── factories/
-└── tests/
-    ├── Feature/
-    └── Unit/
-```
-
----
-
-**Versión:** 2.0
-**Última actualización:** Octubre 2025
-**Proyecto:** Funeral ERP - Sistema de Gestión Funeraria
+**Version:** 2.1
+**Last updated:** October 2025
+**Project:** Funeral ERP - Funeral Management System

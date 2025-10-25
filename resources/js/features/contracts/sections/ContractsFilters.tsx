@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ interface ContractsFiltersProps {
 }
 
 export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState(filters.search || '');
   const [selectedStatus, setSelectedStatus] = useState(filters.status || 'all');
   const [selectedType, setSelectedType] = useState(filters.type || 'all');
@@ -99,7 +101,7 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
-              placeholder="Buscar por número, cliente o difunto..."
+              placeholder={t('contracts.searchPlaceholder')}
               className="pl-9"
               value={searchValue}
               onChange={(e) => handleSearchChange(e.target.value)}
@@ -110,7 +112,7 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
             <PopoverTrigger asChild>
               <Button variant="outline" className="gap-2">
                 <Filter className="h-4 w-4" />
-                Filtros
+                {t('common.filters')}
                 {hasActiveFilters && (
                   <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
                     {[searchValue, selectedStatus !== 'all', selectedType !== 'all'].filter(Boolean).length}
@@ -121,7 +123,7 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
             <PopoverContent className="w-80" align="end">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-semibold">Filtros</h4>
+                  <h4 className="font-semibold">{t('common.filters')}</h4>
                   {hasActiveFilters && (
                     <Button
                       variant="ghost"
@@ -130,22 +132,22 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
                       className="h-auto gap-1 px-2 py-1 text-xs"
                     >
                       <X className="h-3 w-3" />
-                      Limpiar
+                      {t('common.clear')}
                     </Button>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Estado</label>
+                  <label className="text-sm font-medium">{t('contracts.status')}</label>
                   <Select value={selectedStatus} onValueChange={handleStatusChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar estado" />
+                      <SelectValue placeholder={t('contracts.selectStatus')} />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="all">{t('common.all')}</SelectItem>
                       {ESTADOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                          {t(option.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -153,16 +155,16 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Tipo</label>
+                  <label className="text-sm font-medium">{t('contracts.type')}</label>
                   <Select value={selectedType} onValueChange={handleTypeChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar tipo" />
+                      <SelectValue placeholder={t('contracts.selectType')} />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="all">{t('common.all')}</SelectItem>
                       {TIPOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                          {t(option.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>

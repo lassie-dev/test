@@ -43,18 +43,11 @@ import {
 import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
 import { Input } from '@/components/ui/input';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 interface MainLayoutProps {
   children: ReactNode;
-}
-
-interface MenuItem {
-  name: string;
-  href: string;
-  icon: any; // Can be React component or string name
-  badge?: number;
-  permissions?: string[];
-  children?: MenuItem[];
 }
 
 // Helper to get icon component from string name or return the component directly
@@ -68,73 +61,92 @@ const getIconComponent = (icon: any): LucideIcon => {
 
 interface NavigationSection {
   title: string | null;
+  titleKey?: string;
   items: MenuItem[];
   permissions?: string[];
 }
 
-const navigationSections: NavigationSection[] = [
-  {
-    title: null,
-    items: [
-      { name: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
-    ],
-  },
-  {
-    title: 'Operaciones',
-    permissions: ['view_operations'],
-    items: [
-      {
-        name: 'Contratos',
-        href: '/contracts',
-        icon: FileSignature,
-        permissions: ['view_contracts'],
-        children: [
-          { name: 'Nuevo Contrato', href: '/contracts/create', icon: FileSignature },
-          { name: 'Lista de Contratos', href: '/contracts', icon: FileText },
-          { name: 'Contratos Archivados', href: '/contracts/archived', icon: Archive },
-        ]
-      },
-      {
-        name: 'Inventario',
-        href: '/inventory',
-        icon: Archive,
-        permissions: ['view_inventory'],
-        badge: 5,
-      },
-      {
-        name: 'Pagos',
-        href: '/payments',
-        icon: Wallet,
-        permissions: ['view_payments'],
-        badge: 12,
-      },
-      {
-        name: 'Personal',
-        href: '/staff',
-        icon: UsersRound,
-        permissions: ['view_staff'],
-      },
-      {
-        name: 'Liquidaciones',
-        href: '/payroll',
-        icon: Receipt,
-        permissions: ['view_payroll'],
-      },
-    ],
-  },
-  {
-    title: 'Análisis',
-    permissions: ['view_reports'],
-    items: [
-      { name: 'Reportes', href: '/reports', icon: TrendingUp },
-    ],
-  },
-];
+interface MenuItem {
+  name: string;
+  nameKey?: string;
+  href: string;
+  icon: any;
+  badge?: number;
+  permissions?: string[];
+  children?: MenuItem[];
+}
 
 export default function MainLayout({ children }: MainLayoutProps) {
+  const { t } = useTranslation();
   const page = usePage<any>();
   const { auth, navigation: dbNavigation } = page.props;
   const currentUrl = page.url;
+
+  const navigationSections: NavigationSection[] = [
+    {
+      title: null,
+      items: [
+        { name: t('nav.dashboard'), nameKey: 'nav.dashboard', href: '/dashboard', icon: LayoutGrid },
+      ],
+    },
+    {
+      title: t('nav.operations'),
+      titleKey: 'nav.operations',
+      permissions: ['view_operations'],
+      items: [
+        {
+          name: t('nav.contracts'),
+          nameKey: 'nav.contracts',
+          href: '/contracts',
+          icon: FileSignature,
+          permissions: ['view_contracts'],
+          children: [
+            { name: t('nav.newContract'), nameKey: 'nav.newContract', href: '/contracts/create', icon: FileSignature },
+            { name: t('nav.contractList'), nameKey: 'nav.contractList', href: '/contracts', icon: FileText },
+            { name: t('nav.archivedContracts'), nameKey: 'nav.archivedContracts', href: '/contracts/archived', icon: Archive },
+          ]
+        },
+        {
+          name: t('nav.inventory'),
+          nameKey: 'nav.inventory',
+          href: '/inventory',
+          icon: Archive,
+          permissions: ['view_inventory'],
+          badge: 5,
+        },
+        {
+          name: t('nav.payments'),
+          nameKey: 'nav.payments',
+          href: '/payments',
+          icon: Wallet,
+          permissions: ['view_payments'],
+          badge: 12,
+        },
+        {
+          name: t('nav.staff'),
+          nameKey: 'nav.staff',
+          href: '/staff',
+          icon: UsersRound,
+          permissions: ['view_staff'],
+        },
+        {
+          name: t('nav.payroll'),
+          nameKey: 'nav.payroll',
+          href: '/payroll',
+          icon: Receipt,
+          permissions: ['view_payroll'],
+        },
+      ],
+    },
+    {
+      title: t('nav.analysis'),
+      titleKey: 'nav.analysis',
+      permissions: ['view_reports'],
+      items: [
+        { name: t('nav.reports'), nameKey: 'nav.reports', href: '/reports', icon: TrendingUp },
+      ],
+    },
+  ];
 
   // Use database navigation if available, otherwise fallback to hardcoded
   const navigationData = dbNavigation && dbNavigation.length > 0 ? dbNavigation : navigationSections;
@@ -234,7 +246,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   // Generate breadcrumbs
   const generateBreadcrumbs = () => {
-    const crumbs = [{ name: 'Inicio', href: '/dashboard', icon: Home }];
+    const crumbs = [{ name: t('common.home'), href: '/dashboard', icon: Home }];
 
     for (const section of filteredSections) {
       for (const item of section.items) {
@@ -318,7 +330,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('common.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-9"
@@ -437,22 +449,22 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   </div>
                   <div className="flex-1 text-left overflow-hidden">
                     <div className="font-medium text-text-primary truncate">
-                      {auth?.user?.name || 'Usuario'}
+                      {auth?.user?.name || t('nav.user')}
                     </div>
                     <div className="text-xs text-text-subtle truncate">
-                      {auth?.user?.email || 'usuario@ejemplo.com'}
+                      {auth?.user?.email || t('nav.defaultEmail')}
                     </div>
                   </div>
                   <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                <DropdownMenuLabel>{t('nav.myAccount')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="flex items-center gap-2">
                     <Settings className="h-4 w-4" />
-                    Configuración
+                    {t('nav.settings')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -464,7 +476,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                     className="flex w-full items-center gap-2 text-error"
                   >
                     <LogOut className="h-4 w-4" />
-                    Cerrar Sesión
+                    {t('nav.logout')}
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -481,15 +493,15 @@ export default function MainLayout({ children }: MainLayoutProps) {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium text-text-primary">{auth?.user?.name || 'Usuario'}</p>
-                    <p className="text-xs text-text-subtle">{auth?.user?.email || 'usuario@ejemplo.com'}</p>
+                    <p className="text-sm font-medium text-text-primary">{auth?.user?.name || t('nav.user')}</p>
+                    <p className="text-xs text-text-subtle">{auth?.user?.email || t('nav.defaultEmail')}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="flex items-center gap-2">
                     <Settings className="h-4 w-4" />
-                    Configuración
+                    {t('nav.settings')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -501,7 +513,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                     className="flex w-full items-center gap-2 text-error"
                   >
                     <LogOut className="h-4 w-4" />
-                    Cerrar Sesión
+                    {t('nav.logout')}
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -528,6 +540,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
           <div className="flex-1" />
 
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
@@ -542,17 +557,17 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   {auth?.user?.name?.charAt(0) || 'U'}
                 </div>
                 <span className="hidden text-sm font-medium lg:inline-block">
-                  {auth?.user?.name || 'Usuario'}
+                  {auth?.user?.name || t('nav.user')}
                 </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('nav.myAccount')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/profile" className="flex items-center gap-2">
                   <Settings className="h-4 w-4" />
-                  Configuración
+                  {t('nav.settings')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -564,7 +579,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   className="flex w-full items-center gap-2 text-error"
                 >
                   <LogOut className="h-4 w-4" />
-                  Cerrar Sesión
+                  {t('nav.logout')}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

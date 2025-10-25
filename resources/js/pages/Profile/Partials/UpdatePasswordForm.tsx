@@ -1,6 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ export default function UpdatePasswordForm({
 }: {
     className?: string;
 }) {
+    const { t } = useTranslation();
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
@@ -51,18 +53,17 @@ export default function UpdatePasswordForm({
         <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">
-                    Update Password
+                    {t('profile.updatePassword')}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Ensure your account is using a long, random password to stay
-                    secure.
+                    {t('profile.updatePasswordDescription')}
                 </p>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">
                 <div>
-                    <Label htmlFor="current_password">Current Password</Label>
+                    <Label htmlFor="current_password">{t('profile.currentPassword')}</Label>
 
                     <Input
                         id="current_password"
@@ -82,7 +83,7 @@ export default function UpdatePasswordForm({
                 </div>
 
                 <div>
-                    <Label htmlFor="password">New Password</Label>
+                    <Label htmlFor="password">{t('profile.newPassword')}</Label>
 
                     <Input
                         id="password"
@@ -100,7 +101,7 @@ export default function UpdatePasswordForm({
                 </div>
 
                 <div>
-                    <Label htmlFor="password_confirmation">Confirm Password</Label>
+                    <Label htmlFor="password_confirmation">{t('profile.confirmPassword')}</Label>
 
                     <Input
                         id="password_confirmation"
@@ -119,7 +120,7 @@ export default function UpdatePasswordForm({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Button disabled={processing}>Save</Button>
+                    <Button disabled={processing}>{t('common.save')}</Button>
 
                     <Transition
                         show={recentlySuccessful}
@@ -129,7 +130,7 @@ export default function UpdatePasswordForm({
                         leaveTo="opacity-0"
                     >
                         <p className="text-sm text-gray-600">
-                            Saved.
+                            {t('common.saved')}
                         </p>
                     </Transition>
                 </div>

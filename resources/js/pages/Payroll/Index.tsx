@@ -5,8 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Filter, DollarSign, Calendar, TrendingUp } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 export default function Index() {
+  const { t } = useTranslation();
+
   return (
     <MainLayout>
       <Head />
@@ -15,14 +18,14 @@ export default function Index() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Liquidaciones</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('payroll.title')}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Gestiona las liquidaciones y nómina del personal
+              {t('payroll.subtitle')}
             </p>
           </div>
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
-            Nueva Liquidación
+            {t('payroll.new')}
           </Button>
         </div>
 
@@ -30,45 +33,45 @@ export default function Index() {
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Liquidación del Mes</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('payroll.monthlyPayroll')}</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">Total a pagar</p>
+              <p className="text-xs text-muted-foreground">{t('payroll.totalToPay')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pagadas</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('payroll.paid')}</CardTitle>
               <DollarSign className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Liquidaciones pagadas</p>
+              <p className="text-xs text-muted-foreground">{t('payroll.paidPayrolls')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pendientes</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('payroll.pending')}</CardTitle>
               <Calendar className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Por pagar</p>
+              <p className="text-xs text-muted-foreground">{t('payroll.toPay')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Promedio</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('payroll.average')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">Promedio por empleado</p>
+              <p className="text-xs text-muted-foreground">{t('payroll.averagePerEmployee')}</p>
             </CardContent>
           </Card>
         </div>
@@ -79,11 +82,11 @@ export default function Index() {
             <div className="flex gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <Input placeholder="Buscar por empleado o período..." className="pl-9" />
+                <Input placeholder={t('payroll.searchPlaceholder')} className="pl-9" />
               </div>
               <Button variant="outline" className="gap-2">
                 <Filter className="h-4 w-4" />
-                Filtros
+                {t('common.filters')}
               </Button>
             </div>
           </CardContent>
@@ -92,7 +95,7 @@ export default function Index() {
         {/* Empty State */}
         <Card>
           <CardHeader>
-            <CardTitle>Lista de Liquidaciones</CardTitle>
+            <CardTitle>{t('payroll.list')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -100,14 +103,14 @@ export default function Index() {
                 <DollarSign className="h-6 w-6 text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                No hay liquidaciones registradas
+                {t('payroll.noPayrolls')}
               </h3>
               <p className="mt-2 text-sm text-gray-600">
-                Comienza creando la primera liquidación del mes.
+                {t('payroll.noPayrollsDescription')}
               </p>
               <Button className="mt-4 gap-2">
                 <Plus className="h-4 w-4" />
-                Crear Primera Liquidación
+                {t('payroll.createFirstPayroll')}
               </Button>
             </div>
           </CardContent>

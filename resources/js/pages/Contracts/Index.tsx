@@ -1,4 +1,5 @@
 import { Head, router } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -42,6 +43,8 @@ interface ContractsIndexProps {
 }
 
 export default function Index({ contracts, filters }: ContractsIndexProps) {
+  const { t } = useTranslation();
+
   const handleCreate = () => {
     router.visit('/contracts/create');
   };
@@ -65,9 +68,9 @@ export default function Index({ contracts, filters }: ContractsIndexProps) {
         <Card className="border-gray-200">
           <CardHeader>
             <CardTitle className="text-gray-900">
-              Lista de Contratos
+              {t('contracts.list')}
               <span className="ml-2 text-sm font-normal text-gray-500">
-                ({contracts.total} {contracts.total === 1 ? 'contrato' : 'contratos'})
+                ({contracts.total} {contracts.total === 1 ? t('contracts.contractSingular') : t('contracts.contractPlural')})
               </span>
             </CardTitle>
           </CardHeader>

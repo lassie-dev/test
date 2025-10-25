@@ -5,8 +5,8 @@ import {
   COMISION_NOCTURNA_EXTRA,
   COMISION_FESTIVO_EXTRA,
   ESTADO_BADGE_VARIANTS,
-  ESTADO_LABELS,
-  TIPO_LABELS,
+  ESTADO_LABEL_KEYS,
+  TIPO_LABEL_KEYS,
 } from './constants';
 
 // Funciones básicas (sin dependencias)
@@ -138,19 +138,19 @@ export function obtenerVarianteBadgeEstado(estado: EstadoContrato): string {
 }
 
 /**
- * Gets the label for a contract status
+ * Gets the translation key for a contract status
  * @param estado - Contract status
- * @returns Human-readable status label
+ * @returns Translation key for the status label
  */
 export function obtenerEtiquetaEstado(estado: EstadoContrato): string {
-  return ESTADO_LABELS[estado] || estado;
+  return ESTADO_LABEL_KEYS[estado] || estado;
 }
 
 /**
- * Gets the label for a contract type
+ * Gets the translation key for a contract type
  * @param tipo - Contract type
- * @returns Human-readable type label
+ * @returns Translation key for the type label
  */
 export function obtenerEtiquetaTipo(tipo: TipoContrato): string {
-  return TIPO_LABELS[tipo] || tipo;
+  return TIPO_LABEL_KEYS[tipo] || tipo;
 }

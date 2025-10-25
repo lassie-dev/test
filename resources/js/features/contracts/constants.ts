@@ -1,20 +1,20 @@
 export const PORCENTAJES_DESCUENTO = [0, 3, 5, 8, 10, 15, 25, 30] as const;
 
 export const TIPOS_CONTRATO_OPTIONS = [
-  { value: 'necesidad_inmediata', label: 'Necesidad Inmediata' },
-  { value: 'necesidad_futura', label: 'Necesidad Futura' },
+  { value: 'necesidad_inmediata', labelKey: 'contracts.immediateNeed' },
+  { value: 'necesidad_futura', labelKey: 'contracts.futureNeed' },
 ] as const;
 
 export const ESTADOS_CONTRATO_OPTIONS = [
-  { value: 'cotizacion', label: 'Cotización' },
-  { value: 'contrato', label: 'Contrato' },
-  { value: 'finalizado', label: 'Finalizado' },
-  { value: 'cancelado', label: 'Cancelado' },
+  { value: 'cotizacion', labelKey: 'contracts.quotation' },
+  { value: 'contrato', labelKey: 'contracts.contract' },
+  { value: 'finalizado', labelKey: 'contracts.finished' },
+  { value: 'cancelado', labelKey: 'contracts.canceled' },
 ] as const;
 
 export const FORMAS_PAGO_OPTIONS = [
-  { value: 'contado', label: 'Contado' },
-  { value: 'credito', label: 'Crédito' },
+  { value: 'contado', labelKey: 'contracts.cash' },
+  { value: 'credito', labelKey: 'contracts.credit' },
 ] as const;
 
 export const DEFAULT_CONTRATO_VALUES = {
@@ -38,14 +38,14 @@ export const ESTADO_BADGE_VARIANTS = {
   cancelado: 'destructive',
 } as const;
 
-export const ESTADO_LABELS = {
-  cotizacion: 'Cotización',
-  contrato: 'Contrato',
-  finalizado: 'Finalizado',
-  cancelado: 'Cancelado',
+export const ESTADO_LABEL_KEYS = {
+  cotizacion: 'contracts.quotation',
+  contrato: 'contracts.contract',
+  finalizado: 'contracts.finished',
+  cancelado: 'contracts.canceled',
 } as const;
 
-export const TIPO_LABELS = {
-  necesidad_inmediata: 'Inmediata',
-  necesidad_futura: 'Futura',
+export const TIPO_LABEL_KEYS = {
+  necesidad_inmediata: 'contracts.immediateShort',
+  necesidad_futura: 'contracts.futureShort',
 } as const;
