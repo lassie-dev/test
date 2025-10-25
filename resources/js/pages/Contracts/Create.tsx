@@ -197,7 +197,7 @@ export default function Create({ services }: CreateProps) {
                     <SelectTrigger id="type">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       {TIPOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
@@ -217,7 +217,7 @@ export default function Create({ services }: CreateProps) {
                     <SelectTrigger id="status">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       {ESTADOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
@@ -395,7 +395,7 @@ export default function Create({ services }: CreateProps) {
                     <SelectTrigger id="service">
                       <SelectValue placeholder="Seleccionar servicio" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       {services.map((service) => (
                         <SelectItem key={service.id} value={service.id.toString()}>
                           {service.nombre} - {formatearMoneda(service.precio)}
@@ -497,7 +497,7 @@ export default function Create({ services }: CreateProps) {
                   <SelectTrigger id="discount_percentage">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper">
                     {PORCENTAJES_DESCUENTO.map((percent) => (
                       <SelectItem key={percent} value={percent.toString()}>
                         {percent}%

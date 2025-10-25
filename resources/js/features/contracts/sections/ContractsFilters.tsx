@@ -141,7 +141,7 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar estado" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       <SelectItem value="all">Todos</SelectItem>
                       {ESTADOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
@@ -158,7 +158,7 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar tipo" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       <SelectItem value="all">Todos</SelectItem>
                       {TIPOS_CONTRATO_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
