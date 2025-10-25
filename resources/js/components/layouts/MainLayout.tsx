@@ -140,8 +140,43 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const navigationData = dbNavigation && dbNavigation.length > 0 ? dbNavigation : navigationSections;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Initialize expanded items based on current URL
+  const getInitialExpandedState = () => {
+    const expanded: Record<string, boolean> = {};
+    for (const section of navigationData) {
+      for (const item of section.items) {
+        if (item.children && currentUrl?.startsWith(item.href)) {
+          expanded[item.name] = true;
+        }
+      }
+    }
+    return expanded;
+  };
+
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(getInitialExpandedState);
+
+  // Update expanded items when URL changes to ensure active parent is expanded
+  useEffect(() => {
+    const newExpanded = { ...expandedItems };
+    let hasChanges = false;
+
+    for (const section of navigationData) {
+      for (const item of section.items) {
+        if (item.children && currentUrl?.startsWith(item.href)) {
+          if (!newExpanded[item.name]) {
+            newExpanded[item.name] = true;
+            hasChanges = true;
+          }
+        }
+      }
+    }
+
+    if (hasChanges) {
+      setExpandedItems(newExpanded);
+    }
+  }, [currentUrl, navigationData]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -304,9 +339,18 @@ export default function MainLayout({ children }: MainLayoutProps) {
               <div className="space-y-1">
                 {section.items.map((item: MenuItem) => {
                   const Icon = getIconComponent(item.icon);
-                  const isActive = currentUrl?.startsWith(item.href) || false;
-                  const isExpanded = expandedItems[item.name];
                   const hasChildren = item.children && item.children.length > 0;
+
+                  // Check if any child is active
+                  const activeChild = hasChildren
+                    ? item.children?.find((child: MenuItem) =>
+                        currentUrl === child.href || currentUrl?.startsWith(child.href + '/')
+                      )
+                    : null;
+
+                  // Parent is only active if on exact parent page and no child is active
+                  const isActive = !activeChild && (currentUrl === item.href || (currentUrl?.startsWith(item.href + '/') && !hasChildren));
+                  const isExpanded = expandedItems[item.name];
 
                   return (
                     <div key={item.name}>
