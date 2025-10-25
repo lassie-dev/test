@@ -24,16 +24,31 @@ class Contract extends Model
         'discount_percentage',
         'discount_amount',
         'total',
+        'payment_method',
+        'installments',
+        'down_payment',
+        'service_location',
+        'service_datetime',
+        'special_requests',
+        'assigned_driver_id',
+        'assigned_assistant_id',
+        'commission_percentage',
+        'commission_amount',
         'is_holiday',
         'is_night_shift',
     ];
 
     protected $casts = [
         'service_date' => 'datetime',
+        'service_datetime' => 'datetime',
         'subtotal' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'total' => 'decimal:2',
+        'down_payment' => 'decimal:2',
+        'commission_percentage' => 'decimal:2',
+        'commission_amount' => 'decimal:2',
+        'installments' => 'integer',
         'is_holiday' => 'boolean',
         'is_night_shift' => 'boolean',
         'created_at' => 'datetime',
@@ -66,6 +81,28 @@ class Contract extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)
+            ->withPivot('quantity', 'unit_price', 'subtotal')
+            ->withTimestamps();
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function assignedDriver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_driver_id');
+    }
+
+    public function assignedAssistant(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_assistant_id');
     }
 
     // Scopes

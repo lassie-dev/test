@@ -117,9 +117,19 @@ class ContractController extends Controller
     public function create()
     {
         $services = Service::where('active', true)->get();
+        $products = \App\Models\Product::where('is_active', true)->get();
+
+        // Get all users for drivers and assistants
+        // TODO: Filter by role once role system is implemented
+        $allUsers = \App\Models\User::all(['id', 'name', 'email']);
+        $drivers = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'driver']);
+        $assistants = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'assistant']);
 
         return Inertia::render('Contracts/Create', [
             'services' => $services,
+            'products' => $products,
+            'drivers' => $drivers,
+            'assistants' => $assistants,
         ]);
     }
 
@@ -145,7 +155,10 @@ class ContractController extends Controller
             // Deceased fields (required for immediate need)
             'deceased_name' => 'required_if:type,necesidad_inmediata|string|max:255',
             'deceased_death_date' => 'required_if:type,necesidad_inmediata|date',
+            'deceased_death_time' => 'nullable|date_format:H:i',
             'deceased_death_place' => 'nullable|string|max:255',
+            'deceased_age' => 'nullable|integer|min:0',
+            'deceased_cause_of_death' => 'nullable|string|max:255',
 
             // Services
             'services' => 'required|array|min:1',
@@ -153,7 +166,27 @@ class ContractController extends Controller
             'services.*.quantity' => 'required|integer|min:1',
             'services.*.unit_price' => 'required|numeric|min:0',
 
+            // Products
+            'products' => 'nullable|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.unit_price' => 'required|numeric|min:0',
+
             'discount_percentage' => 'required|numeric|min:0|max:100',
+
+            // Payment
+            'payment_method' => 'required|in:cash,credit',
+            'installments' => 'required_if:payment_method,credit|integer|min:1|max:12',
+            'down_payment' => 'nullable|numeric|min:0',
+
+            // Service details
+            'service_location' => 'nullable|string|max:255',
+            'service_datetime' => 'nullable|date',
+            'special_requests' => 'nullable|string',
+
+            // Staff assignment
+            'assigned_driver_id' => 'nullable|exists:users,id',
+            'assigned_assistant_id' => 'nullable|exists:users,id',
         ]);
 
         // Start transaction
@@ -175,7 +208,10 @@ class ContractController extends Controller
                 $deceased = \App\Models\Deceased::create([
                     'name' => $validated['deceased_name'],
                     'death_date' => $validated['deceased_death_date'],
+                    'death_time' => $validated['deceased_death_time'] ?? null,
                     'death_place' => $validated['deceased_death_place'] ?? null,
+                    'age' => $validated['deceased_age'] ?? null,
+                    'cause_of_death' => $validated['deceased_cause_of_death'] ?? null,
                 ]);
                 $deceasedId = $deceased->id;
             }
@@ -186,8 +222,21 @@ class ContractController extends Controller
                 $subtotal += $service['quantity'] * $service['unit_price'];
             }
 
+            // Add products to subtotal
+            if (!empty($validated['products'])) {
+                foreach ($validated['products'] as $product) {
+                    $subtotal += $product['quantity'] * $product['unit_price'];
+                }
+            }
+
             $discountAmount = ($subtotal * $validated['discount_percentage']) / 100;
             $total = $subtotal - $discountAmount;
+
+            // Calculate commission
+            $commissionRate = 5; // Base 5%
+            if ($validated['is_night_shift'] ?? false) $commissionRate += 2;
+            if ($validated['is_holiday'] ?? false) $commissionRate += 3;
+            $commissionAmount = ($total * $commissionRate) / 100;
 
             // Convert type to English
             $type = match($validated['type']) {
@@ -222,6 +271,16 @@ class ContractController extends Controller
                 'discount_percentage' => $validated['discount_percentage'],
                 'discount_amount' => $discountAmount,
                 'total' => $total,
+                'payment_method' => $validated['payment_method'],
+                'installments' => $validated['installments'] ?? null,
+                'down_payment' => $validated['down_payment'] ?? null,
+                'service_location' => $validated['service_location'] ?? null,
+                'service_datetime' => $validated['service_datetime'] ?? null,
+                'special_requests' => $validated['special_requests'] ?? null,
+                'assigned_driver_id' => $validated['assigned_driver_id'] ?? null,
+                'assigned_assistant_id' => $validated['assigned_assistant_id'] ?? null,
+                'commission_percentage' => $commissionRate,
+                'commission_amount' => $commissionAmount,
                 'is_holiday' => $validated['is_holiday'] ?? false,
                 'is_night_shift' => $validated['is_night_shift'] ?? false,
             ]);
@@ -233,6 +292,41 @@ class ContractController extends Controller
                     'unit_price' => $service['unit_price'],
                     'subtotal' => $service['quantity'] * $service['unit_price'],
                 ]);
+            }
+
+            // Attach products and deduct inventory (only for immediate need)
+            if (!empty($validated['products'])) {
+                foreach ($validated['products'] as $product) {
+                    $contract->products()->attach($product['product_id'], [
+                        'quantity' => $product['quantity'],
+                        'unit_price' => $product['unit_price'],
+                        'subtotal' => $product['quantity'] * $product['unit_price'],
+                    ]);
+
+                    // Deduct from inventory ONLY for immediate need contracts
+                    if ($type === 'immediate_need') {
+                        $productModel = \App\Models\Product::find($product['product_id']);
+                        $productModel->decrement('stock', $product['quantity']);
+                    }
+                }
+            }
+
+            // Create payment schedule for credit payments
+            if ($validated['payment_method'] === 'credit' && $validated['installments'] > 0) {
+                $remainingAmount = $total - ($validated['down_payment'] ?? 0);
+                $monthlyPayment = $remainingAmount / $validated['installments'];
+
+                for ($i = 1; $i <= $validated['installments']; $i++) {
+                    \App\Models\Payment::create([
+                        'contract_id' => $contract->id,
+                        'payment_method' => 'credit',
+                        'amount' => $monthlyPayment,
+                        'payment_date' => null,
+                        'due_date' => now()->addMonths($i),
+                        'status' => 'pending',
+                        'processed_by' => null,
+                    ]);
+                }
             }
 
             \DB::commit();
