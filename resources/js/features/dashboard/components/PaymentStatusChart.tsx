@@ -78,13 +78,13 @@ export default function PaymentStatusChart({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[380px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsPieChart>
               <Pie
                 data={validData}
                 cx="50%"
-                cy="45%"
+                cy="35%"
                 innerRadius={60}
                 outerRadius={90}
                 paddingAngle={2}
@@ -125,30 +125,30 @@ export default function PaymentStatusChart({
               />
               <Legend
                 verticalAlign="bottom"
-                height={60}
+                height={140}
                 content={() => (
-                  <div className="grid grid-cols-1 gap-2 mt-4">
+                  <div className="grid grid-cols-1 gap-2 mt-2 px-2">
                     {validData.map((item, index) => {
                       const percentage = total > 0 ? ((item.value / total) * 100).toFixed(1) : 0;
                       return (
                         <div
                           key={`legend-${index}`}
-                          className="flex items-center justify-between px-2 py-1 rounded hover:bg-gray-50"
+                          className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-gray-50"
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             <div
                               className="h-3 w-3 rounded-full flex-shrink-0"
                               style={{ backgroundColor: item.color }}
                             />
-                            <span className="text-xs font-medium text-text-secondary">
+                            <span className="text-xs font-medium text-text-secondary truncate">
                               {item.label}
                             </span>
                           </div>
-                          <div className="text-right">
-                            <span className="text-xs font-bold text-text-primary">
+                          <div className="text-right flex-shrink-0 ml-4">
+                            <span className="text-xs font-bold text-text-primary whitespace-nowrap">
                               ${item.value.toLocaleString('es-CL')}
                             </span>
-                            <span className="text-xs text-text-subtle ml-2">
+                            <span className="text-xs text-text-subtle ml-2 whitespace-nowrap">
                               ({percentage}%)
                             </span>
                           </div>

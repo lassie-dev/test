@@ -297,12 +297,8 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Generate all chart data
-        $revenueTrendsData = $this->generateRevenueTrendsData($contractQuery, $now);
-        $contractStatusData = $this->generateContractStatusData($contractQuery, $now);
-        $servicesTimelineData = $this->generateServicesTimelineData($contractQuery, $now);
-        $paymentStatusData = $this->generatePaymentStatusData($contractQuery, $now);
-        $branchPerformanceData = $user->isAdmin() ? $this->generateBranchPerformanceData($now) : [];
+        // Charts now use frontend mock data
+        // Backend chart generation methods kept for future use when real data is needed
 
         return Inertia::render('Dashboard', [
             'stats' => [
@@ -316,13 +312,6 @@ class DashboardController extends Controller
             ],
             'recent_contracts' => $recentContracts,
             'upcoming_services' => $upcomingServices,
-            'charts' => [
-                'revenue_trends' => $revenueTrendsData,
-                'contract_status' => $contractStatusData,
-                'services_timeline' => $servicesTimelineData,
-                'payment_status' => $paymentStatusData,
-                'branch_performance' => $branchPerformanceData,
-            ],
             'branches' => $branches,
             'current_branch' => $currentBranch,
             'is_admin' => $user->isAdmin(),

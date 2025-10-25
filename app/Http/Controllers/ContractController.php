@@ -12,12 +12,51 @@ class ContractController extends Controller
     /**
      * Display a listing of contracts.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contracts = Contract::with(['client', 'deceased', 'services'])
-            ->latest()
-            ->get()
-            ->map(function ($contract) {
+        $query = Contract::with(['client', 'deceased', 'services']);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('contract_number', 'like', "%{$search}%")
+                    ->orWhereHas('client', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('rut', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('deceased', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $status = match($request->status) {
+                'cotizacion' => 'quote',
+                'contrato' => 'contract',
+                'finalizado' => 'completed',
+                'cancelado' => 'cancelled',
+                default => $request->status
+            };
+            $query->where('status', $status);
+        }
+
+        // Type filter
+        if ($request->filled('type')) {
+            $type = match($request->type) {
+                'necesidad_inmediata' => 'immediate_need',
+                'necesidad_futura' => 'future_need',
+                default => $request->type
+            };
+            $query->where('type', $type);
+        }
+
+        $contracts = $query->latest()
+            ->paginate(15)
+            ->withQueryString()
+            ->through(function ($contract) {
                 return [
                     'id' => $contract->id,
                     'numero_contrato' => $contract->contract_number,
@@ -68,6 +107,7 @@ class ContractController extends Controller
 
         return Inertia::render('Contracts/Index', [
             'contracts' => $contracts,
+            'filters' => $request->only(['search', 'status', 'type']),
         ]);
     }
 
@@ -88,9 +128,124 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        // Implementation would go here
-        return redirect()->route('contracts.index')
-            ->with('success', 'Contrato creado exitosamente');
+        $validated = $request->validate([
+            // Contract fields
+            'type' => 'required|in:necesidad_inmediata,necesidad_futura',
+            'status' => 'required|in:cotizacion,contrato,finalizado,cancelado',
+            'is_holiday' => 'boolean',
+            'is_night_shift' => 'boolean',
+
+            // Client fields
+            'client_name' => 'required|string|max:255',
+            'client_rut' => 'required|string|max:12|unique:clients,rut',
+            'client_phone' => 'required|string|max:20',
+            'client_email' => 'nullable|email|max:255',
+            'client_address' => 'nullable|string|max:255',
+
+            // Deceased fields (required for immediate need)
+            'deceased_name' => 'required_if:type,necesidad_inmediata|string|max:255',
+            'deceased_death_date' => 'required_if:type,necesidad_inmediata|date',
+            'deceased_death_place' => 'nullable|string|max:255',
+
+            // Services
+            'services' => 'required|array|min:1',
+            'services.*.service_id' => 'required|exists:services,id',
+            'services.*.quantity' => 'required|integer|min:1',
+            'services.*.unit_price' => 'required|numeric|min:0',
+
+            'discount_percentage' => 'required|numeric|min:0|max:100',
+        ]);
+
+        // Start transaction
+        \DB::beginTransaction();
+
+        try {
+            // Create client
+            $client = \App\Models\Client::create([
+                'name' => $validated['client_name'],
+                'rut' => $validated['client_rut'],
+                'phone' => $validated['client_phone'],
+                'email' => $validated['client_email'] ?? null,
+                'address' => $validated['client_address'] ?? null,
+            ]);
+
+            // Create deceased if immediate need
+            $deceasedId = null;
+            if ($validated['type'] === 'necesidad_inmediata') {
+                $deceased = \App\Models\Deceased::create([
+                    'name' => $validated['deceased_name'],
+                    'death_date' => $validated['deceased_death_date'],
+                    'death_place' => $validated['deceased_death_place'] ?? null,
+                ]);
+                $deceasedId = $deceased->id;
+            }
+
+            // Calculate totals
+            $subtotal = 0;
+            foreach ($validated['services'] as $service) {
+                $subtotal += $service['quantity'] * $service['unit_price'];
+            }
+
+            $discountAmount = ($subtotal * $validated['discount_percentage']) / 100;
+            $total = $subtotal - $discountAmount;
+
+            // Convert type to English
+            $type = match($validated['type']) {
+                'necesidad_inmediata' => 'immediate_need',
+                'necesidad_futura' => 'future_need',
+                default => $validated['type']
+            };
+
+            // Convert status to English
+            $status = match($validated['status']) {
+                'cotizacion' => 'quote',
+                'contrato' => 'contract',
+                'finalizado' => 'completed',
+                'cancelado' => 'cancelled',
+                default => $validated['status']
+            };
+
+            // Generate contract number
+            $lastContract = Contract::latest('id')->first();
+            $contractNumber = 'CTR-' . str_pad(($lastContract?->id ?? 0) + 1, 6, '0', STR_PAD_LEFT);
+
+            // Create contract
+            $contract = Contract::create([
+                'contract_number' => $contractNumber,
+                'type' => $type,
+                'status' => $status,
+                'client_id' => $client->id,
+                'deceased_id' => $deceasedId,
+                'user_id' => auth()->id(),
+                'branch_id' => auth()->user()->branch_id ?? 1,
+                'subtotal' => $subtotal,
+                'discount_percentage' => $validated['discount_percentage'],
+                'discount_amount' => $discountAmount,
+                'total' => $total,
+                'is_holiday' => $validated['is_holiday'] ?? false,
+                'is_night_shift' => $validated['is_night_shift'] ?? false,
+            ]);
+
+            // Attach services
+            foreach ($validated['services'] as $service) {
+                $contract->services()->attach($service['service_id'], [
+                    'quantity' => $service['quantity'],
+                    'unit_price' => $service['unit_price'],
+                    'subtotal' => $service['quantity'] * $service['unit_price'],
+                ]);
+            }
+
+            \DB::commit();
+
+            return redirect()->route('contracts.index')
+                ->with('success', 'Contrato creado exitosamente');
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return back()
+                ->withErrors(['error' => 'Error al crear el contrato: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**

@@ -86,6 +86,7 @@ export default function ContractStatusChart({
                 axisLine={false}
               />
               <Tooltip
+                cursor={false}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
@@ -142,11 +143,15 @@ export default function ContractStatusChart({
                 dataKey="previous_month"
                 fill="#d1d5db"
                 radius={[4, 4, 0, 0]}
+                fillOpacity={1}
+                activeBar={false}
               />
               <Bar
                 dataKey="current_month"
                 fill="#059669"
                 radius={[4, 4, 0, 0]}
+                fillOpacity={1}
+                activeBar={false}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />

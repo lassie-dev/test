@@ -1,5 +1,13 @@
-import { Contrato, ContratoServicio } from './types';
-import { PORCENTAJES_DESCUENTO, COMISION_BASE_PORCENTAJE, COMISION_NOCTURNA_EXTRA, COMISION_FESTIVO_EXTRA } from './constants';
+import { Contrato, ContratoServicio, EstadoContrato, TipoContrato } from './types';
+import {
+  PORCENTAJES_DESCUENTO,
+  COMISION_BASE_PORCENTAJE,
+  COMISION_NOCTURNA_EXTRA,
+  COMISION_FESTIVO_EXTRA,
+  ESTADO_BADGE_VARIANTS,
+  ESTADO_LABELS,
+  TIPO_LABELS,
+} from './constants';
 
 // Funciones básicas (sin dependencias)
 export function formatearRut(rut: string): string {
@@ -97,4 +105,52 @@ export function formatearMoneda(valor: number): string {
     currency: 'CLP',
     minimumFractionDigits: 0,
   }).format(valor);
+}
+
+// ============================================================================
+// Date Formatting Functions
+// ============================================================================
+
+/**
+ * Formats a date to Chilean locale format
+ * @param date - Date object or ISO string
+ * @returns Formatted date string (e.g., "15 ene 2024")
+ */
+export function formatearFecha(date: Date | string): string {
+  return new Date(date).toLocaleDateString('es-CL', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+// ============================================================================
+// Badge and Label Helper Functions
+// ============================================================================
+
+/**
+ * Gets the badge variant for a contract status
+ * @param estado - Contract status
+ * @returns Badge variant string
+ */
+export function obtenerVarianteBadgeEstado(estado: EstadoContrato): string {
+  return ESTADO_BADGE_VARIANTS[estado] || 'default';
+}
+
+/**
+ * Gets the label for a contract status
+ * @param estado - Contract status
+ * @returns Human-readable status label
+ */
+export function obtenerEtiquetaEstado(estado: EstadoContrato): string {
+  return ESTADO_LABELS[estado] || estado;
+}
+
+/**
+ * Gets the label for a contract type
+ * @param tipo - Contract type
+ * @returns Human-readable type label
+ */
+export function obtenerEtiquetaTipo(tipo: TipoContrato): string {
+  return TIPO_LABELS[tipo] || tipo;
 }

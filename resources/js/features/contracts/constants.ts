@@ -26,3 +26,26 @@ export const DEFAULT_CONTRATO_VALUES = {
 export const COMISION_BASE_PORCENTAJE = 5;
 export const COMISION_NOCTURNA_EXTRA = 2;
 export const COMISION_FESTIVO_EXTRA = 3;
+
+// ============================================================================
+// Badge Variants and Labels
+// ============================================================================
+
+export const ESTADO_BADGE_VARIANTS = {
+  cotizacion: 'secondary',
+  contrato: 'default',
+  finalizado: 'outline',
+  cancelado: 'destructive',
+} as const;
+
+export const ESTADO_LABELS = {
+  cotizacion: 'Cotización',
+  contrato: 'Contrato',
+  finalizado: 'Finalizado',
+  cancelado: 'Cancelado',
+} as const;
+
+export const TIPO_LABELS = {
+  necesidad_inmediata: 'Inmediata',
+  necesidad_futura: 'Futura',
+} as const;

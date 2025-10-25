@@ -1,198 +1,58 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import RevenueTrendsChart from '@/components/charts/RevenueTrendsChart';
-import ContractStatusChart from '@/components/charts/ContractStatusChart';
-import ServicesTimelineChart from '@/components/charts/ServicesTimelineChart';
-import PaymentStatusChart from '@/components/charts/PaymentStatusChart';
-import BranchPerformanceChart from '@/components/charts/BranchPerformanceChart';
+import RevenueTrendsChart from '@/features/dashboard/components/RevenueTrendsChart';
+import ContractStatusChart from '@/features/dashboard/components/ContractStatusChart';
+import ServicesTimelineChart from '@/features/dashboard/components/ServicesTimelineChart';
+import PaymentStatusChart from '@/features/dashboard/components/PaymentStatusChart';
+import BranchPerformanceChart from '@/features/dashboard/components/BranchPerformanceChart';
 import {
   FileSignature,
-  Wallet,
-  Archive,
-  UsersRound,
   Calendar,
   Clock,
-  AlertCircle,
-  CheckCircle2,
-  TrendingUp,
-  Heart,
   ChevronRight,
   Building2,
 } from 'lucide-react';
 
-interface Contract {
-  id: number;
-  contract_number: string;
-  deceased_name: string;
-  family_contact: string;
-  status: string;
-  service_date: string | null;
-  created_at: string;
-  total: number;
-}
-
-interface DashboardStats {
-  contracts_month: number;
-  revenue_month: number;
-  inventory_low: number;
-  pending_payments: number;
-  active_services: number;
-  families_served: number;
-  pending_arrangements: number;
-}
-
-interface Branch {
-  id: number;
-  name: string;
-  code: string;
-  city: string | null;
-}
-
-interface RevenueDataPoint {
-  month: string;
-  revenue: number;
-  previous_revenue: number;
-}
-
-interface ContractStatusData {
-  status: string;
-  current_month: number;
-  previous_month: number;
-  label: string;
-  color: string;
-}
-
-interface ServicesTimelineData {
-  date: string;
-  scheduled: number;
-  completed: number;
-}
-
-interface PaymentStatusData {
-  status: string;
-  value: number;
-  label: string;
-  color: string;
-}
-
-interface BranchPerformanceData {
-  branch_name: string;
-  revenue: number;
-  contracts: number;
-  services: number;
-}
-
-interface ChartsData {
-  revenue_trends: RevenueDataPoint[];
-  contract_status: ContractStatusData[];
-  services_timeline: ServicesTimelineData[];
-  payment_status: PaymentStatusData[];
-  branch_performance: BranchPerformanceData[];
-}
-
-interface DashboardProps {
-  stats: DashboardStats;
-  recent_contracts: Contract[];
-  upcoming_services: Contract[];
-  charts: ChartsData;
-  branches: Branch[];
-  current_branch: Branch | null;
-  is_admin: boolean;
-}
+// Feature imports - NO re-exports
+import type { DashboardProps } from '@/features/dashboard/types';
+import {
+  handleBranchChange,
+  getStatusBadge,
+  formatDate,
+  generateStatCards,
+} from '@/features/dashboard/functions';
+import {
+  ALL_BRANCHES_VALUE,
+  QUICK_ACTIONS,
+  MAX_RECENT_CONTRACTS,
+  MAX_UPCOMING_SERVICES,
+} from '@/features/dashboard/constants';
+import {
+  mockRevenueTrendsData,
+  mockContractStatusData,
+  mockPaymentStatusData,
+  mockServicesTimelineData,
+  mockBranchPerformanceData,
+} from '@/features/dashboard/mockData';
 
 export default function Dashboard({
   stats,
   recent_contracts = [],
   upcoming_services = [],
-  charts,
   branches = [],
   current_branch = null,
   is_admin = false
 }: DashboardProps) {
+  const statCards = generateStatCards(stats);
 
-  const handleBranchChange = (value: string) => {
-    // If empty string or "0", pass 0 to indicate "all branches"
-    // Otherwise pass the actual branch ID
-    const branchId = value === '' || value === '0' ? 0 : parseInt(value, 10);
-    router.get('/dashboard', { branch_id: branchId }, {
-      preserveState: true,
-      preserveScroll: true,
-    });
-  };
-  const cardData = [
-    {
-      title: 'Servicios Activos',
-      value: stats.active_services || 0,
-      icon: Calendar,
-      description: 'En proceso esta semana',
-      color: 'text-text-accent',
-      bgColor: 'bg-primary-50',
-      href: '/contracts?status=active',
-    },
-    {
-      title: 'Familias Atendidas',
-      value: stats.families_served || stats.contracts_month || 0,
-      icon: Heart,
-      description: 'Este mes',
-      color: 'text-text-accent',
-      bgColor: 'bg-primary-50',
-      href: '/contracts',
-    },
-    {
-      title: 'Arreglos Pendientes',
-      value: stats.pending_arrangements || 0,
-      icon: FileSignature,
-      description: 'Requieren atención',
-      color: 'text-warning',
-      bgColor: 'bg-amber-50',
-      href: '/contracts?status=pending',
-    },
-    {
-      title: 'Pagos Pendientes',
-      value: stats.pending_payments || 0,
-      icon: Wallet,
-      description: 'Por cobrar',
-      color: 'text-error',
-      bgColor: 'bg-red-50',
-      href: '/payments',
-    },
-    {
-      title: 'Ingresos del Mes',
-      value: `$${(stats.revenue_month || 0).toLocaleString('es-CL')}`,
-      icon: TrendingUp,
-      description: 'Total facturado',
-      color: 'text-text-secondary',
-      bgColor: 'bg-green-50',
-      href: '/reports',
-    },
-    {
-      title: 'Alertas de Inventario',
-      value: stats.inventory_low || 0,
-      icon: Archive,
-      description: 'Stock bajo',
-      color: 'text-warning',
-      bgColor: 'bg-amber-50',
-      href: '/inventory',
-    },
-  ];
-
-  const getStatusBadge = (status: string) => {
-    const badges: Record<string, { label: string; className: string }> = {
-      pending: { label: 'Pendiente', className: 'bg-amber-100 text-amber-800' },
-      active: { label: 'Activo', className: 'bg-blue-100 text-blue-800' },
-      completed: { label: 'Completado', className: 'bg-green-100 text-green-800' },
-      cancelled: { label: 'Cancelado', className: 'bg-gray-100 text-gray-800' },
-    };
-    return badges[status] || { label: status, className: 'bg-gray-100 text-gray-800' };
-  };
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('es-CL', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
+  // Use mock data for charts
+  const charts = {
+    revenue_trends: mockRevenueTrendsData,
+    contract_status: mockContractStatusData,
+    payment_status: mockPaymentStatusData,
+    services_timeline: mockServicesTimelineData,
+    branch_performance: mockBranchPerformanceData,
   };
 
   return (
@@ -217,11 +77,11 @@ export default function Dashboard({
                 <span>Sucursal:</span>
               </div>
               <select
-                value={current_branch?.id || '0'}
+                value={current_branch?.id || ALL_BRANCHES_VALUE}
                 onChange={(e) => handleBranchChange(e.target.value)}
                 className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
               >
-                <option value="0">Todas las sucursales</option>
+                <option value={ALL_BRANCHES_VALUE}>Todas las sucursales</option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.id}>
                     {branch.name} {branch.city ? `- ${branch.city}` : ''}
@@ -244,7 +104,7 @@ export default function Dashboard({
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {cardData.map((card) => {
+          {statCards.map((card) => {
             const Icon = card.icon;
             return (
               <Link key={card.title} href={card.href}>
@@ -318,7 +178,7 @@ export default function Dashboard({
             <CardContent>
               {recent_contracts.length > 0 ? (
                 <div className="space-y-4">
-                  {recent_contracts.slice(0, 5).map((contract) => {
+                  {recent_contracts.slice(0, MAX_RECENT_CONTRACTS).map((contract) => {
                     const badge = getStatusBadge(contract.status);
                     return (
                       <Link
@@ -379,7 +239,7 @@ export default function Dashboard({
             <CardContent>
               {upcoming_services.length > 0 ? (
                 <div className="space-y-4">
-                  {upcoming_services.slice(0, 5).map((service) => (
+                  {upcoming_services.slice(0, MAX_UPCOMING_SERVICES).map((service) => (
                     <Link
                       key={service.id}
                       href={`/contracts/${service.id}`}
@@ -429,54 +289,24 @@ export default function Dashboard({
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-              <Link
-                href="/contracts/create"
-                className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
-                  <FileSignature className="h-5 w-5 text-text-accent" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Nuevo Contrato</p>
-                  <p className="text-xs text-text-subtle">Registrar servicio</p>
-                </div>
-              </Link>
-              <Link
-                href="/payments"
-                className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                  <Wallet className="h-5 w-5 text-green-700" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Registrar Pago</p>
-                  <p className="text-xs text-text-subtle">Procesar cobro</p>
-                </div>
-              </Link>
-              <Link
-                href="/inventory"
-                className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
-                  <Archive className="h-5 w-5 text-amber-700" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Ver Inventario</p>
-                  <p className="text-xs text-text-subtle">Stock disponible</p>
-                </div>
-              </Link>
-              <Link
-                href="/reports"
-                className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                  <TrendingUp className="h-5 w-5 text-blue-700" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Ver Reportes</p>
-                  <p className="text-xs text-text-subtle">Análisis y métricas</p>
-                </div>
-              </Link>
+              {QUICK_ACTIONS.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Link
+                    key={action.title}
+                    href={action.href}
+                    className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all"
+                  >
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${action.iconBg}`}>
+                      <Icon className={`h-5 w-5 ${action.iconColor}`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">{action.title}</p>
+                      <p className="text-xs text-text-subtle">{action.description}</p>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
