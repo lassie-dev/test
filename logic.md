@@ -479,6 +479,9 @@ LÍQUIDO A PAGAR: $844,600
 - Edit contracts (before finalization)
 - View contract details
 - Search and filter contracts
+- **Print Quotation (Cotización)**: Professional quote document for families to review
+- **Print Contract**: Full contract with all terms and conditions
+- **Print Social Media Authorization**: Family permission form to publish obituary/photos on social networks
 - Export contracts to PDF
 - Send contract copy to client email
 - Track contract status progression
@@ -734,7 +737,554 @@ Base Salary: $650,000
 
 ---
 
-### Module 7: Dashboard (Command Center)
+### Module 7: Convenios (Corporate Agreements)
+**Purpose:** Manage corporate/institutional funeral service agreements
+
+**What are Convenios?**
+Funeral homes establish agreements with:
+- Large companies (mining, retail, banking)
+- Labor unions
+- Insurance companies
+- Government institutions
+- Professional associations
+
+These agreements provide discounted funeral services to employees/members as a benefit.
+
+**Agreement Information:**
+- Agreement name/code
+- Company/Institution name
+- Contact person (HR manager, benefits coordinator)
+- Phone, email, address
+- Contract start date
+- Contract end date
+- Number of covered employees/members
+- Agreement status (Active, Expired, Suspended)
+
+**Benefits & Terms:**
+- Discount percentage (e.g., 25% off all services)
+- Payment terms:
+  - Who pays what: "Company pays 50%, employee pays 50%"
+  - Payment method: Direct billing to company, or employee pays and company reimburses
+  - Credit terms: Extended payment periods (e.g., 18 months instead of 12)
+- Included services (base package)
+- Available upgrades
+- Special conditions
+
+**Features:**
+- List all active agreements
+- Search agreements by company name
+- View agreement details and benefits
+- **Person lookup**: Enter employee name/RUT → system shows which company agreement they belong to
+- Track usage: How many services provided per agreement
+- Monthly billing summary per company
+- Agreement renewal alerts (30 days before expiration)
+
+**Contract Creation Flow:**
+1. Client mentions company: "I work at Codelco"
+2. Secretary searches "Codelco" in Convenios module
+3. System shows:
+   - Discount: 25%
+   - Company pays: 50% (billed directly)
+   - Employee pays: 50% (12-month credit)
+   - Base package: Transport + Cremation included
+4. Agreement automatically applied to contract
+5. System generates separate invoice for company portion
+
+**Reports:**
+- Services provided per agreement (monthly)
+- Revenue by corporate agreement
+- Most active agreements
+- Pending company payments
+- Agreement profitability analysis
+
+**Example Agreement:**
+```
+Agreement: AGR-001
+Company: Codelco (Corporación Nacional del Cobre)
+Contact: María Rodríguez, HR Manager
+Phone: +56 2 2690 3000
+Email: hr.benefits@codelco.cl
+Employees covered: 15,234
+
+Benefits:
+- Discount: 25% on all services
+- Company pays: 50% (direct billing, net 30 days)
+- Employee pays: 50% (credit up to 18 months, 0% interest)
+- Base package included:
+  * Body transport
+  * Basic cremation
+  * Standard urn
+- Active since: January 2024
+- Expires: December 2026
+
+Services this year: 47 contracts
+Total value: $35,200,000
+Company billed: $13,200,000 (pending: $2,100,000)
+Employee payments: $13,200,000 (collected: $11,800,000)
+```
+
+**Access Control:**
+- Propietario: Full access, can create/edit agreements
+- Administrador: View, apply to contracts
+- Secretaria: View, apply to contracts
+- Others: No access
+
+---
+
+### Module 8: Iglesias, Cementerios y Funerarias (National Database)
+**Purpose:** Quick reference database for coordinating funeral services
+
+**Why is this needed?**
+Secretaries constantly need to:
+- Find church addresses and priest contacts for ceremonies
+- Reserve cemetery plots in different cities
+- Coordinate with wake rooms (salas velatorias)
+- Transfer services to/from other funeral homes
+
+Instead of googling or maintaining paper lists, everything is in the system.
+
+**Database Categories:**
+
+#### A) Iglesias (Churches)
+**Information stored:**
+- Church name: "Parroquia San Francisco de Asís"
+- Religion: Catholic, Protestant, Evangelical, etc.
+- Address: "Calle Independencia 234, Santiago"
+- Phone: +56 2 2555 1234
+- Priest/Pastor name: "Padre Juan Pérez"
+- Email: parroquia.sanfrancisco@gmail.com
+- Capacity: 200 people
+- Service hours: "Monday-Saturday 10:00-18:00"
+- Parking available: Yes/No
+- Accessibility: Wheelchair accessible
+- Notes: "Requires 48-hour advance booking"
+- Region/City: Santiago, Región Metropolitana
+
+#### B) Cementerios (Cemeteries)
+**Information stored:**
+- Cemetery name: "Cementerio General de Santiago"
+- Type: Public, Private, Park, Catholic, Secular
+- Address: "Avenida Profesor Zañartu 951, Recoleta"
+- Phone: +56 2 2737 9696
+- Administrator name: "Carlos Muñoz"
+- Email: contacto@cementeriosgenerales.cl
+- Operating hours: "Daily 8:00-18:00"
+- Services offered:
+  - Traditional burial
+  - Mausoleum crypts
+  - Cremation on-site
+  - Columbarium (urn niches)
+- Plot costs: Range $500,000 - $3,000,000
+- Maintenance fees: Monthly/Annual
+- Region/City: Santiago, Región Metropolitana
+- Notes: "Oldest cemetery in Chile, historic site"
+
+#### C) Salas Velatorias (Wake Rooms)
+**Information stored:**
+- Venue name: "Sala Velatoria La Paz"
+- Address: "Calle Arturo Prat 456, Viña del Mar"
+- Phone: +56 32 2345 678
+- Contact person: "Pedro González"
+- Email: contacto@salapaz.cl
+- Number of rooms: 3 (small, medium, large)
+- Capacity: 50, 100, 200 people
+- Hourly rate: $25,000/hour
+- Services included:
+  - Coffee service
+  - Parking
+  - Audio/video equipment
+  - Religious items (cross, candles)
+- Availability: 24/7
+- Booking: Minimum 4 hours
+- Region/City: Viña del Mar, Región de Valparaíso
+
+#### D) Otras Funerarias (Other Funeral Homes)
+**Information stored:**
+- Funeral home name: "Funeraria del Norte"
+- Address: "Avenida Grecia 1234, Antofagasta"
+- Phone: +56 55 2456 789
+- Emergency line: +56 9 8888 7777
+- Contact person: "Ana Silva, Operations Manager"
+- Email: contacto@funerariadelnorte.cl
+- Services offered:
+  - Full service funeral home
+  - Cremation facility
+  - International repatriation
+- Coverage area: Antofagasta region
+- Transfer agreements: Yes (can receive/send bodies)
+- Region/City: Antofagasta, Región de Antofagasta
+- Notes: "Partner funeral home for northern transfers"
+
+**Features:**
+- **Quick search**: Type church name → instant results
+- **Filter by city/region**: Show all churches in Valparaíso
+- **Filter by type**: Show only Catholic churches
+- **Map integration**: Show location on Google Maps
+- **Click-to-call**: Phone numbers are clickable links
+- **Email integration**: Send booking requests from system
+- **Recently used**: Quick access to frequently contacted places
+- **Add to contract**: Link church/cemetery to specific contract
+
+**Usage Example:**
+```
+Secretary on phone with family:
+"Which church would you like for the ceremony?"
+Family: "Catholic church in Providencia"
+
+Secretary searches:
+- Category: Churches
+- Religion: Catholic
+- City: Providencia
+
+Results (3 churches):
+1. Parroquia Nuestra Señora de Gracia
+   Address: Av. Providencia 2512
+   Priest: Padre Miguel Ángel
+   Phone: +56 2 2231 5678
+   Capacity: 150
+   [Select] [Call] [Email]
+
+Secretary: "I can book Nuestra Señora de Gracia,
+capacity 150 people, on Av. Providencia.
+Would that work?"
+
+[Clicks "Select" → adds to contract]
+```
+
+**Reports:**
+- Most used churches (by region)
+- Most used cemeteries
+- Transfer partners usage
+- Service venue costs (for budgeting)
+
+**Access Control:**
+- Propietario: Full access, can add/edit entries
+- Administrador: Full access, can add/edit entries
+- Secretaria: View and search only
+- Others: No access
+
+---
+
+### Module 9: Estado de Resultados (Profit & Loss Statement)
+**Purpose:** Complete financial tracking with income AND expenses
+
+**Critical for business:**
+This is how the owner knows if the funeral home is profitable or losing money.
+
+**Income Tracking** (Already implemented in Contracts):
+- All contract revenue automatically recorded
+- Payment method tracking
+- Monthly/annual totals
+
+**Expense Tracking** (NEW - Critical Addition):
+
+#### Expense Categories:
+1. **Salaries & Payroll**
+   - Secretary salaries (base + commissions)
+   - Driver salaries
+   - Assistant salaries
+   - Administrative staff
+   - Tax withholdings (AFP, Isapre)
+   - *Auto-populated from Payroll module*
+
+2. **Inventory Purchases**
+   - Coffins purchased
+   - Urns purchased
+   - Flowers and supplies
+   - Embalming chemicals
+   - *Auto-populated when inventory received*
+
+3. **Vehicle Expenses**
+   - Fuel/gasoline
+   - Vehicle maintenance
+   - Vehicle insurance
+   - Parking/tolls
+
+4. **Facilities**
+   - Office rent
+   - Utilities (electricity, water, internet)
+   - Building maintenance
+   - Security services
+
+5. **Marketing & Advertising**
+   - Online ads (Facebook, Google)
+   - Printed materials
+   - Website hosting
+   - Social media management
+
+6. **Professional Services**
+   - Accountant fees
+   - Lawyer fees
+   - Consultants
+   - IT support
+
+7. **Administrative**
+   - Office supplies
+   - Software licenses
+   - Phone/mobile plans
+   - Bank fees
+
+8. **Other Expenses**
+   - Permits and licenses
+   - Taxes (IVA, municipal)
+   - Insurance (liability, property)
+   - Miscellaneous
+
+#### Recording an Expense:
+**Required fields:**
+- Date of expense
+- Category (dropdown from list above)
+- Amount (CLP)
+- Payment method (Cash, Transfer, Check, Credit Card)
+- Vendor/Supplier name
+- Description
+- **Receipt/Invoice number** (REQUIRED)
+- **Receipt photo/PDF upload** (REQUIRED for amounts > $50,000)
+- Approved by (manager/owner)
+
+**Example expense entry:**
+```
+Date: October 15, 2025
+Category: Vehicle Expenses → Fuel
+Amount: $85,000
+Payment: Credit Card
+Vendor: Copec (Gas Station)
+Description: Fuel for hearse vehicle (Patente AB-1234)
+Receipt #: 789456123
+Receipt file: [copec_receipt_oct15.pdf]
+Approved by: Juan Administrador
+```
+
+#### Fraud Prevention Features:
+
+**1. Duplicate Receipt Detection:**
+```
+Secretary tries to enter:
+Receipt #: 789456123
+
+System checks database:
+⚠️ ALERT: Receipt #789456123 already exists!
+- Date: October 15, 2025
+- Amount: $85,000
+- Category: Fuel
+- Entered by: María
+
+Action: Block entry, show warning
+```
+
+**2. Missing Receipt Tracking:**
+```
+Expenses without receipts:
+- $45,000 - Parking (Oct 10) - No receipt ⚠️
+- $125,000 - Office supplies (Oct 12) - No receipt 🔴
+- $20,000 - Tolls (Oct 14) - No receipt ⚠️
+
+Total unsupported: $190,000 (1.2% of monthly expenses)
+
+Owner review required.
+```
+
+**3. Receipt Photo Requirements:**
+- Expenses < $50,000: Receipt # required, photo optional
+- Expenses ≥ $50,000: Receipt # required, photo/PDF MANDATORY
+- Expenses ≥ $500,000: Receipt + Manager approval required
+
+**4. Expense Approval Workflow:**
+```
+Standard expenses (< $100,000):
+Secretary enters → Auto-approved
+
+Medium expenses ($100,000 - $500,000):
+Secretary enters → Administrator approval required
+
+Large expenses (> $500,000):
+Secretary enters → Administrator reviews → Owner final approval
+```
+
+#### Monthly P&L Statement:
+```
+ESTADO DE RESULTADOS - OCTUBRE 2025
+
+INGRESOS (Income):
+─────────────────────────────────
+Contratos completados:          24 contratos
+Servicios funerarios:     $14,200,000
+Productos vendidos:        $4,300,000
+                          ──────────────
+TOTAL INGRESOS:           $18,500,000
+
+EGRESOS (Expenses):
+─────────────────────────────────
+Sueldos y comisiones:      $6,200,000  (33.5%)
+Compra inventario:         $2,100,000  (11.4%)
+Vehículos (fuel, etc):       $450,000   (2.4%)
+Arriendo oficina:            $800,000   (4.3%)
+Servicios básicos:           $280,000   (1.5%)
+Marketing:                   $320,000   (1.7%)
+Servicios profesionales:     $450,000   (2.4%)
+Gastos administrativos:      $180,000   (1.0%)
+Otros gastos:                $350,000   (1.9%)
+                          ──────────────
+TOTAL EGRESOS:             $11,130,000  (60.2%)
+
+═══════════════════════════════════════
+UTILIDAD NETA (Net Profit): $7,370,000  (39.8%)
+═══════════════════════════════════════
+
+Comparación mes anterior:
+Septiembre: $6,850,000 (+7.6% ✅)
+
+Margen de ganancia: 39.8%
+Objetivo: 35%  ✅ SOBRE OBJETIVO
+```
+
+#### Alerts & Warnings:
+- 🔴 Expense without receipt (>$50,000)
+- 🔴 Duplicate receipt number detected
+- 🟡 Expense category over budget (>110% of average)
+- 🟡 Unusual expense pattern (3x normal amount)
+- 🔴 Monthly expenses > monthly income (losing money!)
+- 🟢 Profit margin above target
+
+#### Reports Available:
+- Monthly P&L statement
+- Quarterly comparison
+- Year-to-date summary
+- Expense breakdown by category (pie chart)
+- Expense trends over time (line graph)
+- Vendor spending analysis (who we pay most)
+- Receipt compliance report (% with receipts)
+- Budget vs actual comparison
+
+**Access Control:**
+- Propietario: Full access, approve all expenses
+- Administrador: Enter expenses, approve medium expenses, view reports
+- Secretaria: Enter small expenses only, view own entries
+- Others: No access
+
+**Integration:**
+- Payroll module → Auto-creates salary expenses
+- Inventory purchases → Auto-creates inventory expenses
+- Accounting export → Expenses included in export to Softland/Nubox
+
+---
+
+### Module 10: Gestión Documental (Document Management)
+**Purpose:** Centralized storage and organization of business documents
+
+**Document Categories:**
+
+#### A) Documentos de Contratos (Contract Documents)
+- Signed contracts (PDF)
+- Death certificates
+- Cremation certificates
+- Burial permits
+- Family authorizations
+- Service completion certificates
+- Payment receipts
+- Linked to specific contract ID
+
+#### B) Documentos Legales (Legal Documents)
+- Business licenses and permits
+- Tax registrations (RUT, IVA)
+- Insurance policies (liability, property)
+- Employee contracts
+- Corporate bylaws
+- Government certifications
+
+#### C) Correspondencia (Business Correspondence)
+- Official letters sent/received
+- Email archives (important communications)
+- Legal notices
+- Government communications
+- Vendor correspondence
+
+#### D) Recursos Humanos (HR Documents)
+- Employee personal files
+- Hiring contracts
+- Performance reviews
+- Training certificates
+- Payroll records (liquidaciones)
+- Resignation letters
+
+#### E) Contabilidad (Accounting Documents)
+- Monthly financial statements
+- Tax declarations (IVA, annual taxes)
+- Bank statements
+- Auditor reports
+- Budget documents
+
+#### F) Proveedor (Vendor Documents)
+- Supplier contracts
+- Purchase orders
+- Invoices from suppliers
+- Delivery receipts
+- Warranty documents
+
+**Features:**
+- **Upload documents**: Drag & drop or click to upload
+- **File formats**: PDF, JPG, PNG, DOCX, XLSX
+- **File size limit**: 10MB per file
+- **Organization**: Folders by category and year
+- **Search**: By filename, category, date, or contract number
+- **Preview**: View documents without downloading
+- **Download**: Download individual or multiple files
+- **Share**: Generate secure links to share with family/authorities
+- **Version control**: Track document updates
+- **Automatic naming**: "Contract_CTR-000123_Signed_2025-10-15.pdf"
+
+**Document Expiration Alerts:**
+```
+🔴 VENCIMIENTO PRÓXIMO:
+- Licencia municipal: Vence en 15 días (Nov 10)
+- Seguro responsabilidad civil: Vence en 30 días (Nov 25)
+- Permiso sanitario: Vence en 45 días (Dec 10)
+
+Action: Renew before expiration
+```
+
+**Storage Structure:**
+```
+/documents
+  /contratos
+    /2025
+      /octubre
+        - CTR-000123_Contrato_Firmado.pdf
+        - CTR-000123_Certificado_Defuncion.pdf
+        - CTR-000123_Autorizacion_Familia.pdf
+  /legal
+    - Licencia_Municipal_2025.pdf
+    - Seguro_Responsabilidad_Civil_2025.pdf
+  /correspondencia
+    /2025
+      - Carta_SII_Oct2025.pdf
+  /rrhh
+    /empleados
+      /Juan_Perez_RUT_12345678-9
+        - Contrato_Trabajo.pdf
+        - Certificado_Antecedentes.pdf
+  /contabilidad
+    /2025
+      /octubre
+        - Estado_Resultados_Oct2025.pdf
+        - Declaracion_IVA_Oct2025.pdf
+```
+
+**Access Control:**
+- Propietario: Full access to all documents
+- Administrador: Access to contracts, correspondence, vendor docs
+- Secretaria: Access to contract docs for own contracts only
+- Others: No access
+
+**Backup & Security:**
+- Daily automatic backup
+- Encrypted storage
+- Audit trail (who viewed/downloaded what)
+- Retention policy: Keep for 7 years (Chilean legal requirement)
+
+---
+
+### Module 11: Dashboard (Command Center)
 **Purpose:** Real-time overview of business operations
 
 **Dashboard Widgets:**
@@ -1021,6 +1571,448 @@ function formatearMoneda(amount) {
 - Display: +56 9 8765 4321 (formatted)
 - WhatsApp API uses: 56987654321
 - Validation: Must start with 569, must be 11 digits total
+
+---
+
+## 📄 Document Printing & Templates
+
+### 1. Quotation (Cotización) - Printable Estimate
+
+**Purpose:** Professional quote document families can take home to review and compare with other funeral homes.
+
+**When used:**
+- Family calls asking for pricing
+- Family visits in person but isn't ready to commit
+- Comparison shopping (families get 2-3 quotes before deciding)
+- Pre-planning discussions
+
+**Document includes:**
+- Funeral home logo and contact information
+- Quote number and date
+- Validity period (e.g., "Valid for 30 days")
+- Client information (name, phone, email)
+- Service type: Immediate Need or Future Need
+- Deceased information (if Immediate Need)
+- Itemized services:
+  - Service name
+  - Description
+  - Unit price
+- Itemized products:
+  - Product name
+  - Description
+  - Unit price
+- Services subtotal
+- Products subtotal
+- SUBTOTAL
+- Discount percentage and amount (if applicable)
+- **TOTAL ESTIMATE**
+- Payment options available:
+  - Cash payment option
+  - Credit options (3, 6, 9, 12 months)
+  - Example monthly payment calculations
+- Terms and conditions summary
+- Secretary name and signature
+- "This is an estimate, not a confirmed contract"
+- Footer: "To confirm services, please sign contract"
+
+**Example Quotation:**
+```
+═══════════════════════════════════════════
+      FUNERARIA [NOMBRE] - COTIZACIÓN
+═══════════════════════════════════════════
+
+Cotización N°: COT-2025-00456
+Fecha: 22 de Octubre, 2025
+Válida hasta: 21 de Noviembre, 2025
+
+CLIENTE:
+María González López
+RUT: 15.234.567-8
+Teléfono: +56 9 8765 4321
+Email: maria.gonzalez@email.com
+
+TIPO: Necesidad Inmediata
+DIFUNTO: Pedro González Martínez
+
+─────────────────────────────────────────
+SERVICIOS:
+─────────────────────────────────────────
+Traslado del cuerpo           $   50,000
+Preparación del cuerpo        $   80,000
+Velatorio 24 horas           $  200,000
+Cremación estándar           $  300,000
+                             ────────────
+Subtotal Servicios           $  630,000
+
+─────────────────────────────────────────
+PRODUCTOS:
+─────────────────────────────────────────
+Ataúd de madera básico       $  150,000
+Urna cerámica estándar       $   80,000
+Arreglo floral               $   40,000
+Tarjetas recordatorio (50)   $   20,000
+                             ────────────
+Subtotal Productos           $  290,000
+
+═════════════════════════════════════════
+SUBTOTAL                     $  920,000
+Descuento (5%)              -$   46,000
+─────────────────────────────────────────
+TOTAL ESTIMADO               $  874,000
+═════════════════════════════════════════
+
+OPCIONES DE PAGO:
+
+Contado (Efectivo/Tarjeta):
+Pago completo: $874,000
+
+Crédito sin interés:
+- 3 cuotas: $291,333 mensuales
+- 6 cuotas: $145,667 mensuales
+- 12 cuotas: $72,833 mensuales
+
+Pie sugerido: 30% ($262,200)
+
+─────────────────────────────────────────
+Esta cotización es referencial y válida
+por 30 días desde su emisión.
+
+Para confirmar el servicio, debe firmarse
+el contrato respectivo.
+
+Atendido por: Carmen Secretaria
+Firma: _________________
+
+Funeraria [Nombre]
+Teléfono: +56 X XXXX XXXX
+Email: contacto@funeraria.cl
+═════════════════════════════════════════
+```
+
+**Key Difference from Contract:**
+- **Quotation**: Non-binding estimate, families can walk away
+- **Contract**: Legal commitment, payment required, service guaranteed
+
+---
+
+### 2. Social Media Authorization Form
+
+**Purpose:** Legal document granting funeral home permission to publish deceased's information and photos on social networks (Facebook, Instagram, funeral home website).
+
+**Why needed:**
+- Privacy laws protect deceased's image and information
+- Families may or may not want publicity
+- Funeral home needs written permission for legal protection
+- Some families want privacy (no social media)
+- Other families want maximum reach (share widely)
+
+**When used:**
+- During contract creation
+- Secretary asks: "Would you like us to share [deceased name]'s obituary on our social networks?"
+- If yes: Print and sign this authorization form
+
+**Document includes:**
+- Form title: "AUTORIZACIÓN PUBLICACIÓN EN REDES SOCIALES"
+- Funeral home information
+- Contract number reference
+- Deceased information:
+  - Full name
+  - Date of birth
+  - Date of death
+  - Age
+- Client/Family representative information:
+  - Name
+  - RUT
+  - Relationship to deceased
+  - Phone, email
+- Authorization checkboxes:
+  - [ ] Authorize publication of obituary text
+  - [ ] Authorize publication of deceased's photo
+  - [ ] Authorize publication of ceremony photos
+  - [ ] Authorize publication of condolence message link
+- Social networks where will be published:
+  - [ ] Facebook
+  - [ ] Instagram
+  - [ ] Funeral home website
+  - [ ] WhatsApp status (funeral home account)
+- Content to be shared:
+  - Full name
+  - Dates (birth and death)
+  - Service ceremony details (date, time, location)
+  - Family message/biography (optional)
+- Privacy options:
+  - [ ] Public (anyone can see)
+  - [ ] Friends only (limited reach)
+- Duration:
+  - Post will remain online for: [30 days / 60 days / Permanently]
+- Legal clause:
+  - "I understand this authorization is voluntary"
+  - "I can request removal at any time"
+  - "Funeral home will handle information respectfully"
+- Signature section:
+  - Client signature
+  - Client name printed
+  - Date
+  - Secretary witness signature
+- Footer: Privacy policy reference
+
+**Example Authorization Form:**
+```
+═══════════════════════════════════════════
+  AUTORIZACIÓN PUBLICACIÓN EN REDES SOCIALES
+═══════════════════════════════════════════
+
+Funeraria: [Nombre]
+Contrato N°: CTR-000123
+Fecha: 22 de Octubre, 2025
+
+─────────────────────────────────────────
+INFORMACIÓN DEL DIFUNTO:
+─────────────────────────────────────────
+Nombre completo: Pedro González Martínez
+Fecha de nacimiento: 15 de Mayo, 1943
+Fecha de fallecimiento: 20 de Octubre, 2025
+Edad: 82 años
+
+─────────────────────────────────────────
+REPRESENTANTE FAMILIAR:
+─────────────────────────────────────────
+Nombre: María González López
+RUT: 15.234.567-8
+Parentesco: Hija
+Teléfono: +56 9 8765 4321
+Email: maria.gonzalez@email.com
+
+─────────────────────────────────────────
+AUTORIZO LA PUBLICACIÓN DE:
+─────────────────────────────────────────
+[X] Texto de obituario
+[X] Fotografía del difunto
+[ ] Fotografías de ceremonia
+[X] Enlace a libro de condolencias digital
+
+─────────────────────────────────────────
+EN LAS SIGUIENTES PLATAFORMAS:
+─────────────────────────────────────────
+[X] Facebook (Página Funeraria [Nombre])
+[X] Instagram (@funeraria_nombre)
+[X] Sitio web oficial
+[ ] WhatsApp Status
+
+─────────────────────────────────────────
+CONTENIDO A COMPARTIR:
+─────────────────────────────────────────
+✓ Nombre completo
+✓ Fechas de nacimiento y fallecimiento
+✓ Detalles de ceremonia
+✓ Mensaje familiar (si lo proporcionamos)
+
+PRIVACIDAD:
+[X] Público (cualquiera puede ver)
+[ ] Solo amigos/seguidores
+
+DURACIÓN:
+La publicación permanecerá en línea por:
+[X] 30 días
+[ ] 60 días
+[ ] Permanentemente
+
+─────────────────────────────────────────
+DECLARACIÓN LEGAL:
+─────────────────────────────────────────
+Yo, María González López, en mi calidad
+de hija del difunto Pedro González Martínez,
+autorizo voluntariamente a Funeraria [Nombre]
+para publicar la información y material
+fotográfico señalado anteriormente en sus
+redes sociales oficiales.
+
+Entiendo que:
+• Esta autorización es completamente voluntaria
+• Puedo solicitar la eliminación en cualquier
+  momento contactando a la funeraria
+• La información será manejada con respeto y
+  profesionalismo
+• La funeraria no es responsable por comentarios
+  de terceros en las publicaciones
+
+─────────────────────────────────────────
+FIRMAS:
+─────────────────────────────────────────
+
+_____________________    _______________
+Firma Representante      Fecha
+
+MARÍA GONZÁLEZ LÓPEZ
+Nombre en letra imprenta
+
+_____________________    _______________
+Firma Secretaria         Fecha
+
+CARMEN SECRETARIA
+Testigo - Funeraria [Nombre]
+
+═════════════════════════════════════════
+Este documento forma parte del expediente
+del Contrato CTR-000123
+
+Para más información sobre privacidad:
+www.funeraria.cl/privacidad
+═════════════════════════════════════════
+```
+
+**System Actions:**
+- Form auto-populates with contract data
+- Print with signature lines
+- Family signs manually
+- Scan and upload signed form to Document Management
+- Link to contract record
+- Marketing team notified to create social media post
+- If boxes checked, post goes live within 4 hours
+
+---
+
+### 3. Accounting Software Export
+
+**Purpose:** Export financial data to Chilean accounting software (Softland, Nubox) to avoid manual re-entry and reduce errors.
+
+**Why needed:**
+- Funeral home owner's accountant uses Softland or Nubox for:
+  - Monthly tax declarations (IVA)
+  - Annual income tax (Impuesto a la Renta)
+  - Financial statements
+  - Payroll tax reporting
+- Manual re-entry of 20-30 contracts per month = 4-8 hours wasted
+- Typing errors in amounts = tax problems
+- Automatic export = professional, efficient, accurate
+
+**Export Formats:**
+
+#### A) Softland Export (CSV format)
+**File structure:**
+```csv
+Fecha,TipoDoc,NumeroDoc,RutCliente,NombreCliente,Neto,IVA,Total,CentroCosto,CuentaContable,Glosa
+2025-10-22,BOL,CTR-000123,15234567-8,María González,734454,139546,874000,VEN-001,110101,"Contrato funerario - Pedro González"
+2025-10-22,BOL,CTR-000124,9876543-2,Juan Pérez,420168,79832,500000,VEN-001,110101,"Contrato funerario - Ana Pérez"
+```
+
+**Field mapping:**
+- Fecha: Contract creation date
+- TipoDoc: BOL (Boleta) or FAC (Factura)
+- NumeroDoc: Contract number
+- RutCliente: Client RUT
+- NombreCliente: Client name
+- Neto: Amount without tax (Total / 1.19)
+- IVA: Tax amount (Total × 0.19 / 1.19)
+- Total: Final contract total
+- CentroCosto: Cost center code (VEN-001 = Sales)
+- CuentaContable: Account code (110101 = Service revenue)
+- Glosa: Description
+
+#### B) Nubox Export (JSON format)
+**File structure:**
+```json
+{
+  "empresa_rut": "76123456-7",
+  "periodo": "2025-10",
+  "ventas": [
+    {
+      "fecha": "2025-10-22",
+      "tipo_documento": "boleta",
+      "numero": "CTR-000123",
+      "cliente_rut": "15234567-8",
+      "cliente_nombre": "María González López",
+      "neto": 734454,
+      "iva": 139546,
+      "total": 874000,
+      "items": [
+        {
+          "descripcion": "Servicios funerarios",
+          "cantidad": 1,
+          "precio_unitario": 630000,
+          "subtotal": 630000
+        },
+        {
+          "descripcion": "Productos funerarios",
+          "cantidad": 1,
+          "precio_unitario": 244000,
+          "subtotal": 244000
+        }
+      ],
+      "metodo_pago": "credito",
+      "notas": "Contrato funerario - Pedro González Martínez"
+    }
+  ],
+  "gastos": [
+    {
+      "fecha": "2025-10-15",
+      "tipo_documento": "factura",
+      "numero": "789456123",
+      "proveedor_rut": "96543210-K",
+      "proveedor_nombre": "Copec S.A.",
+      "neto": 71429,
+      "iva": 13571,
+      "total": 85000,
+      "categoria": "combustible",
+      "centro_costo": "vehiculos",
+      "descripcion": "Combustible vehículo fúnebre"
+    }
+  ]
+}
+```
+
+**Export Features:**
+- **Date range selection**: "Export October 2025" or "Export Q3 2025"
+- **What to include:**
+  - [ ] Contracts (income)
+  - [ ] Payments received
+  - [ ] Expenses
+  - [ ] Payroll
+  - [ ] Inventory purchases
+- **Format selection:**
+  - Softland (CSV)
+  - Nubox (JSON)
+  - Generic Excel (XLSX)
+- **Tax calculation:** Automatic IVA (19%) calculation
+- **Validation:** Check for missing RUTs, invalid amounts
+- **Preview:** Show data before exporting
+- **Download:** Generate file and download
+- **History:** Track exports (date, user, records included)
+
+**System Implementation:**
+```
+Export Process:
+1. User selects: "Reports → Export to Softland"
+2. Select date range: October 1-31, 2025
+3. Select data: Contracts ✓, Expenses ✓, Payroll ✓
+4. System generates CSV:
+   - 24 contracts = 24 rows
+   - 87 expenses = 87 rows
+   - 8 payroll records = 8 rows
+   - Total: 119 rows
+5. Preview shows first 10 rows
+6. User clicks "Download"
+7. File saved: "Softland_Export_2025-10.csv"
+8. User sends file to accountant
+9. Accountant imports into Softland (2 minutes)
+10. Done! No manual typing needed.
+```
+
+**Benefits:**
+- Time saved: 4-8 hours per month
+- Error reduction: 100% (no typing mistakes)
+- Tax compliance: Easier, faster
+- Professional image: Modern business practices
+- Accountant happy: Receives clean data
+
+**Access Control:**
+- Propietario: Full export access
+- Administrador: Export access (income/expenses)
+- Contador (if added as user): Export access
+- Others: No access
+
+**Cost Consideration:**
+Implementation cost: Approximately $300-500 USD one-time fee for both Softland and Nubox export functionality. This is recouped in 2-3 months of time savings.
 
 ---
 
