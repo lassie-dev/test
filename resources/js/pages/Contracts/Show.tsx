@@ -257,9 +257,9 @@ export default function Show({ contract }: ShowProps) {
                         <tr key={index}>
                           <td className="px-4 py-3">
                             <div>
-                              <p className="font-medium text-gray-900">{item.servicio.nombre}</p>
-                              {item.servicio.descripcion && (
-                                <p className="text-sm text-gray-500">{item.servicio.descripcion}</p>
+                              <p className="font-medium text-gray-900">{item.servicio.name}</p>
+                              {item.servicio.description && (
+                                <p className="text-sm text-gray-500">{item.servicio.description}</p>
                               )}
                             </div>
                           </td>

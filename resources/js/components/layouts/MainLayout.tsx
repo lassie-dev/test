@@ -29,6 +29,7 @@ import {
   UsersRound,
   Receipt,
   TrendingUp,
+  Briefcase,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -107,6 +108,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
           ]
         },
         {
+          name: t('nav.services'),
+          nameKey: 'nav.services',
+          href: '/services',
+          icon: Briefcase,
+          permissions: ['view_services'],
+        },
+        {
           name: t('nav.inventory'),
           nameKey: 'nav.inventory',
           href: '/inventory',
@@ -154,8 +162,19 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Initialize expanded items based on current URL
+  // Initialize expanded items based on current URL and localStorage
   const getInitialExpandedState = () => {
+    // Try to load from localStorage first
+    const stored = localStorage.getItem('sidebar-expanded-items');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        // If parsing fails, fall through to default behavior
+      }
+    }
+
+    // Default: expand items that match current URL
     const expanded: Record<string, boolean> = {};
     for (const section of navigationData) {
       for (const item of section.items) {
@@ -168,6 +187,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
   };
 
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(getInitialExpandedState);
+
+  // Save expanded items to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('sidebar-expanded-items', JSON.stringify(expandedItems));
+  }, [expandedItems]);
 
   // Update expanded items when URL changes to ensure active parent is expanded
   useEffect(() => {
@@ -393,7 +417,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => toggleItem(item.name)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleItem(item.name);
+                            }}
                             className="h-8 w-8 flex-shrink-0"
                           >
                             {isExpanded ? (

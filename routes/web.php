@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 // Welcome page
@@ -26,6 +27,9 @@ Route::middleware('auth')->group(callback: function () {
 
     // Contracts Routes - Using proper controller
     Route::resource('contracts', ContractController::class);
+
+    // Services
+    Route::resource('services', ServiceController::class);
 
     // Inventory
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');

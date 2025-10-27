@@ -33,9 +33,9 @@ export interface Difunto {
 
 export interface Servicio {
   id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
+  name: string;
+  description: string;
+  price: number;
 }
 
 // Interfaces que dependen de tipos básicos
@@ -63,6 +63,47 @@ export interface Contrato {
   es_nocturno: boolean;
   created_at: Date;
   updated_at: Date;
+}
+
+// Product types (for contract items)
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  stock: number;
+  min_stock: number;
+  is_active: boolean;
+}
+
+// Staff types (for contract assignments)
+export interface Staff {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
+// Contract item types
+export interface ContratoProducto {
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+}
+
+// Service item type for forms
+export interface ServiceItem {
+  service_id: number;
+  quantity: number;
+  unit_price: number;
+}
+
+// Product item type for forms
+export interface ProductItem {
+  product_id: number;
+  quantity: number;
+  unit_price: number;
 }
 
 // Tipos derivados usando utility types

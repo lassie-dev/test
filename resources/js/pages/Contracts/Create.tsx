@@ -19,52 +19,34 @@ import {
   TIPOS_CONTRATO_OPTIONS,
   ESTADOS_CONTRATO_OPTIONS,
   PORCENTAJES_DESCUENTO,
+  PAYMENT_METHOD_OPTIONS,
+  INSTALLMENT_OPTIONS,
 } from '@/features/contracts/constants';
 import {
-  calcularTotalesContrato,
   validarRut,
   formatearRut,
   formatearMoneda,
+  calculateItemsTotals,
+  calculateCommission,
+  calculateServiceSubtotal,
+  calculateProductSubtotal,
+  isProductLowStock,
+  isProductOutOfStock,
+  getStockStatusClass,
 } from '@/features/contracts/functions';
-import type { Servicio } from '@/features/contracts/types';
-
-interface Service extends Servicio {}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  stock: number;
-  min_stock: number;
-  is_active: boolean;
-}
-
-interface Staff {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
+import type {
+  Servicio,
+  Product,
+  Staff,
+  ServiceItem,
+  ProductItem,
+} from '@/features/contracts/types';
 
 interface CreateProps {
-  services: Service[];
+  services: Servicio[];
   products: Product[];
   drivers: Staff[];
   assistants: Staff[];
-}
-
-interface ServiceItem {
-  service_id: number;
-  quantity: number;
-  unit_price: number;
-}
-
-interface ProductItem {
-  product_id: number;
-  quantity: number;
-  unit_price: number;
 }
 
 export default function Create({ services, products = [], drivers = [], assistants = [] }: CreateProps) {
@@ -155,7 +137,7 @@ export default function Create({ services, products = [], drivers = [], assistan
         {
           service_id: selectedService,
           quantity,
-          unit_price: service.precio,
+          unit_price: service.price,
         },
       ]);
     }
@@ -220,37 +202,11 @@ export default function Create({ services, products = [], drivers = [], assistan
     return products.find(p => p.id === productId);
   };
 
-  const calculateServiceSubtotal = (item: ServiceItem) => {
-    return item.quantity * item.unit_price;
-  };
+  // Calculate totals using extracted function
+  const totals = calculateItemsTotals(data.services, data.products, data.discount_percentage);
 
-  const calculateProductSubtotal = (item: ProductItem) => {
-    return item.quantity * item.unit_price;
-  };
-
-  // Calculate totals including products
-  const servicesSubtotal = data.services.reduce((sum, item) => sum + calculateServiceSubtotal(item), 0);
-  const productsSubtotal = data.products.reduce((sum, item) => sum + calculateProductSubtotal(item), 0);
-  const subtotal = servicesSubtotal + productsSubtotal;
-  const discountAmount = (subtotal * data.discount_percentage) / 100;
-  const total = subtotal - discountAmount;
-
-  const totals = {
-    subtotal,
-    descuentoMonto: discountAmount,
-    total,
-  };
-
-  // Calculate commission
-  const calculateCommission = () => {
-    let commissionRate = 5; // Base 5%
-    if (data.is_night_shift) commissionRate += 2;
-    if (data.is_holiday) commissionRate += 3;
-    const commissionAmount = (total * commissionRate) / 100;
-    return { commissionRate, commissionAmount };
-  };
-
-  const commission = calculateCommission();
+  // Calculate commission using extracted function
+  const commission = calculateCommission(totals.total, data.is_night_shift, data.is_holiday);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -547,7 +503,10 @@ export default function Create({ services, products = [], drivers = [], assistan
                     <SelectContent position="popper">
                       {services.map((service) => (
                         <SelectItem key={service.id} value={service.id.toString()}>
-                          {service.nombre} - {formatearMoneda(service.precio)}
+                          <div className="flex items-center justify-between w-full">
+                            <span>{service.name} - {formatearMoneda(service.price)}</span>
+                            <span className="ml-2 text-xs text-green-600 font-semibold">Available</span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -599,7 +558,7 @@ export default function Create({ services, products = [], drivers = [], assistan
 
                           return (
                             <tr key={item.service_id} className="border-t">
-                              <td className="px-4 py-2 text-sm">{service?.nombre}</td>
+                              <td className="px-4 py-2 text-sm">{service?.name}</td>
                               <td className="px-4 py-2 text-right text-sm">{item.quantity}</td>
                               <td className="px-4 py-2 text-right text-sm">
                                 {formatearMoneda(item.unit_price)}
@@ -825,7 +784,7 @@ export default function Create({ services, products = [], drivers = [], assistan
                       id="down_payment"
                       type="number"
                       min="0"
-                      max={total}
+                      max={totals.total}
                       value={data.down_payment}
                       onChange={(e) => setData('down_payment', parseFloat(e.target.value) || 0)}
                       placeholder="0"
@@ -836,7 +795,7 @@ export default function Create({ services, products = [], drivers = [], assistan
                     <div className="space-y-1">
                       <div className="flex justify-between text-sm">
                         <span>Total Contract:</span>
-                        <span className="font-semibold">{formatearMoneda(total)}</span>
+                        <span className="font-semibold">{formatearMoneda(totals.total)}</span>
                       </div>
                       {data.down_payment > 0 && (
                         <div className="flex justify-between text-sm">
@@ -846,11 +805,11 @@ export default function Create({ services, products = [], drivers = [], assistan
                       )}
                       <div className="flex justify-between text-sm border-t pt-1">
                         <span>Remaining:</span>
-                        <span className="font-semibold">{formatearMoneda(total - data.down_payment)}</span>
+                        <span className="font-semibold">{formatearMoneda(totals.total - data.down_payment)}</span>
                       </div>
                       <div className="flex justify-between text-lg font-bold text-blue-700 border-t pt-2">
                         <span>Monthly Payment:</span>
-                        <span>{formatearMoneda((total - data.down_payment) / data.installments)}</span>
+                        <span>{formatearMoneda((totals.total - data.down_payment) / data.installments)}</span>
                       </div>
                     </div>
                   </div>
@@ -985,13 +944,13 @@ export default function Create({ services, products = [], drivers = [], assistan
                   <span className="font-medium">{formatearMoneda(totals.subtotal)}</span>
                 </div>
 
-                {totals.descuentoMonto > 0 && (
+                {totals.discountAmount > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">
                       {t('contracts.discountAmount', { percent: data.discount_percentage })}:
                     </span>
                     <span className="font-medium text-destructive">
-                      -{formatearMoneda(totals.descuentoMonto)}
+                      -{formatearMoneda(totals.discountAmount)}
                     </span>
                   </div>
                 )}

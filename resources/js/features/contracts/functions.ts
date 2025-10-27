@@ -1,4 +1,12 @@
-import { Contrato, ContratoServicio, EstadoContrato, TipoContrato } from './types';
+import {
+  Contrato,
+  ContratoServicio,
+  EstadoContrato,
+  TipoContrato,
+  Product,
+  ServiceItem,
+  ProductItem
+} from './types';
 import {
   PORCENTAJES_DESCUENTO,
   COMISION_BASE_PORCENTAJE,
@@ -153,4 +161,104 @@ export function obtenerEtiquetaEstado(estado: EstadoContrato): string {
  */
 export function obtenerEtiquetaTipo(tipo: TipoContrato): string {
   return TIPO_LABEL_KEYS[tipo] || tipo;
+}
+
+// ============================================================================
+// Item Calculation Functions (for Create form)
+// ============================================================================
+
+/**
+ * Calculates subtotal for a service item
+ */
+export function calculateServiceSubtotal(item: ServiceItem): number {
+  return item.quantity * item.unit_price;
+}
+
+/**
+ * Calculates subtotal for a product item
+ */
+export function calculateProductSubtotal(item: ProductItem): number {
+  return item.quantity * item.unit_price;
+}
+
+/**
+ * Calculates total subtotals including both services and products
+ */
+export function calculateItemsTotals(
+  services: ServiceItem[],
+  products: ProductItem[],
+  discountPercentage: number
+): {
+  servicesSubtotal: number;
+  productsSubtotal: number;
+  subtotal: number;
+  discountAmount: number;
+  total: number;
+} {
+  const servicesSubtotal = services.reduce((sum, item) => sum + calculateServiceSubtotal(item), 0);
+  const productsSubtotal = products.reduce((sum, item) => sum + calculateProductSubtotal(item), 0);
+  const subtotal = servicesSubtotal + productsSubtotal;
+  const discountAmount = (subtotal * discountPercentage) / 100;
+  const total = subtotal - discountAmount;
+
+  return {
+    servicesSubtotal,
+    productsSubtotal,
+    subtotal,
+    discountAmount,
+    total,
+  };
+}
+
+/**
+ * Calculates commission based on total and modifiers
+ */
+export function calculateCommission(
+  total: number,
+  isNightShift: boolean,
+  isHoliday: boolean
+): {
+  commissionRate: number;
+  commissionAmount: number;
+} {
+  let commissionRate = COMISION_BASE_PORCENTAJE;
+
+  if (isNightShift) {
+    commissionRate += COMISION_NOCTURNA_EXTRA;
+  }
+
+  if (isHoliday) {
+    commissionRate += COMISION_FESTIVO_EXTRA;
+  }
+
+  const commissionAmount = (total * commissionRate) / 100;
+
+  return { commissionRate, commissionAmount };
+}
+
+// ============================================================================
+// Product Helper Functions
+// ============================================================================
+
+/**
+ * Checks if product is low on stock
+ */
+export function isProductLowStock(product: Product): boolean {
+  return product.stock <= product.min_stock && product.stock > 0;
+}
+
+/**
+ * Checks if product is out of stock
+ */
+export function isProductOutOfStock(product: Product): boolean {
+  return product.stock === 0;
+}
+
+/**
+ * Gets stock status indicator class
+ */
+export function getStockStatusClass(product: Product): string {
+  if (isProductOutOfStock(product)) return 'text-red-500';
+  if (isProductLowStock(product)) return 'text-yellow-500';
+  return 'text-green-500';
 }

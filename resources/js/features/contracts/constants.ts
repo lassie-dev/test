@@ -27,6 +27,22 @@ export const COMISION_BASE_PORCENTAJE = 5;
 export const COMISION_NOCTURNA_EXTRA = 2;
 export const COMISION_FESTIVO_EXTRA = 3;
 
+// Payment method options (English keys for backend compatibility)
+export const PAYMENT_METHOD_OPTIONS = [
+  { value: 'cash', labelKey: 'contracts.cash' },
+  { value: 'credit', labelKey: 'contracts.credit' },
+] as const;
+
+// Installment options (1-12 months)
+export const INSTALLMENT_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1);
+
+// Default payment values
+export const DEFAULT_PAYMENT_VALUES = {
+  payment_method: 'cash',
+  installments: 1,
+  down_payment: 0,
+} as const;
+
 // ============================================================================
 // Badge Variants and Labels
 // ============================================================================
