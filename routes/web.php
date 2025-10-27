@@ -44,7 +44,7 @@ Route::middleware('auth')->group(callback: function () {
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 
     // Staff
-    Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
+    Route::resource('staff', StaffController::class);
 
     // Payroll
     Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');

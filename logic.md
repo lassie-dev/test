@@ -391,6 +391,42 @@ Gracias,
 Funeraria [Nombre]"
 ```
 
+**1 Month After Service:**
+```
+To: Client/Family
+Message: "Estimada familia González,
+Les invitamos al oficio religioso en conmemoración
+de Pedro González, que se realizará el [fecha].
+Si desean participar, pueden confirmar su asistencia
+respondiendo este mensaje.
+Con respeto,
+Funeraria [Nombre]"
+```
+
+**On Deceased's Birthday (Annual):**
+```
+To: Client/Family
+Message: "Estimada familia González,
+Hoy recordamos con cariño a Pedro González
+en el día de su cumpleaños.
+Nuestros pensamientos están con ustedes.
+Con afecto,
+Funeraria [Nombre]"
+```
+
+**1 Year After Service:**
+```
+To: Client/Family
+Message: "Estimada familia González,
+Se cumple un año del fallecimiento de Pedro González.
+Les invitamos a la misa de conmemoración que
+realizaremos en su memoria el [fecha] a las [hora]
+en [lugar].
+Confirme asistencia: [link]
+Con respeto,
+Funeraria [Nombre]"
+```
+
 #### STEP 9: Service Execution
 **What happens:**
 - Driver receives notification, goes to pickup location

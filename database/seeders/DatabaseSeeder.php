@@ -36,8 +36,14 @@ class DatabaseSeeder extends Seeder
             'branch_id' => 1, // Casa Matriz
         ]);
 
-        // Seed services and products (inventory)
+        // Seed staff
         $this->call([
+            StaffSeeder::class,
+        ]);
+
+        // Seed categories, services and products (inventory)
+        $this->call([
+            CategorySeeder::class,
             ServiceSeeder::class,
             ProductSeeder::class,
         ]);
