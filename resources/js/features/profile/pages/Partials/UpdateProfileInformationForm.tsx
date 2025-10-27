@@ -1,0 +1,122 @@
+import { Transition } from '@headlessui/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+
+export default function UpdateProfileInformation({
+    mustVerifyEmail,
+    status,
+    className = '',
+}: {
+    mustVerifyEmail: boolean;
+    status?: string;
+    className?: string;
+}) {
+    const { t } = useTranslation();
+    const user = usePage().props.auth.user;
+
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
+        useForm({
+            name: user.name,
+            email: user.email,
+        });
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        patch(route('profile.update'));
+    };
+
+    return (
+        <section className={className}>
+            <header>
+                <h2 className="text-lg font-medium text-gray-900">
+                    {t('profile.information')}
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-600">
+                    {t('profile.informationDescription')}
+                </p>
+            </header>
+
+            <form onSubmit={submit} className="mt-6 space-y-6">
+                <div>
+                    <Label htmlFor="name">{t('profile.name')}</Label>
+
+                    <Input
+                        id="name"
+                        className="mt-1 block w-full"
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
+                        required
+                        autoComplete="name"
+                    />
+
+                    {errors.name && (
+                        <p className="mt-2 text-sm text-red-600">{errors.name}</p>
+                    )}
+                </div>
+
+                <div>
+                    <Label htmlFor="email">{t('profile.email')}</Label>
+
+                    <Input
+                        id="email"
+                        type="email"
+                        className="mt-1 block w-full"
+                        value={data.email}
+                        onChange={(e) => setData('email', e.target.value)}
+                        required
+                        autoComplete="username"
+                    />
+
+                    {errors.email && (
+                        <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+                    )}
+                </div>
+
+                {mustVerifyEmail && user.email_verified_at === null && (
+                    <div>
+                        <p className="mt-2 text-sm text-gray-800">
+                            {t('profile.emailUnverified')}
+                            {' '}
+                            <Link
+                                href={route('verification.send')}
+                                method="post"
+                                as="button"
+                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                {t('profile.resendVerification')}
+                            </Link>
+                        </p>
+
+                        {status === 'verification-link-sent' && (
+                            <div className="mt-2 text-sm font-medium text-green-600">
+                                {t('profile.verificationSent')}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                <div className="flex items-center gap-4">
+                    <Button disabled={processing}>{t('common.save')}</Button>
+
+                    <Transition
+                        show={recentlySuccessful}
+                        enter="transition ease-in-out"
+                        enterFrom="opacity-0"
+                        leave="transition ease-in-out"
+                        leaveTo="opacity-0"
+                    >
+                        <p className="text-sm text-gray-600">
+                            {t('common.saved')}
+                        </p>
+                    </Transition>
+                </div>
+            </form>
+        </section>
+    );
+}

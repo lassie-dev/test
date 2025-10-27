@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +14,12 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Service::query();
+        $query = Service::query()->with('category');
+
+        // Category filter
+        if ($request->filled('category') && $request->category) {
+            $query->where('category_id', $request->category);
+        }
 
         // Search filter
         if ($request->filled('search')) {
@@ -22,11 +28,6 @@ class ServiceController extends Controller
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             });
-        }
-
-        // Active/Inactive filter
-        if ($request->filled('active')) {
-            $query->where('active', $request->active === 'true' || $request->active === '1');
         }
 
         $services = $query->latest()
@@ -39,16 +40,28 @@ class ServiceController extends Controller
                     'descripcion' => $service->description,
                     'precio' => (float) $service->price,
                     'activo' => $service->active,
+                    'category' => $service->category ? [
+                        'id' => $service->category->id,
+                        'name' => $service->category->name,
+                        'slug' => $service->category->slug,
+                    ] : null,
                     'created_at' => $service->created_at->format('Y-m-d H:i:s'),
                     'updated_at' => $service->updated_at->format('Y-m-d H:i:s'),
                 ];
             });
 
-        return Inertia::render('Services/Index', [
+        // Get service categories for filter
+        $categories = Category::where('type', 'service')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
+        return Inertia::render('features/services/pages/Index', [
             'services' => $services,
+            'categories' => $categories,
             'filters' => [
                 'search' => $request->search,
-                'active' => $request->active,
+                'category' => $request->category,
             ],
         ]);
     }
@@ -58,7 +71,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Services/Create');
+        return Inertia::render('features/services/pages/Create');
     }
 
     /**
@@ -84,7 +97,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        return Inertia::render('Services/Show', [
+        return Inertia::render('features/services/pages/Show', [
             'service' => [
                 'id' => $service->id,
                 'nombre' => $service->name,
@@ -102,7 +115,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        return Inertia::render('Services/Edit', [
+        return Inertia::render('features/services/pages/Edit', [
             'service' => [
                 'id' => $service->id,
                 'nombre' => $service->name,

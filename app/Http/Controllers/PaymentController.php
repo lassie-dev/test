@@ -12,6 +12,6 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Payments/Index');
+        return Inertia::render('features/payments/pages/Index');
     }
 }

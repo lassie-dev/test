@@ -5,6 +5,11 @@ export interface Service {
   descripcion: string | null;
   precio: number;
   activo: boolean;
+  category?: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
   created_at: string;
   updated_at: string;
 }
@@ -17,7 +22,7 @@ export type ServiceUpdateInput = Partial<ServiceFormData>;
 // Filter types
 export interface ServiceFilters {
   search?: string;
-  active?: string;
+  category?: string;
 }
 
 // Stats types

@@ -35,5 +35,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'branch_id' => 1, // Casa Matriz
         ]);
+
+        // Seed services and products (inventory)
+        $this->call([
+            ServiceSeeder::class,
+            ProductSeeder::class,
+        ]);
     }
 }

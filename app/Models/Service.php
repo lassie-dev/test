@@ -10,6 +10,7 @@ class Service extends Model
     protected $fillable = [
         'name',
         'description',
+        'category_id',
         'price',
         'active',
     ];
@@ -18,6 +19,14 @@ class Service extends Model
         'price' => 'decimal:2',
         'active' => 'boolean',
     ];
+
+    /**
+     * Get the category that owns the service
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public function contracts(): BelongsToMany
     {

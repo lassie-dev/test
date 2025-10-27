@@ -12,6 +12,6 @@ class PayrollController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Payroll/Index');
+        return Inertia::render('features/payroll/pages/Index');
     }
 }

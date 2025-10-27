@@ -35,7 +35,7 @@ export function calculateServiceStats(services: Service[]): ServiceStats {
 }
 
 /**
- * Filters services based on search query and active status
+ * Filters services based on search query
  */
 export function filterServices(
   services: Service[],
@@ -50,11 +50,6 @@ export function filterServices(
         s.nombre.toLowerCase().includes(searchLower) ||
         s.descripcion?.toLowerCase().includes(searchLower)
     );
-  }
-
-  if (filters.active && filters.active !== 'all') {
-    const isActive = filters.active === 'true';
-    filtered = filtered.filter(s => s.activo === isActive);
   }
 
   return filtered;

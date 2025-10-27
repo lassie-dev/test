@@ -30,6 +30,7 @@ import {
   Receipt,
   TrendingUp,
   Briefcase,
+  FolderTree,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -113,6 +114,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
           href: '/services',
           icon: Briefcase,
           permissions: ['view_services'],
+        },
+        {
+          name: 'Categorías',
+          href: '/categories',
+          icon: FolderTree,
+          permissions: ['view_categories'],
         },
         {
           name: t('nav.inventory'),

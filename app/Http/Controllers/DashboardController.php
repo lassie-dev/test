@@ -300,7 +300,7 @@ class DashboardController extends Controller
         // Charts now use frontend mock data
         // Backend chart generation methods kept for future use when real data is needed
 
-        return Inertia::render('Dashboard', [
+        return Inertia::render('features/dashboard/pages/Index', [
             'stats' => [
                 'active_services' => $activeServices,
                 'families_served' => $familiesServed,

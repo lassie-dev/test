@@ -12,6 +12,6 @@ class ReportController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Reports/Index');
+        return Inertia::render('features/reports/pages/Index');
     }
 }

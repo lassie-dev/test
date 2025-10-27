@@ -14,6 +14,7 @@ class Product extends Model
         'name',
         'description',
         'category',
+        'category_id',
         'price',
         'stock',
         'min_stock',
@@ -26,6 +27,22 @@ class Product extends Model
         'min_stock' => 'integer',
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Hide the old category string field from serialization
+     * We now use the category_id relationship instead
+     */
+    protected $hidden = [
+        'category',
+    ];
+
+    /**
+     * Get the category that owns the product
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     /**
      * Get the contracts that use this product

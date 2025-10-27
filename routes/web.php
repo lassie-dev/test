@@ -10,6 +10,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // Welcome page
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(callback: function () {
 
     // Services
     Route::resource('services', ServiceController::class);
+
+    // Categories
+    Route::resource('categories', CategoryController::class);
 
     // Inventory
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');

@@ -12,6 +12,6 @@ class StaffController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Staff/Index');
+        return Inertia::render('features/staff/pages/Index');
     }
 }

@@ -105,7 +105,7 @@ class ContractController extends Controller
                 ];
             });
 
-        return Inertia::render('Contracts/Index', [
+        return Inertia::render('features/contracts/pages/Index', [
             'contracts' => $contracts,
             'filters' => $request->only(['search', 'status', 'type']),
         ]);
@@ -125,7 +125,7 @@ class ContractController extends Controller
         $drivers = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'driver']);
         $assistants = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'assistant']);
 
-        return Inertia::render('Contracts/Create', [
+        return Inertia::render('features/contracts/pages/Create', [
             'services' => $services,
             'products' => $products,
             'drivers' => $drivers,
@@ -349,7 +349,7 @@ class ContractController extends Controller
     {
         $contract->load(['client', 'deceased', 'services', 'user']);
 
-        return Inertia::render('Contracts/Show', [
+        return Inertia::render('features/contracts/pages/Show', [
             'contract' => $contract,
         ]);
     }
@@ -362,7 +362,7 @@ class ContractController extends Controller
         $contract->load(['client', 'deceased', 'services']);
         $services = Service::where('active', true)->get();
 
-        return Inertia::render('Contracts/Edit', [
+        return Inertia::render('features/contracts/pages/Edit', [
             'contract' => $contract,
             'services' => $services,
         ]);
