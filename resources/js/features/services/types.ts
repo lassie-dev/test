@@ -23,6 +23,7 @@ export type ServiceUpdateInput = Partial<ServiceFormData>;
 export interface ServiceFilters {
   search?: string;
   category?: string;
+  status?: string;
 }
 
 // Stats types

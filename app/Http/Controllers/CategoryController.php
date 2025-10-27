@@ -37,7 +37,6 @@ class CategoryController extends Controller
             'total' => Category::count(),
             'product' => Category::where('type', 'product')->count(),
             'service' => Category::where('type', 'service')->count(),
-            'active' => Category::where('is_active', true)->count(),
         ];
 
         return Inertia::render('features/categories/pages/Index', [
@@ -47,18 +46,94 @@ class CategoryController extends Controller
                 'search' => $request->search,
                 'type' => $request->type,
             ],
+            'categoryType' => 'all',
+        ]);
+    }
+
+    /**
+     * Display product categories only.
+     */
+    public function products(Request $request)
+    {
+        $query = Category::query()->where('type', 'product')->withCount(['products']);
+
+        // Search filter
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Get categories with pagination
+        $categories = $query->orderBy('name')->paginate(15)->withQueryString();
+
+        // Calculate stats (product-only)
+        $stats = [
+            'total' => Category::where('type', 'product')->count(),
+            'product' => Category::where('type', 'product')->count(),
+            'service' => 0,
+        ];
+
+        return Inertia::render('features/categories/pages/Index', [
+            'categories' => $categories,
+            'stats' => $stats,
+            'filters' => [
+                'search' => $request->search,
+                'type' => 'product',
+            ],
+            'categoryType' => 'product',
+        ]);
+    }
+
+    /**
+     * Display service categories only.
+     */
+    public function services(Request $request)
+    {
+        $query = Category::query()->where('type', 'service')->withCount(['services']);
+
+        // Search filter
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Get categories with pagination
+        $categories = $query->orderBy('name')->paginate(15)->withQueryString();
+
+        // Calculate stats (service-only)
+        $stats = [
+            'total' => Category::where('type', 'service')->count(),
+            'product' => 0,
+            'service' => Category::where('type', 'service')->count(),
+        ];
+
+        return Inertia::render('features/categories/pages/Index', [
+            'categories' => $categories,
+            'stats' => $stats,
+            'filters' => [
+                'search' => $request->search,
+                'type' => 'service',
+            ],
+            'categoryType' => 'service',
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $categoryType = $request->query('type'); // Get type from URL query parameter
+
         $parentCategories = Category::parents()->active()->orderBy('name')->get();
 
         return Inertia::render('features/categories/pages/Create', [
             'parentCategories' => $parentCategories,
+            'categoryType' => $categoryType, // Pass to frontend
         ]);
     }
 
@@ -69,7 +144,6 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string',
             'type' => 'required|in:service,product',
             'icon' => 'nullable|string|max:50',
@@ -77,10 +151,8 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        // Auto-generate slug if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
-        }
+        // Auto-generate slug from name
+        $validated['slug'] = Str::slug($validated['name']);
 
         $category = Category::create($validated);
 
@@ -112,7 +184,6 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
             'description' => 'nullable|string',
             'type' => 'required|in:service,product',
             'icon' => 'nullable|string|max:50',
@@ -120,10 +191,8 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        // Auto-generate slug if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
-        }
+        // Auto-generate slug from name
+        $validated['slug'] = Str::slug($validated['name']);
 
         $category->update($validated);
 

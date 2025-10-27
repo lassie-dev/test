@@ -67,4 +67,90 @@ class InventoryController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Show the form for creating a new product.
+     */
+    public function create()
+    {
+        // Get product categories for the form
+        $categories = Category::where('type', 'product')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
+        return Inertia::render('features/inventory/pages/Create', [
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Store a newly created product in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'min_stock' => 'required|integer|min:0',
+            'is_active' => 'boolean',
+        ]);
+
+        Product::create($validated);
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Product created successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified product.
+     */
+    public function edit(Product $inventory)
+    {
+        // Get product categories for the form
+        $categories = Category::where('type', 'product')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
+        return Inertia::render('features/inventory/pages/Edit', [
+            'product' => $inventory->load('category'),
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Update the specified product in storage.
+     */
+    public function update(Request $request, Product $inventory)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'min_stock' => 'required|integer|min:0',
+            'is_active' => 'boolean',
+        ]);
+
+        $inventory->update($validated);
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Product updated successfully.');
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
+    public function destroy(Product $inventory)
+    {
+        $inventory->delete();
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Product deleted successfully.');
+    }
 }

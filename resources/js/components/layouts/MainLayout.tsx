@@ -116,14 +116,19 @@ export default function MainLayout({ children }: MainLayoutProps) {
           permissions: ['view_services'],
         },
         {
-          name: 'Categorías',
+          name: t('nav.categories'),
+          nameKey: 'nav.categories',
           href: '/categories',
           icon: FolderTree,
           permissions: ['view_categories'],
+          children: [
+            { name: t('nav.productCategories'), nameKey: 'nav.productCategories', href: '/categories/products', icon: Package },
+            { name: t('nav.serviceCategories'), nameKey: 'nav.serviceCategories', href: '/categories/services', icon: Briefcase },
+          ]
         },
         {
-          name: t('nav.inventory'),
-          nameKey: 'nav.inventory',
+          name: t('nav.products'),
+          nameKey: 'nav.products',
           href: '/inventory',
           icon: Archive,
           permissions: ['view_inventory'],
@@ -315,12 +320,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transition-all duration-300",
+        "fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transition-all duration-300 flex flex-col",
         isCollapsed ? "w-16" : "w-64",
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         {/* Header with Logo and Controls */}
-        <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
+        <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4 flex-shrink-0">
           {!isCollapsed && <Logo size="md" />}
           {isCollapsed && (
             <Button
@@ -356,7 +361,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
         {/* Search */}
         {!isCollapsed && (
-          <div className="p-3 border-b border-gray-200">
+          <div className="p-3 border-b border-gray-200 flex-shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -474,7 +479,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </nav>
 
         {/* User Profile Footer */}
-        <div className="border-t border-gray-200 p-3">
+        <div className="border-t border-gray-200 p-3 flex-shrink-0">
           {!isCollapsed ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

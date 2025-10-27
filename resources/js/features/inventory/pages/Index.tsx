@@ -129,7 +129,7 @@ export default function Index({ products, stats, categories, filters }: Props) {
               {t('inventory.subtitle')}
             </p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => router.visit('/inventory/create')}>
             <Plus className="h-4 w-4" />
             {t('inventory.addProduct')}
           </Button>
@@ -306,7 +306,7 @@ export default function Index({ products, stats, categories, filters }: Props) {
                     <p className="text-sm text-gray-500 mb-4">
                       {t('inventory.noProductsDescription')}
                     </p>
-                    <Button className="gap-2">
+                    <Button className="gap-2" onClick={() => router.visit('/inventory/create')}>
                       <Plus className="h-4 w-4" />
                       {t('inventory.createFirstProduct')}
                     </Button>
@@ -374,7 +374,12 @@ export default function Index({ products, stats, categories, filters }: Props) {
 
                         {/* Action Buttons */}
                         <div className="flex gap-2 pt-2">
-                          <Button variant="outline" size="sm" className="flex-1 gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 gap-1"
+                            onClick={() => router.visit(`/inventory/${product.id}/edit`)}
+                          >
                             <Edit className="h-4 w-4" />
                             {t('common.edit')}
                           </Button>

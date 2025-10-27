@@ -16,11 +16,6 @@ class ServiceController extends Controller
     {
         $query = Service::query()->with('category');
 
-        // Category filter
-        if ($request->filled('category') && $request->category) {
-            $query->where('category_id', $request->category);
-        }
-
         // Search filter
         if ($request->filled('search')) {
             $search = $request->search;
@@ -28,6 +23,20 @@ class ServiceController extends Controller
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             });
+        }
+
+        // Category filter
+        if ($request->filled('category') && $request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Status filter
+        if ($request->filled('status') && $request->status) {
+            if ($request->status === 'active') {
+                $query->where('active', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('active', false);
+            }
         }
 
         $services = $query->latest()
@@ -62,6 +71,7 @@ class ServiceController extends Controller
             'filters' => [
                 'search' => $request->search,
                 'category' => $request->category,
+                'status' => $request->status,
             ],
         ]);
     }

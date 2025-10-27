@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Filter, Edit, Trash2, Package, Briefcase, Tag, CheckCircle2, XCircle } from 'lucide-react';
+import { Plus, Search, Filter, Edit, Trash2, Package, Briefcase, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -60,6 +60,7 @@ interface Props {
   categories: PaginatedCategories;
   stats: Stats;
   filters: Filters;
+  categoryType?: 'all' | 'product' | 'service';
 }
 
 const TYPE_OPTIONS = [
@@ -68,17 +69,24 @@ const TYPE_OPTIONS = [
   { value: 'service', label: 'Servicios' },
 ];
 
-export default function Index({ categories, stats, filters }: Props) {
+export default function Index({ categories, stats, filters, categoryType = 'all' }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState(filters.search || '');
   const [typeFilter, setTypeFilter] = useState(filters.type || 'all');
 
+  // Determine the base URL based on categoryType
+  const getBaseUrl = () => {
+    if (categoryType === 'product') return '/categories/products';
+    if (categoryType === 'service') return '/categories/services';
+    return '/categories';
+  };
+
   const handleSearch = () => {
     router.get(
-      '/categories',
+      getBaseUrl(),
       {
         search,
-        type: typeFilter === 'all' ? '' : typeFilter,
+        ...(categoryType === 'all' && typeFilter !== 'all' ? { type: typeFilter } : {}),
       },
       { preserveState: true, preserveScroll: true }
     );
@@ -104,20 +112,33 @@ export default function Index({ categories, stats, filters }: Props) {
     return type === 'product' ? 'default' : 'secondary';
   };
 
+  // Get page title and subtitle based on category type
+  const getPageTitle = () => {
+    if (categoryType === 'product') return 'Categorías de Productos';
+    if (categoryType === 'service') return 'Categorías de Servicios';
+    return 'Categorías';
+  };
+
+  const getPageSubtitle = () => {
+    if (categoryType === 'product') return 'Gestiona las categorías de productos';
+    if (categoryType === 'service') return 'Gestiona las categorías de servicios';
+    return 'Gestiona las categorías de servicios y productos';
+  };
+
   return (
     <MainLayout>
-      <Head title="Categorías" />
+      <Head title={getPageTitle()} />
 
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Categorías</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{getPageTitle()}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Gestiona las categorías de servicios y productos
+              {getPageSubtitle()}
             </p>
           </div>
-          <Link href="/categories/create">
+          <Link href={categoryType !== 'all' ? `/categories/create?type=${categoryType}` : '/categories/create'}>
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
               Nueva Categoría
@@ -126,7 +147,7 @@ export default function Index({ categories, stats, filters }: Props) {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total</CardTitle>
@@ -159,17 +180,6 @@ export default function Index({ categories, stats, filters }: Props) {
               <p className="text-xs text-muted-foreground">Categorías de servicios</p>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Activas</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.active}</div>
-              <p className="text-xs text-muted-foreground">Categorías activas</p>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Filters */}
@@ -186,18 +196,21 @@ export default function Index({ categories, stats, filters }: Props) {
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TYPE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {/* Only show type filter on "all categories" page */}
+              {categoryType === 'all' && (
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TYPE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <Button onClick={handleSearch} className="gap-2">
                 <Filter className="h-4 w-4" />
                 Filtrar
@@ -223,7 +236,7 @@ export default function Index({ categories, stats, filters }: Props) {
                 <p className="text-sm text-gray-500 mb-4">
                   Comienza creando tu primera categoría
                 </p>
-                <Link href="/categories/create">
+                <Link href={categoryType !== 'all' ? `/categories/create?type=${categoryType}` : '/categories/create'}>
                   <Button className="gap-2">
                     <Plus className="h-4 w-4" />
                     Nueva Categoría
@@ -240,7 +253,6 @@ export default function Index({ categories, stats, filters }: Props) {
                       <TableHead>Tipo</TableHead>
                       <TableHead>Descripción</TableHead>
                       <TableHead className="text-center">Elementos</TableHead>
-                      <TableHead className="text-center">Estado</TableHead>
                       <TableHead className="text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -255,10 +267,7 @@ export default function Index({ categories, stats, filters }: Props) {
                             ) : (
                               <Tag className="h-4 w-4 text-muted-foreground" />
                             )}
-                            <div>
-                              <div className="font-medium">{category.name}</div>
-                              <div className="text-xs text-muted-foreground">{category.slug}</div>
-                            </div>
+                            <div className="font-medium">{category.name}</div>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -290,19 +299,6 @@ export default function Index({ categories, stats, filters }: Props) {
                             <span className="font-medium">{getItemsCount(category)}</span>
                             <span className="text-xs text-muted-foreground">items</span>
                           </div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {category.is_active ? (
-                            <Badge variant="success" className="gap-1">
-                              <CheckCircle2 className="h-3 w-3" />
-                              Activo
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary" className="gap-1">
-                              <XCircle className="h-3 w-3" />
-                              Inactivo
-                            </Badge>
-                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
@@ -340,7 +336,7 @@ export default function Index({ categories, stats, filters }: Props) {
                     variant="outline"
                     size="sm"
                     disabled={categories.current_page === 1}
-                    onClick={() => router.get(`/categories?page=${categories.current_page - 1}`)}
+                    onClick={() => router.get(`${getBaseUrl()}?page=${categories.current_page - 1}`)}
                   >
                     Anterior
                   </Button>
@@ -350,7 +346,7 @@ export default function Index({ categories, stats, filters }: Props) {
                         key={page}
                         variant={page === categories.current_page ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => router.get(`/categories?page=${page}`)}
+                        onClick={() => router.get(`${getBaseUrl()}?page=${page}`)}
                       >
                         {page}
                       </Button>
@@ -360,7 +356,7 @@ export default function Index({ categories, stats, filters }: Props) {
                     variant="outline"
                     size="sm"
                     disabled={categories.current_page === categories.last_page}
-                    onClick={() => router.get(`/categories?page=${categories.current_page + 1}`)}
+                    onClick={() => router.get(`${getBaseUrl()}?page=${categories.current_page + 1}`)}
                   >
                     Siguiente
                   </Button>
