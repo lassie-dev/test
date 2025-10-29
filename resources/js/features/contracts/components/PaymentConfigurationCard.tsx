@@ -101,15 +101,20 @@ export default function PaymentConfigurationCard({
 
             <div className="space-y-2">
               <Label htmlFor="down_payment">Down Payment (Optional)</Label>
-              <Input
-                id="down_payment"
-                type="number"
-                min="0"
-                max={total}
-                value={down_payment}
-                onChange={(e) => onDownPaymentChange(parseFloat(e.target.value) || 0)}
-                placeholder="0"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <Input
+                  id="down_payment"
+                  type="number"
+                  min="0"
+                  max={total}
+                  value={down_payment}
+                  onChange={(e) => onDownPaymentChange(parseFloat(e.target.value) || 0)}
+                  placeholder="0"
+                  className="pl-7"
+                />
+              </div>
+              <p className="text-xs text-gray-500">Enter amount in Chilean pesos (e.g., 50000)</p>
               {errors?.down_payment && <p className="text-sm text-destructive">{errors.down_payment}</p>}
             </div>
 

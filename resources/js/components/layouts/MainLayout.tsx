@@ -29,8 +29,9 @@ import {
   UsersRound,
   Receipt,
   TrendingUp,
-  Briefcase,
   FolderTree,
+  Handshake,
+  BookOpen,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,7 @@ import Logo from '@/components/Logo';
 import { Input } from '@/components/ui/input';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import { Toaster } from '@/components/ui/sonner';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -109,10 +111,17 @@ export default function MainLayout({ children }: MainLayoutProps) {
           ]
         },
         {
+          name: t('nav.agreements'),
+          nameKey: 'nav.agreements',
+          href: '/agreements',
+          icon: Handshake,
+          permissions: ['view_agreements'],
+        },
+        {
           name: t('nav.services'),
           nameKey: 'nav.services',
           href: '/services',
-          icon: Briefcase,
+          icon: FileSignature,
           permissions: ['view_services'],
         },
         {
@@ -123,7 +132,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           permissions: ['view_categories'],
           children: [
             { name: t('nav.productCategories'), nameKey: 'nav.productCategories', href: '/categories/products', icon: Package },
-            { name: t('nav.serviceCategories'), nameKey: 'nav.serviceCategories', href: '/categories/services', icon: Briefcase },
+            { name: t('nav.serviceCategories'), nameKey: 'nav.serviceCategories', href: '/categories/services', icon: FileSignature },
           ]
         },
         {
@@ -155,6 +164,18 @@ export default function MainLayout({ children }: MainLayoutProps) {
           href: '/payroll',
           icon: Receipt,
           permissions: ['view_payroll'],
+        },
+        {
+          name: t('nav.directory'),
+          nameKey: 'nav.directory',
+          href: '/directory',
+          icon: BookOpen,
+          permissions: ['view_contracts'],
+          children: [
+            { name: t('nav.churches'), nameKey: 'nav.churches', href: '/directory/churches', icon: BookOpen },
+            { name: t('nav.cemeteries'), nameKey: 'nav.cemeteries', href: '/directory/cemeteries', icon: BookOpen },
+            { name: t('nav.wakeRooms'), nameKey: 'nav.wakeRooms', href: '/directory/wake-rooms', icon: BookOpen },
+          ]
         },
       ],
     },
@@ -665,6 +686,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }

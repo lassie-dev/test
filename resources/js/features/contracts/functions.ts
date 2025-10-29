@@ -183,28 +183,44 @@ export function calculateProductSubtotal(item: ProductItem): number {
 
 /**
  * Calculates total subtotals including both services and products
+ * New logic: subtotal -> insurance coverage -> remaining -> discount -> final total
  */
 export function calculateItemsTotals(
   services: ServiceItem[],
   products: ProductItem[],
-  discountPercentage: number
+  discountPercentage: number,
+  agreementCompanyPaysPercentage: number = 0
 ): {
   servicesSubtotal: number;
   productsSubtotal: number;
   subtotal: number;
+  insuranceCoverage: number;
+  amountAfterInsurance: number;
   discountAmount: number;
   total: number;
 } {
   const servicesSubtotal = services.reduce((sum, item) => sum + calculateServiceSubtotal(item), 0);
   const productsSubtotal = products.reduce((sum, item) => sum + calculateProductSubtotal(item), 0);
   const subtotal = servicesSubtotal + productsSubtotal;
-  const discountAmount = (subtotal * discountPercentage) / 100;
-  const total = subtotal - discountAmount;
+
+  // Step 1: Calculate insurance coverage from subtotal
+  const insuranceCoverage = (subtotal * agreementCompanyPaysPercentage) / 100;
+
+  // Step 2: Amount remaining after insurance coverage
+  const amountAfterInsurance = subtotal - insuranceCoverage;
+
+  // Step 3: Apply discount to the amount after insurance
+  const discountAmount = (amountAfterInsurance * discountPercentage) / 100;
+
+  // Step 4: Final total client pays
+  const total = amountAfterInsurance - discountAmount;
 
   return {
     servicesSubtotal,
     productsSubtotal,
     subtotal,
+    insuranceCoverage,
+    amountAfterInsurance,
     discountAmount,
     total,
   };

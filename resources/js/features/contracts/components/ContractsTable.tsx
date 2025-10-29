@@ -137,11 +137,11 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
                 {contrato.difunto?.nombre || '-'}
               </TableCell>
               <TableCell>
-                {obtenerEtiquetaTipo(contrato.tipo)}
+                {t(obtenerEtiquetaTipo(contrato.tipo))}
               </TableCell>
               <TableCell>
                 <Badge variant={obtenerVarianteBadgeEstado(contrato.estado) as any}>
-                  {obtenerEtiquetaEstado(contrato.estado)}
+                  {t(obtenerEtiquetaEstado(contrato.estado))}
                 </Badge>
               </TableCell>
               <TableCell className="font-semibold">

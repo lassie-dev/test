@@ -10,6 +10,8 @@ interface Agreement {
   company_name: string;
   code: string;
   discount_percentage: number;
+  company_pays_percentage: number;
+  employee_pays_percentage: number;
 }
 
 interface AgreementSelectionCardProps {
@@ -39,14 +41,13 @@ export default function AgreementSelectionCard({
         <div>
           <Label>{t('agreements.selectAgreement')}</Label>
           <Select
-            value={selectedAgreementId?.toString() || ''}
+            value={selectedAgreementId?.toString() || undefined}
             onValueChange={(value) => onAgreementChange(value ? parseInt(value) : null)}
           >
             <SelectTrigger>
               <SelectValue placeholder={t('agreements.selectAgreement')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('common.none')}</SelectItem>
               {agreements.map((agreement) => (
                 <SelectItem key={agreement.id} value={agreement.id.toString()}>
                   {agreement.company_name} ({agreement.code})
@@ -72,10 +73,18 @@ export default function AgreementSelectionCard({
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">
-                {t('agreements.discountPercentage')}:
+                Insurance Coverage:
               </span>
-              <Badge variant="default" className="bg-green-600">
-                {selectedAgreement.discount_percentage}% {t('common.discount')}
+              <Badge variant="default" className="bg-blue-600">
+                {selectedAgreement.company_pays_percentage}%
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">
+                Client Pays:
+              </span>
+              <Badge variant="default" className="bg-orange-600">
+                {selectedAgreement.employee_pays_percentage}%
               </Badge>
             </div>
           </div>

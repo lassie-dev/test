@@ -51,17 +51,62 @@ The system handles two distinct types of funeral contracts:
 
 ---
 
-### 2. Financial Calculations
+### 2. Corporate Agreements (Insurance)
 
-#### Pricing Structure
+The system supports **corporate agreements** where companies provide funeral benefits to their employees. These agreements define:
+
+- **Insurance Coverage**: Percentage that the company/insurance pays
+- **Employee Payment**: Percentage that the employee/family pays
+- **Payment Terms**: Extended credit terms for corporate billing
+
+#### Agreement Structure
+
+Each agreement includes:
+- Company name and contact information
+- Agreement code (e.g., AGR-001)
+- Start and end dates
+- Number of covered employees
+- `company_pays_percentage`: What insurance covers (e.g., 70%)
+- `employee_pays_percentage`: What client pays (e.g., 30%)
+- Payment method (direct billing, employee reimbursement)
+- Credit terms (months)
+
+**Example Agreements:**
+- **Banco Estado**: Company pays 70%, Employee pays 30%
+- **Codelco Mining**: Company pays 80%, Employee pays 20%
+- **Universidad de Chile**: Company pays 50%, Employee pays 50%
+
+---
+
+### 3. Financial Calculations
+
+#### Pricing Structure WITH Corporate Agreement/Insurance
+
+**IMPORTANT: Insurance coverage is applied BEFORE discount**
 
 ```
 SUBTOTAL = Sum of all services + Sum of all products
-DISCOUNT_AMOUNT = SUBTOTAL × (DISCOUNT_PERCENTAGE / 100)
-TOTAL = SUBTOTAL - DISCOUNT_AMOUNT
+INSURANCE_COVERAGE = SUBTOTAL × (COMPANY_PAYS_PERCENTAGE / 100)
+AMOUNT_AFTER_INSURANCE = SUBTOTAL - INSURANCE_COVERAGE
+DISCOUNT_AMOUNT = AMOUNT_AFTER_INSURANCE × (DISCOUNT_PERCENTAGE / 100)
+FINAL_TOTAL = AMOUNT_AFTER_INSURANCE - DISCOUNT_AMOUNT
 ```
 
-**Example:**
+**Example WITH Insurance:**
+```
+Services: $550,000 (Transport + Wake + Cremation)
+Products: $230,000 (Coffin + Urn)
+SUBTOTAL: $780,000
+
+Agreement: Banco Estado (Company pays 70%)
+Insurance Coverage: $780,000 × 70% = -$546,000
+Amount After Insurance: $780,000 - $546,000 = $234,000
+
+Discount: 10% on remaining amount = -$23,400
+FINAL TOTAL (Client Pays): $234,000 - $23,400 = $210,600
+```
+
+**Example WITHOUT Insurance:**
 ```
 Services: $550,000 (Transport + Wake + Cremation)
 Products: $230,000 (Coffin + Urn)
@@ -512,6 +557,7 @@ LÍQUIDO A PAGAR: $844,600
 
 **Features:**
 - Create new contracts (Immediate/Future)
+- **Select Corporate Agreement**: Link contract to company insurance/benefits
 - Edit contracts (before finalization)
 - View contract details
 - Search and filter contracts
@@ -522,6 +568,24 @@ LÍQUIDO A PAGAR: $844,600
 - Send contract copy to client email
 - Track contract status progression
 - Duplicate contracts (for similar services)
+
+**Contract Creation Flow:**
+1. Select contract type (Immediate/Future Need)
+2. Enter client information (name, RUT, phone, email, address)
+3. Enter deceased information (if immediate need)
+4. Select services from catalog
+5. Select products from inventory
+6. **Optional: Select corporate agreement** (applies insurance coverage)
+7. Configure payment method (Cash/Credit with installments)
+8. Add service details (location, datetime, special requests)
+9. Assign staff (driver, assistant) - immediate need only
+10. Review totals:
+    - Subtotal (services + products)
+    - Insurance coverage (if agreement selected)
+    - Discount (applied to remaining amount)
+    - Final total (what client pays)
+11. Calculate secretary commission
+12. Submit contract
 
 **Contract States:**
 1. **Cotización** (Quote): Initial estimate, not confirmed
@@ -867,7 +931,63 @@ Employee payments: $13,200,000 (collected: $11,800,000)
 
 ---
 
-### Module 8: Iglesias, Cementerios y Funerarias (National Database)
+### Module 8: Corporate Agreements (Convenios Corporativos)
+**Purpose:** Manage insurance and corporate benefits agreements
+
+**What is this?**
+Corporate agreements are contracts between the funeral home and companies/organizations that provide funeral benefits to their employees. When an employee or family member passes away, the company's insurance covers a percentage of the funeral costs.
+
+**Features:**
+- Create new corporate agreements
+- Edit agreement terms (coverage percentages, dates, conditions)
+- View all active/expired agreements
+- Track usage per agreement (how many contracts used this agreement)
+- Generate billing summaries for companies
+- Monitor agreement expiration dates
+
+**Agreement Information:**
+- **Basic Info:**
+  - Agreement code (e.g., AGR-001)
+  - Company name (e.g., "Banco Estado")
+  - Contact person name, phone, email
+  - Company address
+
+- **Terms:**
+  - Start date and end date
+  - Number of covered employees
+  - Status: Active, Expired, Suspended
+
+- **Financial Terms:**
+  - `company_pays_percentage`: What the insurance covers (e.g., 70%)
+  - `employee_pays_percentage`: What the employee's family pays (e.g., 30%)
+  - `discount_percentage`: Additional discount if applicable (usually 0%)
+  - Payment method: Direct billing to company, or employee reimbursement
+  - Credit terms: Number of months to pay (extended terms for companies)
+
+- **Special Conditions:**
+  - Included services (which services are covered)
+  - Exclusions or limitations
+  - Notes and special terms
+
+**Usage in Contracts:**
+When creating a contract, if the client is covered by a corporate agreement:
+1. Secretary selects the agreement from dropdown
+2. System automatically applies insurance coverage to the subtotal
+3. Discount is then applied to the remaining amount (after insurance)
+4. Contract shows breakdown: Subtotal → Insurance coverage → Remaining → Discount → Final total
+5. Two payment schedules may be created:
+   - Company portion (billed to company)
+   - Employee portion (paid by family)
+
+**Access Control:**
+- Propietario: Full access
+- Administrador: Full access
+- Secretaria: View only (can select in contracts)
+- Others: No access
+
+---
+
+### Module 9: Iglesias, Cementerios y Funerarias (National Database)
 **Purpose:** Quick reference database for coordinating funeral services
 
 **Why is this needed?**

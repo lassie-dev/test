@@ -94,9 +94,30 @@ Route::middleware('auth')->group(callback: function () {
 
     // Directory (Churches, Cemeteries, Wake Rooms)
     Route::get('/directory', [DirectoryController::class, 'index'])->name('directory.index');
-    Route::get('/directory/churches', [DirectoryController::class, 'churches'])->name('directory.churches');
-    Route::get('/directory/cemeteries', [DirectoryController::class, 'cemeteries'])->name('directory.cemeteries');
-    Route::get('/directory/wake-rooms', [DirectoryController::class, 'wakeRooms'])->name('directory.wake-rooms');
+
+    // Churches CRUD
+    Route::get('/directory/churches', [DirectoryController::class, 'churchesIndex'])->name('directory.churches.index');
+    Route::get('/directory/churches/create', [DirectoryController::class, 'createChurch'])->name('directory.churches.create');
+    Route::post('/directory/churches', [DirectoryController::class, 'storeChurch'])->name('directory.churches.store');
+    Route::get('/directory/churches/{church}/edit', [DirectoryController::class, 'editChurch'])->name('directory.churches.edit');
+    Route::put('/directory/churches/{church}', [DirectoryController::class, 'updateChurch'])->name('directory.churches.update');
+    Route::delete('/directory/churches/{church}', [DirectoryController::class, 'destroyChurch'])->name('directory.churches.destroy');
+
+    // Cemeteries CRUD
+    Route::get('/directory/cemeteries', [DirectoryController::class, 'cemeteriesIndex'])->name('directory.cemeteries.index');
+    Route::get('/directory/cemeteries/create', [DirectoryController::class, 'createCemetery'])->name('directory.cemeteries.create');
+    Route::post('/directory/cemeteries', [DirectoryController::class, 'storeCemetery'])->name('directory.cemeteries.store');
+    Route::get('/directory/cemeteries/{cemetery}/edit', [DirectoryController::class, 'editCemetery'])->name('directory.cemeteries.edit');
+    Route::put('/directory/cemeteries/{cemetery}', [DirectoryController::class, 'updateCemetery'])->name('directory.cemeteries.update');
+    Route::delete('/directory/cemeteries/{cemetery}', [DirectoryController::class, 'destroyCemetery'])->name('directory.cemeteries.destroy');
+
+    // Wake Rooms CRUD
+    Route::get('/directory/wake-rooms', [DirectoryController::class, 'wakeRoomsIndex'])->name('directory.wake-rooms.index');
+    Route::get('/directory/wake-rooms/create', [DirectoryController::class, 'createWakeRoom'])->name('directory.wake-rooms.create');
+    Route::post('/directory/wake-rooms', [DirectoryController::class, 'storeWakeRoom'])->name('directory.wake-rooms.store');
+    Route::get('/directory/wake-rooms/{wakeRoom}/edit', [DirectoryController::class, 'editWakeRoom'])->name('directory.wake-rooms.edit');
+    Route::put('/directory/wake-rooms/{wakeRoom}', [DirectoryController::class, 'updateWakeRoom'])->name('directory.wake-rooms.update');
+    Route::delete('/directory/wake-rooms/{wakeRoom}', [DirectoryController::class, 'destroyWakeRoom'])->name('directory.wake-rooms.destroy');
 
     // Expenses & P&L
     Route::get('/api/expenses/check-duplicate', [ExpenseController::class, 'checkDuplicate'])->name('expenses.check-duplicate');

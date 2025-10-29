@@ -101,12 +101,12 @@ class Contract extends Model
 
     public function assignedDriver(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_driver_id');
+        return $this->belongsTo(Staff::class, 'assigned_driver_id');
     }
 
     public function assignedAssistant(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_assistant_id');
+        return $this->belongsTo(Staff::class, 'assigned_assistant_id');
     }
 
     public function agreement(): BelongsTo

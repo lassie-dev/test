@@ -12,6 +12,8 @@ interface TotalsAndCommissionCardProps {
     servicesSubtotal: number;
     productsSubtotal: number;
     subtotal: number;
+    insuranceCoverage: number;
+    amountAfterInsurance: number;
     discountAmount: number;
     total: number;
   };
@@ -68,10 +70,26 @@ export default function TotalsAndCommissionCard({
             <span className="font-medium">{formatearMoneda(totals.subtotal)}</span>
           </div>
 
+          {totals.insuranceCoverage > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">{t('contracts.insuranceCoverage')}:</span>
+              <span className="font-medium text-blue-600">
+                -{formatearMoneda(totals.insuranceCoverage)}
+              </span>
+            </div>
+          )}
+
+          {totals.insuranceCoverage > 0 && (
+            <div className="flex justify-between text-sm border-t pt-1">
+              <span className="text-gray-600">{t('contracts.amountAfterInsurance')}:</span>
+              <span className="font-medium">{formatearMoneda(totals.amountAfterInsurance)}</span>
+            </div>
+          )}
+
           {totals.discountAmount > 0 && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">
-                {t('contracts.discountAmount', { percent: discount_percentage })}:
+                {t('contracts.discount')} ({discount_percentage}%):
               </span>
               <span className="font-medium text-destructive">
                 -{formatearMoneda(totals.discountAmount)}
@@ -80,7 +98,7 @@ export default function TotalsAndCommissionCard({
           )}
 
           <div className="flex justify-between border-t pt-2">
-            <span className="text-lg font-semibold">{t('common.total')}:</span>
+            <span className="text-lg font-semibold">{t('contracts.totalClientPays')}:</span>
             <span className="text-lg font-bold text-primary">
               {formatearMoneda(totals.total)}
             </span>
@@ -89,30 +107,30 @@ export default function TotalsAndCommissionCard({
 
         {/* Commission Preview */}
         <div className="border-t pt-4 bg-green-50 p-4 rounded-lg">
-          <h4 className="font-semibold text-green-900 mb-3">Commission Preview</h4>
+          <h4 className="font-semibold text-green-900 mb-3">{t('contracts.commissionPreview')}</h4>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-green-800">Base Commission Rate:</span>
+              <span className="text-green-800">{t('contracts.baseCommissionRate')}:</span>
               <span className="font-medium">5%</span>
             </div>
             {is_night_shift && (
               <div className="flex justify-between text-sm">
-                <span className="text-green-800">Night Shift Bonus:</span>
+                <span className="text-green-800">{t('contracts.nightShiftBonus')}:</span>
                 <span className="font-medium text-green-700">+2%</span>
               </div>
             )}
             {is_holiday && (
               <div className="flex justify-between text-sm">
-                <span className="text-green-800">Holiday Bonus:</span>
+                <span className="text-green-800">{t('contracts.holidayBonus')}:</span>
                 <span className="font-medium text-green-700">+3%</span>
               </div>
             )}
             <div className="flex justify-between border-t border-green-200 pt-2">
-              <span className="font-bold text-green-900">Total Commission Rate:</span>
+              <span className="font-bold text-green-900">{t('contracts.totalCommissionRate')}:</span>
               <span className="font-bold text-green-700">{commission.commissionRate}%</span>
             </div>
             <div className="flex justify-between text-lg">
-              <span className="font-bold text-green-900">Commission Amount:</span>
+              <span className="font-bold text-green-900">{t('contracts.commissionAmount')}:</span>
               <span className="font-bold text-green-600">
                 {formatearMoneda(commission.commissionAmount)}
               </span>

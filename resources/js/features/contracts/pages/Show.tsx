@@ -180,7 +180,7 @@ export default function Show({ contract }: ShowProps) {
                     <CardDescription>{t('contracts.generalData')}</CardDescription>
                   </div>
                   <Badge variant={obtenerVarianteBadgeEstado(contract.estado) as any}>
-                    {obtenerEtiquetaEstado(contract.estado)}
+                    {t(obtenerEtiquetaEstado(contract.estado))}
                   </Badge>
                 </div>
               </CardHeader>
@@ -193,7 +193,7 @@ export default function Show({ contract }: ShowProps) {
 
                   <div>
                     <p className="text-sm font-medium text-gray-500">{t('contracts.type')}</p>
-                    <p className="mt-1 text-base">{obtenerEtiquetaTipo(contract.tipo)}</p>
+                    <p className="mt-1 text-base">{t(obtenerEtiquetaTipo(contract.tipo))}</p>
                   </div>
 
                   <div>
@@ -496,6 +496,25 @@ export default function Show({ contract }: ShowProps) {
                     <span className="font-medium">{formatearMoneda(contract.subtotal)}</span>
                   </div>
 
+                  {contract.convenio && contract.convenio.empresa_paga_porcentaje > 0 && (
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">
+                          {t('contracts.insuranceCoverage')} ({contract.convenio.empresa_paga_porcentaje}%):
+                        </span>
+                        <span className="font-medium text-blue-600">
+                          -{formatearMoneda((contract.subtotal * contract.convenio.empresa_paga_porcentaje) / 100)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm border-t pt-1">
+                        <span className="text-gray-600">{t('contracts.amountAfterInsurance')}:</span>
+                        <span className="font-medium">
+                          {formatearMoneda(contract.subtotal - (contract.subtotal * contract.convenio.empresa_paga_porcentaje) / 100)}
+                        </span>
+                      </div>
+                    </>
+                  )}
+
                   {contract.descuento_porcentaje > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">
@@ -510,7 +529,7 @@ export default function Show({ contract }: ShowProps) {
                   <Separator />
 
                   <div className="flex justify-between">
-                    <span className="text-lg font-semibold">{t('contracts.total')}:</span>
+                    <span className="text-lg font-semibold">{t('contracts.totalClientPays')}:</span>
                     <span className="text-lg font-bold text-primary">
                       {formatearMoneda(contract.total)}
                     </span>

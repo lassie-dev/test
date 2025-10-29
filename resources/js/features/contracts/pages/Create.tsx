@@ -1,9 +1,10 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { FormEvent, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '@/components/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   validarRut,
   formatearRut,
@@ -36,6 +37,8 @@ interface Agreement {
   company_name: string;
   code: string;
   discount_percentage: number;
+  company_pays_percentage: number;
+  employee_pays_percentage: number;
 }
 
 interface Church {
@@ -81,6 +84,7 @@ export default function Create({
   agreements = [],
 }: CreateProps) {
   const { t } = useTranslation();
+  const { flash } = usePage().props as any;
   const { data, setData, post, processing, errors } = useForm({
     // Contract basic info
     type: 'necesidad_inmediata' as string,
@@ -133,6 +137,16 @@ export default function Create({
   const [selectedService, setSelectedService] = useState<number | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
   const [productQuantity, setProductQuantity] = useState(1);
+
+  // Show flash messages as toasts
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success);
+    }
+    if (flash?.error) {
+      toast.error(flash.error);
+    }
+  }, [flash]);
 
   const handleRutChange = (value: string) => {
     setData('client_rut', value);
@@ -227,8 +241,17 @@ export default function Create({
     setData('products', data.products.filter(p => p.product_id !== productId));
   };
 
-  // Calculate totals using extracted function
-  const totals = calculateItemsTotals(data.services, data.products, data.discount_percentage);
+  // Get selected agreement to access company_pays_percentage
+  const selectedAgreement = agreements.find(a => a.id === data.agreement_id);
+  const companyPaysPercentage = selectedAgreement?.company_pays_percentage || 0;
+
+  // Calculate totals using extracted function (with insurance logic)
+  const totals = calculateItemsTotals(
+    data.services,
+    data.products,
+    data.discount_percentage,
+    companyPaysPercentage
+  );
 
   // Calculate commission using extracted function
   const commission = calculateCommission(totals.total, data.is_night_shift, data.is_holiday);
@@ -237,12 +260,43 @@ export default function Create({
     e.preventDefault();
 
     if (rutError) {
+      toast.error(t('validation.invalidRut'));
       return;
     }
 
-    post('/contracts', {
+    if (data.services.length === 0) {
+      toast.error(t('contracts.pleaseSelectService'));
+      return;
+    }
+
+    // Use router.post for submitting because we need to conditionally remove fields
+    const submitData: any = { ...data };
+
+    // For Future Need contracts, remove deceased fields (not required)
+    if (data.type === 'necesidad_futura') {
+      delete submitData.deceased_name;
+      delete submitData.deceased_death_date;
+      delete submitData.deceased_death_time;
+      delete submitData.deceased_death_place;
+      delete submitData.deceased_age;
+      delete submitData.deceased_cause_of_death;
+    }
+
+    router.post('/contracts', submitData, {
       onSuccess: () => {
+        toast.success(t('contracts.createdSuccessfully'));
         router.visit('/contracts');
+      },
+      onError: (errors: any) => {
+        // Show validation errors
+        const errorMessages = Object.values(errors);
+        if (errorMessages.length > 0) {
+          errorMessages.forEach((error) => {
+            toast.error(String(error));
+          });
+        } else {
+          toast.error(t('contracts.creationFailed'));
+        }
       },
     });
   };

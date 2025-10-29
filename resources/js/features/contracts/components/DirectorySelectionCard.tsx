@@ -63,14 +63,13 @@ export default function DirectorySelectionCard({
             {t('directory.church')}
           </Label>
           <Select
-            value={selectedChurchId?.toString() || ''}
+            value={selectedChurchId?.toString() || undefined}
             onValueChange={(value) => onChurchChange(value ? parseInt(value) : null)}
           >
             <SelectTrigger>
               <SelectValue placeholder={t('contracts.selectChurch')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('common.none')}</SelectItem>
               {churches.map((church) => (
                 <SelectItem key={church.id} value={church.id.toString()}>
                   {church.name} - {church.city} ({church.religion})
@@ -87,14 +86,13 @@ export default function DirectorySelectionCard({
             {t('directory.cemetery')}
           </Label>
           <Select
-            value={selectedCemeteryId?.toString() || ''}
+            value={selectedCemeteryId?.toString() || undefined}
             onValueChange={(value) => onCemeteryChange(value ? parseInt(value) : null)}
           >
             <SelectTrigger>
               <SelectValue placeholder={t('contracts.selectCemetery')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('common.none')}</SelectItem>
               {cemeteries.map((cemetery) => (
                 <SelectItem key={cemetery.id} value={cemetery.id.toString()}>
                   {cemetery.name} - {cemetery.city} ({cemetery.type})
@@ -111,14 +109,13 @@ export default function DirectorySelectionCard({
             {t('directory.wakeRoom')}
           </Label>
           <Select
-            value={selectedWakeRoomId?.toString() || ''}
+            value={selectedWakeRoomId?.toString() || undefined}
             onValueChange={(value) => onWakeRoomChange(value ? parseInt(value) : null)}
           >
             <SelectTrigger>
               <SelectValue placeholder={t('contracts.selectWakeRoom')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('common.none')}</SelectItem>
               {wakeRooms.map((wakeRoom) => (
                 <SelectItem key={wakeRoom.id} value={wakeRoom.id.toString()}>
                   {wakeRoom.name} ({wakeRoom.funeral_home_name}) - {wakeRoom.city}

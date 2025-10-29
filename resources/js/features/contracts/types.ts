@@ -50,6 +50,12 @@ export interface Usuario {
   email: string;
 }
 
+export interface Convenio {
+  id: number;
+  nombre_empresa: string;
+  empresa_paga_porcentaje: number;
+}
+
 // Interfaces que dependen de tipos básicos
 export interface ContratoServicio {
   servicio: Servicio;
@@ -68,6 +74,7 @@ export interface Contrato {
   difunto?: Difunto;
   servicios: ContratoServicio[];
   productos?: ContratoProductoDetalle[];
+  convenio?: Convenio;
   subtotal: number;
   descuento_porcentaje: number;
   descuento_monto: number;
