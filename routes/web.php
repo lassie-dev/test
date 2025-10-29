@@ -90,8 +90,11 @@ Route::middleware('auth')->group(callback: function () {
 
     // Expenses & P&L
     Route::get('/api/expenses/check-duplicate', [ExpenseController::class, 'checkDuplicate'])->name('expenses.check-duplicate');
-    Route::resource('expenses', ExpenseController::class);
+    Route::get('/expenses/profit-loss-report', function () {
+        return inertia('features/expenses/pages/ProfitLoss');
+    })->name('expenses.profit-loss-report');
     Route::get('/expenses/profit-loss', [ExpenseController::class, 'profitLoss'])->name('expenses.profit-loss');
+    Route::resource('expenses', ExpenseController::class);
 
     // Documents
     Route::resource('documents', DocumentController::class)->except(['edit', 'update']);

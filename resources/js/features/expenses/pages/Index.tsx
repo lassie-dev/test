@@ -117,12 +117,20 @@ export default function Index({ expenses, filters, stats }: IndexProps) {
             <h1 className="text-3xl font-bold text-gray-900">{t('expenses.title')}</h1>
             <p className="mt-2 text-sm text-gray-600">{t('expenses.subtitle')}</p>
           </div>
-          <Link href="/expenses/create">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {t('expenses.create')}
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/expenses/profit-loss-report">
+              <Button variant="outline">
+                <TrendingDown className="mr-2 h-4 w-4" />
+                {t('expenses.profitLossStatement')}
+              </Button>
+            </Link>
+            <Link href="/expenses/create">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                {t('expenses.create')}
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Cards */}
