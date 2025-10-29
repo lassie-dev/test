@@ -22,20 +22,32 @@ export interface Cliente {
   rut: Rut;
   telefono: Telefono;
   email?: string;
+  direccion?: string;
 }
 
 export interface Difunto {
   id: number;
   nombre: string;
   fecha_fallecimiento: Date;
+  hora_fallecimiento?: string;
   lugar_fallecimiento?: string;
+  edad?: number;
+  causa_fallecimiento?: string;
 }
 
 export interface Servicio {
   id: number;
   name: string;
+  nombre: string;
   description: string;
+  descripcion: string;
   price: number;
+}
+
+export interface Usuario {
+  id: number;
+  nombre: string;
+  email: string;
 }
 
 // Interfaces que dependen de tipos básicos
@@ -55,10 +67,22 @@ export interface Contrato {
   cliente: Cliente;
   difunto?: Difunto;
   servicios: ContratoServicio[];
+  productos?: ContratoProductoDetalle[];
   subtotal: number;
   descuento_porcentaje: number;
   descuento_monto: number;
   total: number;
+  metodo_pago?: string;
+  cuotas?: number;
+  pie?: number;
+  ubicacion_servicio?: string;
+  fecha_hora_servicio?: string;
+  solicitudes_especiales?: string;
+  conductor_asignado?: Usuario;
+  auxiliar_asignado?: Usuario;
+  porcentaje_comision?: number;
+  monto_comision?: number;
+  secretaria?: Usuario;
   es_festivo: boolean;
   es_nocturno: boolean;
   created_at: Date;
@@ -69,12 +93,21 @@ export interface Contrato {
 export interface Product {
   id: number;
   name: string;
+  nombre: string;
   description: string;
+  descripcion: string;
   category: string;
   price: number;
   stock: number;
   min_stock: number;
   is_active: boolean;
+}
+
+export interface ContratoProductoDetalle {
+  producto: Product;
+  cantidad: number;
+  precio_unitario: number;
+  subtotal: number;
 }
 
 // Staff types (for contract assignments)

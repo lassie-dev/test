@@ -21,7 +21,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Eye, Edit, Trash2, Plus } from 'lucide-react';
+import { Eye, Edit, Trash2, Plus, FileText, Printer } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import type { Contrato } from '../types';
 import {
   formatearMoneda,
@@ -63,6 +71,22 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
         },
       });
     }
+  };
+
+  const handlePrintQuotation = (id: number) => {
+    window.open(`/contracts/${id}/print-quotation`, '_blank');
+  };
+
+  const handlePrintContract = (id: number) => {
+    window.open(`/contracts/${id}/print-contract`, '_blank');
+  };
+
+  const handlePrintSocialMediaAuth = (id: number) => {
+    window.open(`/contracts/${id}/print-social-media-auth`, '_blank');
+  };
+
+  const handlePrintReceipt = (id: number) => {
+    window.open(`/contracts/${id}/print-receipt`, '_blank');
   };
 
   if (!contracts || contracts.length === 0) {
@@ -144,6 +168,40 @@ export function ContractsTable({ contracts, onCreateClick }: ContractsTableProps
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
+
+                  {/* Print Documents Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title={t('contracts.documents')}
+                      >
+                        <Printer className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>{t('contracts.documents')}</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handlePrintQuotation(contrato.id)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        {t('contracts.printQuotation')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handlePrintContract(contrato.id)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        {t('contracts.printContract')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handlePrintSocialMediaAuth(contrato.id)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        {t('contracts.printSocialMediaAuth')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handlePrintReceipt(contrato.id)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        {t('contracts.printReceipt')}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
                   <Button
                     variant="ghost"
                     size="icon"

@@ -12,6 +12,12 @@ export const ESTADOS_CONTRATO_OPTIONS = [
   { value: 'cancelado', labelKey: 'contracts.canceled' },
 ] as const;
 
+// Status options for contract creation (only initial states)
+export const ESTADOS_CONTRATO_CREATE_OPTIONS = [
+  { value: 'cotizacion', labelKey: 'contracts.quotation' },
+  { value: 'contrato', labelKey: 'contracts.contract' },
+] as const;
+
 export const FORMAS_PAGO_OPTIONS = [
   { value: 'contado', labelKey: 'contracts.cash' },
   { value: 'credito', labelKey: 'contracts.credit' },

@@ -23,7 +23,8 @@ class ContractController extends Controller
                 $q->where('contract_number', 'like', "%{$search}%")
                     ->orWhereHas('client', function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%")
-                            ->orWhere('rut', 'like', "%{$search}%");
+                            ->orWhere('rut', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
                     })
                     ->orWhereHas('deceased', function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%");
@@ -51,6 +52,47 @@ class ContractController extends Controller
                 default => $request->type
             };
             $query->where('type', $type);
+        }
+
+        // Date range filter
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Total amount range filter
+        if ($request->filled('total_min')) {
+            $query->where('total', '>=', $request->total_min);
+        }
+        if ($request->filled('total_max')) {
+            $query->where('total', '<=', $request->total_max);
+        }
+
+        // Payment method filter
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
+        // Has deceased filter
+        if ($request->filled('has_deceased')) {
+            if ($request->has_deceased === 'yes') {
+                $query->whereNotNull('deceased_id');
+            } elseif ($request->has_deceased === 'no') {
+                $query->whereNull('deceased_id');
+            }
+        }
+
+        // Sort options
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        $allowedSorts = ['created_at', 'total', 'contract_number', 'updated_at'];
+        if (in_array($sortBy, $allowedSorts)) {
+            $query->orderBy($sortBy, $sortOrder);
+        } else {
+            $query->latest();
         }
 
         $contracts = $query->latest()
@@ -125,11 +167,23 @@ class ContractController extends Controller
         $drivers = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'driver']);
         $assistants = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'assistant']);
 
+        // Get directory data
+        $churches = \App\Models\Church::orderBy('name')->get(['id', 'name', 'city', 'religion']);
+        $cemeteries = \App\Models\Cemetery::orderBy('name')->get(['id', 'name', 'city', 'type']);
+        $wakeRooms = \App\Models\WakeRoom::orderBy('name')->get(['id', 'name', 'funeral_home_name', 'city']);
+
+        // Get active agreements
+        $agreements = \App\Models\Agreement::where('status', 'active')->orderBy('company_name')->get(['id', 'company_name', 'code', 'discount_percentage']);
+
         return Inertia::render('features/contracts/pages/Create', [
             'services' => $services,
             'products' => $products,
             'drivers' => $drivers,
             'assistants' => $assistants,
+            'churches' => $churches,
+            'cemeteries' => $cemeteries,
+            'wakeRooms' => $wakeRooms,
+            'agreements' => $agreements,
         ]);
     }
 
@@ -187,6 +241,12 @@ class ContractController extends Controller
             // Staff assignment
             'assigned_driver_id' => 'nullable|exists:users,id',
             'assigned_assistant_id' => 'nullable|exists:users,id',
+
+            // Directory references
+            'agreement_id' => 'nullable|exists:agreements,id',
+            'church_id' => 'nullable|exists:churches,id',
+            'cemetery_id' => 'nullable|exists:cemeteries,id',
+            'wake_room_id' => 'nullable|exists:wake_rooms,id',
         ]);
 
         // Start transaction
@@ -267,6 +327,10 @@ class ContractController extends Controller
                 'deceased_id' => $deceasedId,
                 'user_id' => auth()->id(),
                 'branch_id' => auth()->user()->branch_id ?? 1,
+                'agreement_id' => $validated['agreement_id'] ?? null,
+                'church_id' => $validated['church_id'] ?? null,
+                'cemetery_id' => $validated['cemetery_id'] ?? null,
+                'wake_room_id' => $validated['wake_room_id'] ?? null,
                 'subtotal' => $subtotal,
                 'discount_percentage' => $validated['discount_percentage'],
                 'discount_amount' => $discountAmount,
@@ -347,10 +411,117 @@ class ContractController extends Controller
      */
     public function show(Contract $contract)
     {
-        $contract->load(['client', 'deceased', 'services', 'user']);
+        $contract->load([
+            'client',
+            'deceased',
+            'services',
+            'products',
+            'user',
+            'assignedDriver',
+            'assignedAssistant',
+            'payments'
+        ]);
+
+        // Format contract data for frontend
+        $contractData = [
+            'id' => $contract->id,
+            'numero_contrato' => $contract->contract_number,
+            'tipo' => $contract->type === 'immediate_need' ? 'necesidad_inmediata' : 'necesidad_futura',
+            'estado' => match($contract->status) {
+                'quote' => 'cotizacion',
+                'contract' => 'contrato',
+                'completed' => 'finalizado',
+                'cancelled' => 'cancelado',
+                default => $contract->status
+            },
+            'cliente' => [
+                'id' => $contract->client->id,
+                'nombre' => $contract->client->name,
+                'rut' => $contract->client->rut,
+                'telefono' => $contract->client->phone,
+                'email' => $contract->client->email ?? null,
+                'direccion' => $contract->client->address ?? null,
+            ],
+            'difunto' => $contract->deceased ? [
+                'id' => $contract->deceased->id,
+                'nombre' => $contract->deceased->name,
+                'fecha_fallecimiento' => $contract->deceased->death_date,
+                'hora_fallecimiento' => $contract->deceased->death_time,
+                'lugar_fallecimiento' => $contract->deceased->death_place,
+                'edad' => $contract->deceased->age,
+                'causa_fallecimiento' => $contract->deceased->cause_of_death,
+            ] : null,
+            'servicios' => $contract->services->map(function ($service) {
+                return [
+                    'servicio' => [
+                        'id' => $service->id,
+                        'nombre' => $service->name,
+                        'descripcion' => $service->description,
+                        'precio' => (float) $service->price,
+                    ],
+                    'cantidad' => $service->pivot->quantity,
+                    'precio_unitario' => (float) $service->pivot->unit_price,
+                    'subtotal' => (float) $service->pivot->subtotal,
+                ];
+            }),
+            'productos' => $contract->products->map(function ($product) {
+                return [
+                    'producto' => [
+                        'id' => $product->id,
+                        'nombre' => $product->name,
+                        'descripcion' => $product->description,
+                        'precio' => (float) $product->price,
+                    ],
+                    'cantidad' => $product->pivot->quantity,
+                    'precio_unitario' => (float) $product->pivot->unit_price,
+                    'subtotal' => (float) $product->pivot->subtotal,
+                ];
+            }),
+            'subtotal' => (float) $contract->subtotal,
+            'descuento_porcentaje' => (float) $contract->discount_percentage,
+            'descuento_monto' => (float) $contract->discount_amount,
+            'total' => (float) $contract->total,
+            'metodo_pago' => $contract->payment_method,
+            'cuotas' => $contract->installments,
+            'pie' => (float) $contract->down_payment,
+            'ubicacion_servicio' => $contract->service_location,
+            'fecha_hora_servicio' => $contract->service_datetime,
+            'solicitudes_especiales' => $contract->special_requests,
+            'conductor_asignado' => $contract->assignedDriver ? [
+                'id' => $contract->assignedDriver->id,
+                'nombre' => $contract->assignedDriver->name,
+                'email' => $contract->assignedDriver->email,
+            ] : null,
+            'auxiliar_asignado' => $contract->assignedAssistant ? [
+                'id' => $contract->assignedAssistant->id,
+                'nombre' => $contract->assignedAssistant->name,
+                'email' => $contract->assignedAssistant->email,
+            ] : null,
+            'porcentaje_comision' => (float) $contract->commission_percentage,
+            'monto_comision' => (float) $contract->commission_amount,
+            'es_festivo' => $contract->is_holiday,
+            'es_nocturno' => $contract->is_night_shift,
+            'secretaria' => [
+                'id' => $contract->user->id,
+                'nombre' => $contract->user->name,
+                'email' => $contract->user->email,
+            ],
+            'pagos' => $contract->payments->map(function ($payment) {
+                return [
+                    'id' => $payment->id,
+                    'monto' => (float) $payment->amount,
+                    'fecha_pago' => $payment->payment_date,
+                    'fecha_vencimiento' => $payment->due_date,
+                    'estado' => $payment->status,
+                    'metodo_pago' => $payment->payment_method,
+                ];
+            }),
+            'created_at' => $contract->created_at,
+            'updated_at' => $contract->updated_at,
+        ];
 
         return Inertia::render('features/contracts/pages/Show', [
-            'contract' => $contract,
+            'contract' => $contractData,
         ]);
     }
 
@@ -387,5 +558,318 @@ class ContractController extends Controller
 
         return redirect()->route('contracts.index')
             ->with('success', 'Contrato eliminado exitosamente');
+    }
+
+    /**
+     * Print quotation PDF
+     */
+    public function printQuotation(Contract $contract)
+    {
+        $contract->load(['client', 'deceased', 'services', 'products', 'user']);
+
+        $pdf = \PDF::loadView('pdf.quotation', [
+            'contract' => $contract
+        ]);
+
+        return $pdf->download('cotizacion_' . $contract->contract_number . '.pdf');
+    }
+
+    /**
+     * Print contract PDF
+     */
+    public function printContract(Contract $contract)
+    {
+        $contract->load(['client', 'deceased', 'services', 'products', 'user']);
+
+        $pdf = \PDF::loadView('pdf.quotation', [
+            'contract' => $contract
+        ]);
+
+        return $pdf->download('contrato_' . $contract->contract_number . '.pdf');
+    }
+
+    /**
+     * Print social media authorization form
+     */
+    public function printSocialMediaAuth(Contract $contract)
+    {
+        $contract->load(['client', 'deceased', 'user']);
+
+        $pdf = \PDF::loadView('pdf.social-media-auth', [
+            'contract' => $contract
+        ]);
+
+        return $pdf->download('autorizacion_redes_' . $contract->contract_number . '.pdf');
+    }
+
+    /**
+     * Print payment receipt
+     */
+    public function printReceipt(Contract $contract, $paymentId = null)
+    {
+        $contract->load(['client', 'deceased', 'user']);
+
+        // If specific payment ID provided, load that payment
+        // Otherwise, create a receipt for the full contract
+        $payment = $paymentId ? \App\Models\Payment::find($paymentId) : null;
+
+        $pdf = \PDF::loadView('pdf.receipt', [
+            'contract' => $contract,
+            'payment' => $payment
+        ]);
+
+        return $pdf->download('recibo_' . $contract->contract_number . '.pdf');
+    }
+
+    /**
+     * Bulk update status for multiple contracts
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $validated = $request->validate([
+            'contract_ids' => 'required|array',
+            'contract_ids.*' => 'exists:contracts,id',
+            'status' => 'required|in:quote,contract,completed,cancelled',
+        ]);
+
+        $count = Contract::whereIn('id', $validated['contract_ids'])
+            ->update(['status' => $validated['status']]);
+
+        return redirect()->route('contracts.index')
+            ->with('success', "Se actualizaron {$count} contrato(s) exitosamente.");
+    }
+
+    /**
+     * Bulk delete multiple contracts
+     */
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'contract_ids' => 'required|array',
+            'contract_ids.*' => 'exists:contracts,id',
+        ]);
+
+        $count = Contract::whereIn('id', $validated['contract_ids'])->delete();
+
+        return redirect()->route('contracts.index')
+            ->with('success', "Se eliminaron {$count} contrato(s) exitosamente.");
+    }
+
+    /**
+     * Export contracts to Excel/CSV
+     */
+    public function export(Request $request)
+    {
+        $query = Contract::with(['client', 'deceased']);
+
+        // Apply same filters as index
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('contract_number', 'like', "%{$search}%")
+                    ->orWhereHas('client', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('rut', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('deceased', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $contracts = $query->get();
+
+        // Generate CSV
+        $filename = 'contratos_' . now()->format('Y-m-d_His') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() use ($contracts) {
+            $file = fopen('php://output', 'w');
+
+            // CSV Headers
+            fputcsv($file, [
+                'N° Contrato',
+                'Tipo',
+                'Estado',
+                'Cliente',
+                'RUT Cliente',
+                'Teléfono',
+                'Difunto',
+                'Fecha Creación',
+                'Subtotal',
+                'Descuento %',
+                'Total',
+                'Método Pago',
+            ]);
+
+            // Data rows
+            foreach ($contracts as $contract) {
+                fputcsv($file, [
+                    $contract->contract_number,
+                    $contract->type === 'immediate_need' ? 'Necesidad Inmediata' : 'Necesidad Futura',
+                    match($contract->status) {
+                        'quote' => 'Cotización',
+                        'contract' => 'Contrato',
+                        'completed' => 'Finalizado',
+                        'cancelled' => 'Cancelado',
+                        default => $contract->status
+                    },
+                    $contract->client->name,
+                    $contract->client->rut,
+                    $contract->client->phone,
+                    $contract->deceased ? $contract->deceased->name : 'N/A',
+                    $contract->created_at->format('d/m/Y H:i'),
+                    number_format($contract->subtotal, 0, ',', '.'),
+                    $contract->discount_percentage,
+                    number_format($contract->total, 0, ',', '.'),
+                    $contract->payment_method ?? 'N/A',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export to Softland CSV format
+     */
+    public function exportSoftland(Request $request)
+    {
+        $contracts = Contract::with(['client'])
+            ->whereBetween('created_at', [$request->start_date, $request->end_date])
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="softland_export_' . date('Y-m-d') . '.csv"',
+        ];
+
+        $callback = function() use ($contracts) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+            // Softland format: Fecha, Cuenta, Glosa, Debe, Haber, RUT
+            fputcsv($file, ['Fecha', 'Cuenta', 'Glosa', 'Debe', 'Haber', 'RUT'], ';');
+
+            foreach ($contracts as $contract) {
+                fputcsv($file, [
+                    $contract->created_at->format('d/m/Y'),
+                    '410101', // Income account
+                    'Contrato ' . $contract->contract_number,
+                    '',
+                    number_format($contract->total, 2, ',', ''),
+                    str_replace(['.', '-'], '', $contract->client->rut ?? ''),
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export to Nubox JSON format
+     */
+    public function exportNubox(Request $request)
+    {
+        $contracts = Contract::with(['client', 'services', 'products'])
+            ->whereBetween('created_at', [$request->start_date, $request->end_date])
+            ->get();
+
+        $data = $contracts->map(function($contract) {
+            return [
+                'documentType' => 'invoice',
+                'documentNumber' => $contract->contract_number,
+                'date' => $contract->created_at->format('Y-m-d'),
+                'customer' => [
+                    'name' => $contract->client->name,
+                    'taxId' => str_replace(['.', '-'], '', $contract->client->rut ?? ''),
+                ],
+                'items' => $contract->services->map(function($service) {
+                    return [
+                        'description' => $service->name,
+                        'quantity' => $service->pivot->quantity,
+                        'unitPrice' => $service->pivot->unit_price,
+                        'total' => $service->pivot->subtotal,
+                    ];
+                })->toArray(),
+                'totals' => [
+                    'subtotal' => $contract->subtotal,
+                    'discount' => $contract->discount_amount,
+                    'total' => $contract->total,
+                ],
+            ];
+        });
+
+        return response()->json([
+            'exportDate' => now()->format('Y-m-d H:i:s'),
+            'totalDocuments' => $data->count(),
+            'documents' => $data,
+        ]);
+    }
+
+    /**
+     * Convert future need contract to immediate need
+     */
+    public function convertToImmediate(Request $request, Contract $contract)
+    {
+        if ($contract->type !== 'necesidad_futura') {
+            return redirect()->back()->with('error', 'Only future need contracts can be converted');
+        }
+
+        $validated = $request->validate([
+            'deceased_name' => 'required|string|max:255',
+            'deceased_death_date' => 'required|date',
+            'deceased_death_time' => 'nullable|date_format:H:i',
+            'deceased_death_place' => 'nullable|string|max:255',
+            'deceased_age' => 'nullable|integer|min:0',
+            'deceased_cause_of_death' => 'nullable|string|max:255',
+            'service_datetime' => 'required|date',
+            'assigned_driver_id' => 'nullable|exists:users,id',
+            'assigned_assistant_id' => 'nullable|exists:users,id',
+        ]);
+
+        \DB::transaction(function() use ($contract, $validated) {
+            // Create deceased record
+            $deceased = \App\Models\Deceased::create([
+                'name' => $validated['deceased_name'],
+                'death_date' => $validated['deceased_death_date'],
+                'death_time' => $validated['deceased_death_time'] ?? null,
+                'death_place' => $validated['deceased_death_place'] ?? null,
+                'age' => $validated['deceased_age'] ?? null,
+                'cause_of_death' => $validated['deceased_cause_of_death'] ?? null,
+            ]);
+
+            // Update contract
+            $contract->update([
+                'type' => 'necesidad_inmediata',
+                'deceased_id' => $deceased->id,
+                'service_datetime' => $validated['service_datetime'],
+                'assigned_driver_id' => $validated['assigned_driver_id'] ?? null,
+                'assigned_assistant_id' => $validated['assigned_assistant_id'] ?? null,
+            ]);
+
+            // Deduct inventory for products
+            foreach ($contract->products as $product) {
+                $product->decrement('stock', $product->pivot->quantity);
+            }
+        });
+
+        return redirect()->route('contracts.show', $contract)
+            ->with('success', 'Contract converted to immediate need successfully');
     }
 }

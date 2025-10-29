@@ -20,6 +20,10 @@ class Contract extends Model
         'service_date',
         'user_id',
         'branch_id',
+        'agreement_id',
+        'church_id',
+        'cemetery_id',
+        'wake_room_id',
         'subtotal',
         'discount_percentage',
         'discount_amount',
@@ -103,6 +107,26 @@ class Contract extends Model
     public function assignedAssistant(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_assistant_id');
+    }
+
+    public function agreement(): BelongsTo
+    {
+        return $this->belongsTo(Agreement::class);
+    }
+
+    public function church(): BelongsTo
+    {
+        return $this->belongsTo(Church::class);
+    }
+
+    public function cemetery(): BelongsTo
+    {
+        return $this->belongsTo(Cemetery::class);
+    }
+
+    public function wakeRoom(): BelongsTo
+    {
+        return $this->belongsTo(WakeRoom::class);
     }
 
     // Scopes

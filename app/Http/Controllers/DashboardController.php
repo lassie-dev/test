@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\Contract;
+use App\Models\Payment;
+use App\Models\Product;
+use App\Models\Notification;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -244,8 +247,13 @@ class DashboardController extends Controller
             })
             ->count();
 
-        // Pending payments (mock data - replace when payment module is ready)
-        $pendingPayments = 5;
+        // Real pending payments count
+        $pendingPayments = Payment::where('status', 'pending')->count();
+
+        // Real overdue payments count
+        $overduePayments = Payment::where('status', 'pending')
+            ->where('due_date', '<', now())
+            ->count();
 
         // Revenue this month
         $revenueThisMonth = $contractQuery()
@@ -253,8 +261,9 @@ class DashboardController extends Controller
             ->where('status', '!=', 'cancelled')
             ->sum('total');
 
-        // Inventory alerts (mock data - replace when inventory module is ready)
-        $inventoryLow = 3;
+        // Real inventory alerts
+        $inventoryLow = Product::whereRaw('stock <= min_stock')->where('stock', '>', 0)->count();
+        $inventoryOut = Product::where('stock', '<=', 0)->count();
 
         // Recent contracts (last 10)
         $recentContracts = $contractQuery()
@@ -297,6 +306,80 @@ class DashboardController extends Controller
                 ];
             });
 
+        // Alerts and notifications
+        $alerts = [];
+
+        // Overdue payments alert
+        if ($overduePayments > 0) {
+            $alerts[] = [
+                'type' => 'error',
+                'title' => 'Pagos Vencidos',
+                'message' => "{$overduePayments} pago(s) vencido(s) requieren atención inmediata",
+                'action' => '/payments?status=overdue',
+                'icon' => 'alert-triangle',
+            ];
+        }
+
+        // Low inventory alert
+        if ($inventoryLow > 0) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Stock Bajo',
+                'message' => "{$inventoryLow} producto(s) con stock bajo",
+                'action' => '/inventory?stock_status=low',
+                'icon' => 'package',
+            ];
+        }
+
+        // Out of stock alert
+        if ($inventoryOut > 0) {
+            $alerts[] = [
+                'type' => 'error',
+                'title' => 'Sin Stock',
+                'message' => "{$inventoryOut} producto(s) sin stock",
+                'action' => '/inventory?stock_status=out',
+                'icon' => 'alert-circle',
+            ];
+        }
+
+        // Pending arrangements alert
+        if ($pendingArrangements > 0) {
+            $alerts[] = [
+                'type' => 'info',
+                'title' => 'Arreglos Pendientes',
+                'message' => "{$pendingArrangements} contrato(s) pendiente(s) de agendar",
+                'action' => '/contracts?status=quote',
+                'icon' => 'calendar',
+            ];
+        }
+
+        // Recent notifications summary
+        $notificationsSummary = [
+            'total_sent_today' => Notification::whereDate('sent_at', $now->toDateString())->count(),
+            'pending' => Notification::where('status', 'pending')->count(),
+            'failed' => Notification::where('status', 'failed')->count(),
+        ];
+
+        // Today's schedule
+        $todaysServices = $contractQuery()
+            ->with('deceased', 'client', 'assignedDriver', 'assignedAssistant')
+            ->whereDate('service_datetime', $now->toDateString())
+            ->orderBy('service_datetime')
+            ->get()
+            ->map(function ($contract) {
+                return [
+                    'id' => $contract->id,
+                    'contract_number' => $contract->contract_number,
+                    'deceased_name' => $contract->deceased->name ?? 'N/A',
+                    'family_contact' => $contract->client->name ?? 'N/A',
+                    'service_time' => $contract->service_datetime ? Carbon::parse($contract->service_datetime)->format('H:i') : null,
+                    'service_location' => $contract->service_location,
+                    'driver' => $contract->assignedDriver ? $contract->assignedDriver->name : null,
+                    'assistant' => $contract->assignedAssistant ? $contract->assignedAssistant->name : null,
+                    'status' => $contract->status,
+                ];
+            });
+
         // Charts now use frontend mock data
         // Backend chart generation methods kept for future use when real data is needed
 
@@ -306,10 +389,15 @@ class DashboardController extends Controller
                 'families_served' => $familiesServed,
                 'pending_arrangements' => $pendingArrangements,
                 'pending_payments' => $pendingPayments,
+                'overdue_payments' => $overduePayments,
                 'contracts_month' => $familiesServed,
                 'revenue_month' => (float) $revenueThisMonth,
                 'inventory_low' => $inventoryLow,
+                'inventory_out' => $inventoryOut,
             ],
+            'alerts' => $alerts,
+            'notifications_summary' => $notificationsSummary,
+            'todays_services' => $todaysServices,
             'recent_contracts' => $recentContracts,
             'upcoming_services' => $upcomingServices,
             'branches' => $branches,
