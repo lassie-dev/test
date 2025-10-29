@@ -28,7 +28,7 @@ export interface Cliente {
 export interface Difunto {
   id: number;
   nombre: string;
-  fecha_fallecimiento: Date;
+  fecha_fallecimiento: string | Date;
   hora_fallecimiento?: string;
   lugar_fallecimiento?: string;
   edad?: number;
@@ -84,6 +84,9 @@ export interface Contrato {
   servicios: ContratoServicio[];
   productos?: ContratoProductoDetalle[];
   convenio?: Convenio;
+  iglesia?: { id: number; name: string; city: string };
+  cementerio?: { id: number; name: string; city: string };
+  sala_velacion?: { id: number; name: string; city: string };
   subtotal: number;
   descuento_porcentaje: number;
   descuento_monto: number;
@@ -92,7 +95,7 @@ export interface Contrato {
   cuotas?: number;
   pie?: number;
   ubicacion_servicio?: string;
-  fecha_hora_servicio?: string;
+  fecha_hora_servicio?: string | Date;
   solicitudes_especiales?: string;
   conductor_asignado?: Usuario;
   auxiliar_asignado?: Usuario;

@@ -564,12 +564,50 @@ class ContractController extends Controller
      */
     public function edit(Contract $contract)
     {
-        $contract->load(['client', 'deceased', 'services']);
-        $services = Service::where('active', true)->get();
+        // Load all relationships needed for editing
+        $contract->load([
+            'client',
+            'deceased',
+            'services.service',
+            'products.product',
+            'assignedDriver',
+            'assignedAssistant',
+            'agreement',
+            'church',
+            'cemetery',
+            'wakeRoom',
+        ]);
+
+        // Get all available services and products
+        $services = Service::where('active', true)->with('category')->get();
+        $products = \App\Models\Product::where('is_active', true)->get();
+
+        // Get active drivers and assistants from staff table
+        $drivers = \App\Models\Staff::drivers()->get(['id', 'name', 'email', 'role']);
+        $assistants = \App\Models\Staff::assistants()->get(['id', 'name', 'email', 'role']);
+
+        // Get directory data
+        $churches = \App\Models\Church::orderBy('name')->get(['id', 'name', 'city', 'religion']);
+        $cemeteries = \App\Models\Cemetery::orderBy('name')->get(['id', 'name', 'city', 'type']);
+        $wakeRooms = \App\Models\WakeRoom::orderBy('name')->get(['id', 'name', 'funeral_home_name', 'city']);
+
+        // Get active agreements (only those currently valid)
+        $agreements = \App\Models\Agreement::where('status', 'active')
+            ->where('start_date', '<=', Carbon::now())  // Agreement has started
+            ->where('end_date', '>=', Carbon::now())    // Agreement has not expired
+            ->orderBy('company_name')
+            ->get(['id', 'company_name', 'code', 'discount_percentage', 'company_pays_percentage', 'employee_pays_percentage']);
 
         return Inertia::render('features/contracts/pages/Edit', [
             'contract' => $contract,
             'services' => $services,
+            'products' => $products,
+            'drivers' => $drivers,
+            'assistants' => $assistants,
+            'churches' => $churches,
+            'cemeteries' => $cemeteries,
+            'wakeRooms' => $wakeRooms,
+            'agreements' => $agreements,
         ]);
     }
 
@@ -578,9 +616,263 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        // Implementation would go here
-        return redirect()->route('contracts.index')
-            ->with('success', 'Contrato actualizado exitosamente');
+        \Log::info('Contract update method called', [
+            'user_id' => auth()->id(),
+            'contract_id' => $contract->id,
+            'has_services' => $request->has('services'),
+            'services_count' => is_array($request->input('services')) ? count($request->input('services')) : 0,
+        ]);
+
+        $validated = $request->validate([
+            // Contract fields
+            'type' => 'required|in:necesidad_inmediata,necesidad_futura',
+            'status' => 'required|in:cotizacion,contrato,finalizado,cancelado',
+            'is_holiday' => 'boolean',
+            'is_night_shift' => 'boolean',
+
+            // Client fields
+            'client_name' => 'required|string|max:255',
+            'client_rut' => 'required|string|max:12',
+            'client_phone' => 'required|string|max:20',
+            'client_email' => 'nullable|email|max:255',
+            'client_address' => 'nullable|string|max:255',
+
+            // Deceased fields (required for immediate need)
+            'deceased_name' => 'required_if:type,necesidad_inmediata|string|max:255',
+            'deceased_death_date' => 'required_if:type,necesidad_inmediata|date',
+            'deceased_death_time' => 'nullable|date_format:H:i',
+            'deceased_death_place' => 'nullable|string|max:255',
+            'deceased_age' => 'nullable|integer|min:0',
+            'deceased_cause_of_death' => 'nullable|string|max:255',
+
+            // Services
+            'services' => 'required|array|min:1',
+            'services.*.service_id' => 'required|exists:services,id',
+            'services.*.quantity' => 'required|integer|min:1',
+            'services.*.unit_price' => 'required|numeric|min:0',
+
+            // Products
+            'products' => 'nullable|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.unit_price' => 'required|numeric|min:0',
+
+            'discount_percentage' => 'required|numeric|min:0|max:100',
+
+            // Payment
+            'payment_method' => 'required|in:cash,credit',
+            'installments' => 'required_if:payment_method,credit|integer|min:1|max:12',
+            'down_payment' => 'nullable|numeric|min:0',
+
+            // Service details
+            'service_location' => 'nullable|string|max:255',
+            'service_datetime' => 'nullable|date',
+            'special_requests' => 'nullable|string',
+
+            // Staff assignment
+            'assigned_driver_id' => 'nullable|exists:staff,id',
+            'assigned_assistant_id' => 'nullable|exists:staff,id',
+
+            // Directory references
+            'agreement_id' => [
+                'nullable',
+                'exists:agreements,id',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        $agreement = \App\Models\Agreement::find($value);
+                        if (!$agreement) {
+                            $fail('The selected agreement does not exist.');
+                        } elseif (!$agreement->isActive()) {
+                            $fail('The selected agreement is no longer valid or has expired.');
+                        }
+                    }
+                }
+            ],
+            'church_id' => 'nullable|exists:churches,id',
+            'cemetery_id' => 'nullable|exists:cemeteries,id',
+            'wake_room_id' => 'nullable|exists:wake_rooms,id',
+        ]);
+
+        // Start transaction
+        \DB::beginTransaction();
+
+        try {
+            // Update or create client
+            $client = \App\Models\Client::updateOrCreate(
+                ['rut' => $validated['client_rut']],
+                [
+                    'name' => $validated['client_name'],
+                    'phone' => $validated['client_phone'],
+                    'email' => $validated['client_email'] ?? null,
+                    'address' => $validated['client_address'] ?? null,
+                ]
+            );
+
+            // Update or create deceased if immediate need
+            $deceasedId = null;
+            if ($validated['type'] === 'necesidad_inmediata') {
+                if ($contract->deceased_id) {
+                    // Update existing deceased
+                    $contract->deceased->update([
+                        'name' => $validated['deceased_name'],
+                        'death_date' => $validated['deceased_death_date'],
+                        'death_time' => $validated['deceased_death_time'] ?? null,
+                        'death_place' => $validated['deceased_death_place'] ?? null,
+                        'age' => $validated['deceased_age'] ?? null,
+                        'cause_of_death' => $validated['deceased_cause_of_death'] ?? null,
+                    ]);
+                    $deceasedId = $contract->deceased_id;
+                } else {
+                    // Create new deceased
+                    $deceased = \App\Models\Deceased::create([
+                        'name' => $validated['deceased_name'],
+                        'death_date' => $validated['deceased_death_date'],
+                        'death_time' => $validated['deceased_death_time'] ?? null,
+                        'death_place' => $validated['deceased_death_place'] ?? null,
+                        'age' => $validated['deceased_age'] ?? null,
+                        'cause_of_death' => $validated['deceased_cause_of_death'] ?? null,
+                    ]);
+                    $deceasedId = $deceased->id;
+                }
+            }
+
+            // Calculate totals
+            $subtotal = 0;
+            foreach ($validated['services'] as $service) {
+                $subtotal += $service['quantity'] * $service['unit_price'];
+            }
+
+            // Add products to subtotal
+            if (!empty($validated['products'])) {
+                foreach ($validated['products'] as $product) {
+                    $subtotal += $product['quantity'] * $product['unit_price'];
+                }
+            }
+
+            $discountAmount = ($subtotal * $validated['discount_percentage']) / 100;
+            $total = $subtotal - $discountAmount;
+
+            // Calculate commission
+            $commissionRate = 5; // Base 5%
+            if ($validated['is_night_shift'] ?? false) $commissionRate += 2;
+            if ($validated['is_holiday'] ?? false) $commissionRate += 3;
+            $commissionAmount = ($total * $commissionRate) / 100;
+
+            // Convert type to English
+            $type = match($validated['type']) {
+                'necesidad_inmediata' => 'immediate_need',
+                'necesidad_futura' => 'future_need',
+                default => $validated['type']
+            };
+
+            // Convert status to English
+            $status = match($validated['status']) {
+                'cotizacion' => 'quote',
+                'contrato' => 'contract',
+                'finalizado' => 'completed',
+                'cancelado' => 'cancelled',
+                default => $validated['status']
+            };
+
+            // Update contract
+            $contract->update([
+                'type' => $type,
+                'status' => $status,
+                'client_id' => $client->id,
+                'deceased_id' => $deceasedId,
+                'agreement_id' => $validated['agreement_id'] ?? null,
+                'church_id' => $validated['church_id'] ?? null,
+                'cemetery_id' => $validated['cemetery_id'] ?? null,
+                'wake_room_id' => $validated['wake_room_id'] ?? null,
+                'subtotal' => $subtotal,
+                'discount_percentage' => $validated['discount_percentage'],
+                'discount_amount' => $discountAmount,
+                'total' => $total,
+                'payment_method' => $validated['payment_method'],
+                'installments' => $validated['installments'] ?? null,
+                'down_payment' => $validated['down_payment'] ?? null,
+                'service_location' => $validated['service_location'] ?? null,
+                'service_datetime' => $validated['service_datetime'] ?? null,
+                'special_requests' => $validated['special_requests'] ?? null,
+                'assigned_driver_id' => $validated['assigned_driver_id'] ?? null,
+                'assigned_assistant_id' => $validated['assigned_assistant_id'] ?? null,
+                'commission_percentage' => $commissionRate,
+                'commission_amount' => $commissionAmount,
+                'is_holiday' => $validated['is_holiday'] ?? false,
+                'is_night_shift' => $validated['is_night_shift'] ?? false,
+            ]);
+
+            // Sync services - detach old and attach new
+            $contract->services()->detach();
+            foreach ($validated['services'] as $service) {
+                $contract->services()->attach($service['service_id'], [
+                    'quantity' => $service['quantity'],
+                    'unit_price' => $service['unit_price'],
+                    'subtotal' => $service['quantity'] * $service['unit_price'],
+                ]);
+            }
+
+            // Sync products - detach old and attach new
+            // Note: We don't adjust inventory on edit, only on initial creation
+            $contract->products()->detach();
+            if (!empty($validated['products'])) {
+                foreach ($validated['products'] as $product) {
+                    $contract->products()->attach($product['product_id'], [
+                        'quantity' => $product['quantity'],
+                        'unit_price' => $product['unit_price'],
+                        'subtotal' => $product['quantity'] * $product['unit_price'],
+                    ]);
+                }
+            }
+
+            // Update payment schedule if payment method changed to credit
+            if ($validated['payment_method'] === 'credit' && $validated['installments'] > 0) {
+                // Delete existing payment schedule
+                \App\Models\Payment::where('contract_id', $contract->id)->delete();
+
+                // Create new payment schedule
+                $remainingAmount = $total - ($validated['down_payment'] ?? 0);
+                $monthlyPayment = $remainingAmount / $validated['installments'];
+
+                for ($i = 1; $i <= $validated['installments']; $i++) {
+                    \App\Models\Payment::create([
+                        'contract_id' => $contract->id,
+                        'payment_method' => 'credit',
+                        'amount' => $monthlyPayment,
+                        'payment_date' => null,
+                        'due_date' => now()->addMonths($i),
+                        'status' => 'pending',
+                        'processed_by' => null,
+                    ]);
+                }
+            } elseif ($validated['payment_method'] === 'cash') {
+                // If changed to cash, remove payment schedule
+                \App\Models\Payment::where('contract_id', $contract->id)->delete();
+            }
+
+            \DB::commit();
+
+            \Log::info('Contract updated successfully', [
+                'contract_id' => $contract->id,
+                'contract_number' => $contract->contract_number,
+            ]);
+
+            return redirect()->route('contracts.show', $contract->id)
+                ->with('success', 'Contrato actualizado exitosamente');
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Contract update failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => auth()->id(),
+                'contract_id' => $contract->id,
+                'data' => $request->except(['client_rut'])
+            ]);
+            return back()
+                ->withErrors(['error' => 'Error al actualizar el contrato: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**
