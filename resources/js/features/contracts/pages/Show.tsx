@@ -346,9 +346,9 @@ export default function Show({ contract }: ShowProps) {
                       <TableRow key={index}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{item.servicio.nombre}</p>
-                            {item.servicio.descripcion && (
-                              <p className="text-sm text-gray-500">{item.servicio.descripcion}</p>
+                            <p className="font-medium">{item.servicio.name}</p>
+                            {item.servicio.description && (
+                              <p className="text-sm text-gray-500">{item.servicio.description}</p>
                             )}
                           </div>
                         </TableCell>
@@ -387,9 +387,9 @@ export default function Show({ contract }: ShowProps) {
                         <TableRow key={index}>
                           <TableCell>
                             <div>
-                              <p className="font-medium">{item.producto.nombre}</p>
-                              {item.producto.descripcion && (
-                                <p className="text-sm text-gray-500">{item.producto.descripcion}</p>
+                              <p className="font-medium">{item.producto.name}</p>
+                              {item.producto.description && (
+                                <p className="text-sm text-gray-500">{item.producto.description}</p>
                               )}
                             </div>
                           </TableCell>

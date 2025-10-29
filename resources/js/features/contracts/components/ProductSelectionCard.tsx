@@ -63,30 +63,52 @@ export default function ProductSelectionCard({
               <SelectTrigger id="product">
                 <SelectValue placeholder="Select a product" />
               </SelectTrigger>
-              <SelectContent position="popper">
-                {products.map((product) => {
-                  const isLowStock = product.stock <= product.min_stock;
-                  const isOutOfStock = product.stock <= 0;
+              <SelectContent position="popper" className="max-h-[400px]">
+                {/* Group products by category */}
+                {Object.entries(
+                  products.reduce((acc, product) => {
+                    const category = product.category || 'other';
+                    if (!acc[category]) acc[category] = [];
+                    acc[category].push(product);
+                    return acc;
+                  }, {} as Record<string, Product[]>)
+                ).map(([category, categoryProducts]) => (
+                  <div key={category}>
+                    {/* Category Header */}
+                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase bg-gray-50 sticky top-0">
+                      {category === 'coffin' && '⚰️ Coffins'}
+                      {category === 'urn' && '🏺 Urns'}
+                      {category === 'flower' && '🌸 Flowers'}
+                      {category === 'memorial_item' && '🕯️ Memorial Items'}
+                      {category === 'other' && '📦 Other'}
+                    </div>
 
-                  return (
-                    <SelectItem
-                      key={product.id}
-                      value={product.id.toString()}
-                      disabled={isOutOfStock}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span>{product.name} - {formatearMoneda(product.price)}</span>
-                        {isOutOfStock ? (
-                          <span className="ml-2 text-xs text-red-600 font-semibold">Out of Stock</span>
-                        ) : isLowStock ? (
-                          <span className="ml-2 text-xs text-yellow-600 font-semibold">Low Stock ({product.stock})</span>
-                        ) : (
-                          <span className="ml-2 text-xs text-gray-500">Stock: {product.stock}</span>
-                        )}
-                      </div>
-                    </SelectItem>
-                  );
-                })}
+                    {/* Category Products */}
+                    {categoryProducts.map((product) => {
+                      const isLowStock = product.stock <= product.min_stock;
+                      const isOutOfStock = product.stock <= 0;
+
+                      return (
+                        <SelectItem
+                          key={product.id}
+                          value={product.id.toString()}
+                          disabled={isOutOfStock}
+                        >
+                          <div className="flex items-center justify-between w-full">
+                            <span>{product.name} - {formatearMoneda(product.price)}</span>
+                            {isOutOfStock ? (
+                              <span className="ml-2 text-xs text-red-600 font-semibold">Out of Stock</span>
+                            ) : isLowStock ? (
+                              <span className="ml-2 text-xs text-yellow-600 font-semibold">Low Stock ({product.stock})</span>
+                            ) : (
+                              <span className="ml-2 text-xs text-gray-500">Stock: {product.stock}</span>
+                            )}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </div>
+                ))}
               </SelectContent>
             </Select>
           </div>

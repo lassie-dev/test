@@ -76,15 +76,6 @@ class ContractController extends Controller
             $query->where('payment_method', $request->payment_method);
         }
 
-        // Has deceased filter
-        if ($request->filled('has_deceased')) {
-            if ($request->has_deceased === 'yes') {
-                $query->whereNotNull('deceased_id');
-            } elseif ($request->has_deceased === 'no') {
-                $query->whereNull('deceased_id');
-            }
-        }
-
         // Sort options
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
@@ -159,7 +150,7 @@ class ContractController extends Controller
      */
     public function create()
     {
-        $services = Service::where('active', true)->get();
+        $services = Service::where('active', true)->with('category')->get();
         $products = \App\Models\Product::where('is_active', true)->get();
 
         // Get active drivers and assistants from staff table

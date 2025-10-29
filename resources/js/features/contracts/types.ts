@@ -35,13 +35,22 @@ export interface Difunto {
   causa_fallecimiento?: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  type: 'service' | 'product';
+  icon?: string;
+}
+
 export interface Servicio {
   id: number;
   name: string;
-  nombre: string;
   description: string;
-  descripcion: string;
   price: number;
+  category_id?: number;
+  category?: Category;
 }
 
 export interface Usuario {
@@ -100,9 +109,7 @@ export interface Contrato {
 export interface Product {
   id: number;
   name: string;
-  nombre: string;
   description: string;
-  descripcion: string;
   category: string;
   price: number;
   stock: number;

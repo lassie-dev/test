@@ -30,7 +30,6 @@ interface ContractsFiltersProps {
     total_min?: string;
     total_max?: string;
     payment_method?: string;
-    has_deceased?: string;
     sort_by?: string;
     sort_order?: string;
   };
@@ -46,7 +45,6 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
   const [totalMin, setTotalMin] = useState(filters.total_min || '');
   const [totalMax, setTotalMax] = useState(filters.total_max || '');
   const [paymentMethod, setPaymentMethod] = useState(filters.payment_method || 'all');
-  const [hasDeceased, setHasDeceased] = useState(filters.has_deceased || 'all');
   const [sortBy, setSortBy] = useState(filters.sort_by || 'created_at');
   const [sortOrder, setSortOrder] = useState(filters.sort_order || 'desc');
   const [showFilters, setShowFilters] = useState(false);
@@ -63,7 +61,6 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
       total_min: totalMin || undefined,
       total_max: totalMax || undefined,
       payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
-      has_deceased: hasDeceased !== 'all' ? hasDeceased : undefined,
       sort_by: sortBy,
       sort_order: sortOrder,
       ...overrides,
@@ -126,7 +123,6 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
     setTotalMin('');
     setTotalMax('');
     setPaymentMethod('all');
-    setHasDeceased('all');
     setSortBy('created_at');
     setSortOrder('desc');
     router.get('/contracts', {}, { preserveState: true });
@@ -146,7 +142,6 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
     totalMin ||
     totalMax ||
     paymentMethod !== 'all' ||
-    hasDeceased !== 'all' ||
     sortBy !== 'created_at' ||
     sortOrder !== 'desc';
 
@@ -181,16 +176,15 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
                         totalMin,
                         totalMax,
                         paymentMethod !== 'all',
-                        hasDeceased !== 'all',
                       ].filter(Boolean).length
                     }
                   </span>
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-96" align="end">
+            <PopoverContent className="w-96 max-h-[80vh] overflow-y-auto scrollbar-hide" align="end">
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between sticky top-0 bg-white pb-2 z-10">
                   <h4 className="font-semibold">{t('common.filters')}</h4>
                   {hasActiveFilters && (
                     <Button
@@ -291,21 +285,7 @@ export function ContractsFilters({ filters = {} }: ContractsFiltersProps) {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{t('contracts.hasDeceased')}</label>
-                  <Select value={hasDeceased} onValueChange={setHasDeceased}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('contracts.selectDeceasedStatus')} />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="all">{t('common.all')}</SelectItem>
-                      <SelectItem value="yes">{t('common.yes')}</SelectItem>
-                      <SelectItem value="no">{t('common.no')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="pt-2">
+                <div className="pt-2 sticky bottom-0 bg-white">
                   <Button onClick={handleApplyFilters} className="w-full">
                     {t('common.apply')}
                   </Button>

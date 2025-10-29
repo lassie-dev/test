@@ -54,10 +54,10 @@ export const DEFAULT_PAYMENT_VALUES = {
 // ============================================================================
 
 export const ESTADO_BADGE_VARIANTS = {
-  cotizacion: 'secondary',
-  contrato: 'default',
-  finalizado: 'outline',
-  cancelado: 'destructive',
+  cotizacion: 'secondary', // Blue/gray background for quotations
+  contrato: 'success', // Green background for contracts
+  finalizado: 'outline', // Outlined for finished
+  cancelado: 'destructive', // Red background for canceled
 } as const;
 
 export const ESTADO_LABEL_KEYS = {
