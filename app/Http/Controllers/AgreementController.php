@@ -168,10 +168,20 @@ class AgreementController extends Controller
             'query' => 'required|string|min:3',
         ]);
 
-        $query = $request->query;
+        $query = $request->input('query');
 
-        // Search in contracts' clients by name or RUT
+        // Search in agreements by company name
         $agreements = Agreement::active()
+            ->where('company_name', 'like', "%{$query}%")
+            ->orWhere('code', 'like', "%{$query}%")
+            ->with(['contracts' => function ($q) {
+                $q->latest()->limit(5);
+            }])
+            ->limit(10)
+            ->get();
+
+        // Also search for specific client in contracts to find their agreement
+        $contractsWithAgreements = Agreement::active()
             ->whereHas('contracts.client', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
                     ->orWhere('rut', 'like', "%{$query}%");
@@ -184,8 +194,100 @@ class AgreementController extends Controller
             }])
             ->get();
 
+        $allAgreements = $agreements->merge($contractsWithAgreements)->unique('id');
+
         return response()->json([
-            'agreements' => $agreements,
+            'agreements' => $allAgreements,
         ]);
+    }
+
+    /**
+     * Get billing summary for a specific agreement
+     */
+    public function billingSummary(Request $request, Agreement $agreement)
+    {
+        $month = $request->input('month', Carbon::now()->format('Y-m'));
+        $monthStart = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $monthEnd = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+        // Get contracts for this agreement in the period
+        $contracts = $agreement->contracts()
+            ->whereBetween('created_at', [$monthStart, $monthEnd])
+            ->with('client', 'deceased')
+            ->get();
+
+        $totalValue = $contracts->sum('total');
+        $companyPortion = $totalValue * ($agreement->company_pays_percentage / 100);
+        $employeePortion = $totalValue * ($agreement->employee_pays_percentage / 100);
+
+        // Get payment status for company portion
+        $companyPaid = 0; // TODO: Implement company payment tracking
+        $companyPending = $companyPortion - $companyPaid;
+
+        $summary = [
+            'period' => $month,
+            'agreement' => $agreement,
+            'contracts' => $contracts,
+            'statistics' => [
+                'total_contracts' => $contracts->count(),
+                'total_value' => $totalValue,
+                'company_portion' => $companyPortion,
+                'employee_portion' => $employeePortion,
+                'company_paid' => $companyPaid,
+                'company_pending' => $companyPending,
+            ],
+        ];
+
+        return Inertia::render('features/agreements/pages/BillingSummary', $summary);
+    }
+
+    /**
+     * Get detailed usage report for an agreement
+     */
+    public function usageReport(Request $request, Agreement $agreement)
+    {
+        $year = $request->input('year', Carbon::now()->year);
+        $yearStart = Carbon::createFromDate($year, 1, 1)->startOfYear();
+        $yearEnd = Carbon::createFromDate($year, 12, 31)->endOfYear();
+
+        // Get monthly breakdown
+        $monthlyData = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $monthStart = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $monthEnd = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+
+            $monthContracts = $agreement->contracts()
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
+                ->get();
+
+            $monthlyData[] = [
+                'month' => $monthStart->format('M Y'),
+                'month_number' => $month,
+                'contracts_count' => $monthContracts->count(),
+                'total_revenue' => $monthContracts->sum('total'),
+                'company_billed' => $monthContracts->sum('total') * ($agreement->company_pays_percentage / 100),
+                'employee_payments' => $monthContracts->sum('total') * ($agreement->employee_pays_percentage / 100),
+            ];
+        }
+
+        // Year totals
+        $yearContracts = $agreement->contracts()
+            ->whereBetween('created_at', [$yearStart, $yearEnd])
+            ->get();
+
+        $report = [
+            'agreement' => $agreement,
+            'year' => $year,
+            'monthly_data' => $monthlyData,
+            'year_totals' => [
+                'contracts_count' => $yearContracts->count(),
+                'total_revenue' => $yearContracts->sum('total'),
+                'company_billed' => $yearContracts->sum('total') * ($agreement->company_pays_percentage / 100),
+                'employee_payments' => $yearContracts->sum('total') * ($agreement->employee_pays_percentage / 100),
+                'average_contract_value' => $yearContracts->count() > 0 ? $yearContracts->avg('total') : 0,
+            ],
+        ];
+
+        return Inertia::render('features/agreements/pages/UsageReport', $report);
     }
 }

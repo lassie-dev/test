@@ -69,6 +69,14 @@ Route::middleware('auth')->group(callback: function () {
 
     // Payroll
     Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
+    Route::get('/payroll/create', [PayrollController::class, 'create'])->name('payroll.create');
+    Route::get('/payroll/{payroll}', [PayrollController::class, 'show'])->name('payroll.show');
+    Route::post('/payroll/generate', [PayrollController::class, 'generate'])->name('payroll.generate');
+    Route::post('/payroll/{payroll}/approve', [PayrollController::class, 'approve'])->name('payroll.approve');
+    Route::post('/payroll/{payroll}/mark-paid', [PayrollController::class, 'markPaid'])->name('payroll.mark-paid');
+    Route::post('/payroll/{payroll}/recalculate', [PayrollController::class, 'recalculate'])->name('payroll.recalculate');
+    Route::get('/payroll/summary', [PayrollController::class, 'summary'])->name('payroll.summary');
+    Route::post('/payroll/bulk-approve', [PayrollController::class, 'bulkApprove'])->name('payroll.bulk-approve');
 
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -79,8 +87,10 @@ Route::middleware('auth')->group(callback: function () {
     Route::get('/reports/export-sales', [ReportController::class, 'exportSales'])->name('reports.export-sales');
 
     // Agreements (Convenios)
+    Route::get('/agreements-lookup', [AgreementController::class, 'lookup'])->name('agreements.lookup');
+    Route::get('/agreements/{agreement}/billing-summary', [AgreementController::class, 'billingSummary'])->name('agreements.billing-summary');
+    Route::get('/agreements/{agreement}/usage-report', [AgreementController::class, 'usageReport'])->name('agreements.usage-report');
     Route::resource('agreements', AgreementController::class);
-    Route::get('/agreements/lookup', [AgreementController::class, 'lookup'])->name('agreements.lookup');
 
     // Directory (Churches, Cemeteries, Wake Rooms)
     Route::get('/directory', [DirectoryController::class, 'index'])->name('directory.index');

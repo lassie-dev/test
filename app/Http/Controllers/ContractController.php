@@ -744,35 +744,67 @@ class ContractController extends Controller
     }
 
     /**
-     * Export to Softland CSV format
+     * Export to Softland CSV format (Chilean accounting software)
      */
     public function exportSoftland(Request $request)
     {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
         $contracts = Contract::with(['client'])
+            ->where('status', '!=', 'cancelado')
             ->whereBetween('created_at', [$request->start_date, $request->end_date])
+            ->orderBy('created_at')
             ->get();
+
+        $filename = 'Softland_Export_' . now()->format('Y-m-d_His') . '.csv';
 
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="softland_export_' . date('Y-m-d') . '.csv"',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ];
 
         $callback = function() use ($contracts) {
             $file = fopen('php://output', 'w');
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
 
-            // Softland format: Fecha, Cuenta, Glosa, Debe, Haber, RUT
-            fputcsv($file, ['Fecha', 'Cuenta', 'Glosa', 'Debe', 'Haber', 'RUT'], ';');
+            // Softland format as per logic.md:
+            // Fecha,TipoDoc,NumeroDoc,RutCliente,NombreCliente,Neto,IVA,Total,CentroCosto,CuentaContable,Glosa
+            fputcsv($file, [
+                'Fecha',
+                'TipoDoc',
+                'NumeroDoc',
+                'RutCliente',
+                'NombreCliente',
+                'Neto',
+                'IVA',
+                'Total',
+                'CentroCosto',
+                'CuentaContable',
+                'Glosa'
+            ]);
 
             foreach ($contracts as $contract) {
+                // Calculate values for Chilean IVA (19%)
+                $total = $contract->total;
+                $neto = round($total / 1.19, 0);
+                $iva = $total - $neto;
+
                 fputcsv($file, [
-                    $contract->created_at->format('d/m/Y'),
-                    '410101', // Income account
-                    'Contrato ' . $contract->contract_number,
-                    '',
-                    number_format($contract->total, 2, ',', ''),
+                    $contract->created_at->format('Y-m-d'),
+                    'BOL', // Boleta
+                    $contract->contract_number,
                     str_replace(['.', '-'], '', $contract->client->rut ?? ''),
-                ], ';');
+                    $contract->client->name ?? '',
+                    $neto,
+                    $iva,
+                    $total,
+                    'VEN-001', // Centro de costo: Ventas
+                    '110101', // Cuenta contable: Ingresos por servicios
+                    'Contrato funerario - ' . ($contract->deceased->name ?? 'N/A'),
+                ]);
             }
 
             fclose($file);
@@ -782,44 +814,77 @@ class ContractController extends Controller
     }
 
     /**
-     * Export to Nubox JSON format
+     * Export to Nubox JSON format (Chilean accounting software)
      */
     public function exportNubox(Request $request)
     {
-        $contracts = Contract::with(['client', 'services', 'products'])
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $contracts = Contract::with(['client', 'deceased', 'services', 'products'])
+            ->where('status', '!=', 'cancelado')
             ->whereBetween('created_at', [$request->start_date, $request->end_date])
+            ->orderBy('created_at')
             ->get();
 
-        $data = $contracts->map(function($contract) {
+        // Build Nubox format as per logic.md
+        $ventas = $contracts->map(function($contract) {
+            $total = $contract->total;
+            $neto = round($total / 1.19, 0);
+            $iva = $total - $neto;
+
+            // Build items array from services and products
+            $items = [];
+
+            // Add services
+            foreach ($contract->services as $service) {
+                $items[] = [
+                    'descripcion' => $service->name,
+                    'cantidad' => $service->pivot->quantity ?? 1,
+                    'precio_unitario' => $service->pivot->unit_price ?? 0,
+                    'subtotal' => $service->pivot->subtotal ?? 0,
+                ];
+            }
+
+            // Add products
+            foreach ($contract->products as $product) {
+                $items[] = [
+                    'descripcion' => $product->name,
+                    'cantidad' => $product->pivot->quantity ?? 1,
+                    'precio_unitario' => $product->pivot->unit_price ?? 0,
+                    'subtotal' => $product->pivot->subtotal ?? 0,
+                ];
+            }
+
             return [
-                'documentType' => 'invoice',
-                'documentNumber' => $contract->contract_number,
-                'date' => $contract->created_at->format('Y-m-d'),
-                'customer' => [
-                    'name' => $contract->client->name,
-                    'taxId' => str_replace(['.', '-'], '', $contract->client->rut ?? ''),
-                ],
-                'items' => $contract->services->map(function($service) {
-                    return [
-                        'description' => $service->name,
-                        'quantity' => $service->pivot->quantity,
-                        'unitPrice' => $service->pivot->unit_price,
-                        'total' => $service->pivot->subtotal,
-                    ];
-                })->toArray(),
-                'totals' => [
-                    'subtotal' => $contract->subtotal,
-                    'discount' => $contract->discount_amount,
-                    'total' => $contract->total,
-                ],
+                'fecha' => $contract->created_at->format('Y-m-d'),
+                'tipo_documento' => 'boleta',
+                'numero' => $contract->contract_number,
+                'cliente_rut' => str_replace(['.', '-'], '', $contract->client->rut ?? ''),
+                'cliente_nombre' => $contract->client->name ?? '',
+                'neto' => $neto,
+                'iva' => $iva,
+                'total' => $total,
+                'items' => $items,
+                'metodo_pago' => $contract->payment_method === 'contado' ? 'efectivo' : 'credito',
+                'notas' => 'Contrato funerario - ' . ($contract->deceased->name ?? 'N/A'),
             ];
         });
 
-        return response()->json([
-            'exportDate' => now()->format('Y-m-d H:i:s'),
-            'totalDocuments' => $data->count(),
-            'documents' => $data,
-        ]);
+        $data = [
+            'empresa_rut' => config('app.company_rut', ''),
+            'periodo' => Carbon::parse($request->start_date)->format('Y-m'),
+            'fecha_export' => now()->format('Y-m-d H:i:s'),
+            'total_documentos' => $ventas->count(),
+            'ventas' => $ventas,
+        ];
+
+        $filename = 'Nubox_Export_' . now()->format('Y-m-d_His') . '.json';
+
+        return response()->json($data)
+            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
     }
 
     /**
