@@ -25,7 +25,8 @@ interface Agreement {
   status: 'active' | 'expired' | 'suspended';
   start_date: string;
   end_date: string;
-  discount_percentage: number;
+  company_pays_percentage: number;
+  employee_pays_percentage: number;
   covered_employees: number;
 }
 
@@ -150,7 +151,7 @@ export default function Index({ agreements, expiring_soon_count, filters }: Inde
                     <TableHead>{t('agreements.companyName')}</TableHead>
                     <TableHead>{t('agreements.contactName')}</TableHead>
                     <TableHead>{t('agreements.status')}</TableHead>
-                    <TableHead>{t('agreements.discount')}</TableHead>
+                    <TableHead>{t('agreements.coverage')}</TableHead>
                     <TableHead>{t('agreements.endDate')}</TableHead>
                     <TableHead className="text-right">{t('common.actions')}</TableHead>
                   </TableRow>
@@ -162,7 +163,7 @@ export default function Index({ agreements, expiring_soon_count, filters }: Inde
                       <TableCell>{agreement.company_name}</TableCell>
                       <TableCell>{agreement.contact_name}</TableCell>
                       <TableCell>{getStatusBadge(agreement.status)}</TableCell>
-                      <TableCell>{agreement.discount_percentage}%</TableCell>
+                      <TableCell>{agreement.company_pays_percentage}%</TableCell>
                       <TableCell>{formatDate(agreement.end_date)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">

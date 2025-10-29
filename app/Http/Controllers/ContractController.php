@@ -6,6 +6,7 @@ use App\Models\Contract;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class ContractController extends Controller
 {
@@ -161,19 +162,21 @@ class ContractController extends Controller
         $services = Service::where('active', true)->get();
         $products = \App\Models\Product::where('is_active', true)->get();
 
-        // Get all users for drivers and assistants
-        // TODO: Filter by role once role system is implemented
-        $allUsers = \App\Models\User::all(['id', 'name', 'email']);
-        $drivers = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'driver']);
-        $assistants = $allUsers->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'role' => 'assistant']);
+        // Get active drivers and assistants from staff table
+        $drivers = \App\Models\Staff::drivers()->get(['id', 'name', 'email', 'role']);
+        $assistants = \App\Models\Staff::assistants()->get(['id', 'name', 'email', 'role']);
 
         // Get directory data
         $churches = \App\Models\Church::orderBy('name')->get(['id', 'name', 'city', 'religion']);
         $cemeteries = \App\Models\Cemetery::orderBy('name')->get(['id', 'name', 'city', 'type']);
         $wakeRooms = \App\Models\WakeRoom::orderBy('name')->get(['id', 'name', 'funeral_home_name', 'city']);
 
-        // Get active agreements
-        $agreements = \App\Models\Agreement::where('status', 'active')->orderBy('company_name')->get(['id', 'company_name', 'code', 'discount_percentage']);
+        // Get active agreements (only those currently valid)
+        $agreements = \App\Models\Agreement::where('status', 'active')
+            ->where('start_date', '<=', Carbon::now())  // Agreement has started
+            ->where('end_date', '>=', Carbon::now())    // Agreement has not expired
+            ->orderBy('company_name')
+            ->get(['id', 'company_name', 'code', 'discount_percentage', 'company_pays_percentage', 'employee_pays_percentage']);
 
         return Inertia::render('features/contracts/pages/Create', [
             'services' => $services,
@@ -192,6 +195,12 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('Contract store method called', [
+            'user_id' => auth()->id(),
+            'has_services' => $request->has('services'),
+            'services_count' => is_array($request->input('services')) ? count($request->input('services')) : 0,
+        ]);
+
         $validated = $request->validate([
             // Contract fields
             'type' => 'required|in:necesidad_inmediata,necesidad_futura',
@@ -201,7 +210,7 @@ class ContractController extends Controller
 
             // Client fields
             'client_name' => 'required|string|max:255',
-            'client_rut' => 'required|string|max:12|unique:clients,rut',
+            'client_rut' => 'required|string|max:12',
             'client_phone' => 'required|string|max:20',
             'client_email' => 'nullable|email|max:255',
             'client_address' => 'nullable|string|max:255',
@@ -239,11 +248,24 @@ class ContractController extends Controller
             'special_requests' => 'nullable|string',
 
             // Staff assignment
-            'assigned_driver_id' => 'nullable|exists:users,id',
-            'assigned_assistant_id' => 'nullable|exists:users,id',
+            'assigned_driver_id' => 'nullable|exists:staff,id',
+            'assigned_assistant_id' => 'nullable|exists:staff,id',
 
             // Directory references
-            'agreement_id' => 'nullable|exists:agreements,id',
+            'agreement_id' => [
+                'nullable',
+                'exists:agreements,id',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        $agreement = \App\Models\Agreement::find($value);
+                        if (!$agreement) {
+                            $fail('The selected agreement does not exist.');
+                        } elseif (!$agreement->isActive()) {
+                            $fail('The selected agreement is no longer valid or has expired.');
+                        }
+                    }
+                }
+            ],
             'church_id' => 'nullable|exists:churches,id',
             'cemetery_id' => 'nullable|exists:cemeteries,id',
             'wake_room_id' => 'nullable|exists:wake_rooms,id',
@@ -253,14 +275,16 @@ class ContractController extends Controller
         \DB::beginTransaction();
 
         try {
-            // Create client
-            $client = \App\Models\Client::create([
-                'name' => $validated['client_name'],
-                'rut' => $validated['client_rut'],
-                'phone' => $validated['client_phone'],
-                'email' => $validated['client_email'] ?? null,
-                'address' => $validated['client_address'] ?? null,
-            ]);
+            // Find existing client by RUT or create new one
+            $client = \App\Models\Client::firstOrCreate(
+                ['rut' => $validated['client_rut']],
+                [
+                    'name' => $validated['client_name'],
+                    'phone' => $validated['client_phone'],
+                    'email' => $validated['client_email'] ?? null,
+                    'address' => $validated['client_address'] ?? null,
+                ]
+            );
 
             // Create deceased if immediate need
             $deceasedId = null;
@@ -395,11 +419,22 @@ class ContractController extends Controller
 
             \DB::commit();
 
+            \Log::info('Contract created successfully', [
+                'contract_id' => $contract->id,
+                'contract_number' => $contract->contract_number,
+            ]);
+
             return redirect()->route('contracts.index')
                 ->with('success', 'Contrato creado exitosamente');
 
         } catch (\Exception $e) {
             \DB::rollBack();
+            \Log::error('Contract creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => auth()->id(),
+                'data' => $request->except(['client_rut'])
+            ]);
             return back()
                 ->withErrors(['error' => 'Error al crear el contrato: ' . $e->getMessage()])
                 ->withInput();
@@ -419,7 +454,8 @@ class ContractController extends Controller
             'user',
             'assignedDriver',
             'assignedAssistant',
-            'payments'
+            'payments',
+            'agreement'
         ]);
 
         // Format contract data for frontend
@@ -501,6 +537,13 @@ class ContractController extends Controller
             'monto_comision' => (float) $contract->commission_amount,
             'es_festivo' => $contract->is_holiday,
             'es_nocturno' => $contract->is_night_shift,
+            'convenio' => $contract->agreement ? [
+                'id' => $contract->agreement->id,
+                'nombre_empresa' => $contract->agreement->company_name,
+                'codigo' => $contract->agreement->code,
+                'empresa_paga_porcentaje' => (float) $contract->agreement->company_pays_percentage,
+                'empleado_paga_porcentaje' => (float) $contract->agreement->employee_pays_percentage,
+            ] : null,
             'secretaria' => [
                 'id' => $contract->user->id,
                 'nombre' => $contract->user->name,

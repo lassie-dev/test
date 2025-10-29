@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -14,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Building2, User, CreditCard, FileText } from 'lucide-react';
+import { AlertCircle, Building2, User, CreditCard } from 'lucide-react';
 
 export default function Create() {
   const { t } = useTranslation();
@@ -24,20 +23,11 @@ export default function Create() {
     company_name: '',
     contact_name: '',
     contact_phone: '',
-    contact_email: '',
-    address: '',
     start_date: new Date().toISOString().split('T')[0],
     end_date: '',
-    covered_employees: '',
     status: 'active',
-    discount_percentage: '',
     company_pays_percentage: '50',
     employee_pays_percentage: '50',
-    payment_method: 'direct_billing',
-    credit_months: '12',
-    included_services: '',
-    special_conditions: '',
-    notes: '',
   });
 
   const formatPhone = (value: string) => {
@@ -131,49 +121,19 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* Covered Employees and Status */}
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label htmlFor="covered_employees">
-                    {t('agreements.coveredEmployees')} <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="covered_employees"
-                    type="number"
-                    min="0"
-                    value={data.covered_employees}
-                    onChange={(e) => setData('covered_employees', e.target.value)}
-                    placeholder="1000"
-                    required
-                  />
-                  {errors.covered_employees && <p className="mt-1 text-sm text-red-600">{errors.covered_employees}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="status">{t('common.status')}</Label>
-                  <Select value={data.status} onValueChange={(value) => setData('status', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">{t('agreements.statusActive')}</SelectItem>
-                      <SelectItem value="suspended">{t('agreements.statusSuspended')}</SelectItem>
-                      <SelectItem value="expired">{t('agreements.statusExpired')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Address */}
+              {/* Status */}
               <div>
-                <Label htmlFor="address">{t('agreements.address')}</Label>
-                <Textarea
-                  id="address"
-                  value={data.address}
-                  onChange={(e) => setData('address', e.target.value)}
-                  placeholder={t('agreements.addressPlaceholder')}
-                  rows={2}
-                />
+                <Label htmlFor="status">{t('common.status')}</Label>
+                <Select value={data.status} onValueChange={(value) => setData('status', value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">{t('agreements.statusActive')}</SelectItem>
+                    <SelectItem value="suspended">{t('agreements.statusSuspended')}</SelectItem>
+                    <SelectItem value="expired">{t('agreements.statusExpired')}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
@@ -218,17 +178,6 @@ export default function Create() {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="contact_email">{t('agreements.contactEmail')}</Label>
-                <Input
-                  id="contact_email"
-                  type="email"
-                  value={data.contact_email}
-                  onChange={(e) => setData('contact_email', e.target.value)}
-                  placeholder="hr.benefits@company.cl"
-                />
-                {errors.contact_email && <p className="mt-1 text-sm text-red-600">{errors.contact_email}</p>}
-              </div>
             </CardContent>
           </Card>
 
@@ -270,36 +219,16 @@ export default function Create() {
             </CardContent>
           </Card>
 
-          {/* Financial Terms */}
+          {/* Insurance Coverage */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5" />
-                {t('agreements.financialTerms')}
+                {t('agreements.insuranceCoverage')}
               </CardTitle>
-              <CardDescription>{t('agreements.financialTermsDescription')}</CardDescription>
+              <CardDescription>{t('agreements.insuranceCoverageDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Discount */}
-              <div>
-                <Label htmlFor="discount_percentage">
-                  {t('agreements.discountPercentage')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="discount_percentage"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="100"
-                  value={data.discount_percentage}
-                  onChange={(e) => setData('discount_percentage', e.target.value)}
-                  placeholder="25"
-                  required
-                />
-                {errors.discount_percentage && <p className="mt-1 text-sm text-red-600">{errors.discount_percentage}</p>}
-                <p className="mt-1 text-xs text-gray-500">{t('agreements.discountExample')}</p>
-              </div>
-
               {/* Payment Split */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
@@ -313,27 +242,32 @@ export default function Create() {
                     min="0"
                     max="100"
                     value={data.company_pays_percentage}
-                    onChange={(e) => setData('company_pays_percentage', e.target.value)}
+                    onChange={(e) => {
+                      const companyPays = parseFloat(e.target.value) || 0;
+                      setData({
+                        ...data,
+                        company_pays_percentage: e.target.value,
+                        employee_pays_percentage: (100 - companyPays).toString(),
+                      });
+                    }}
                     required
                   />
                   {errors.company_pays_percentage && <p className="mt-1 text-sm text-red-600">{errors.company_pays_percentage}</p>}
+                  <p className="mt-1 text-xs text-gray-500">{t('agreements.companyPaysExample')}</p>
                 </div>
 
                 <div>
                   <Label htmlFor="employee_pays_percentage">
-                    {t('agreements.employeePaysPercentage')} <span className="text-red-500">*</span>
+                    {t('agreements.employeePaysPercentage')}
                   </Label>
                   <Input
                     id="employee_pays_percentage"
                     type="number"
-                    step="0.1"
-                    min="0"
-                    max="100"
                     value={data.employee_pays_percentage}
-                    onChange={(e) => setData('employee_pays_percentage', e.target.value)}
-                    required
+                    disabled
+                    className="bg-gray-50"
                   />
-                  {errors.employee_pays_percentage && <p className="mt-1 text-sm text-red-600">{errors.employee_pays_percentage}</p>}
+                  <p className="mt-1 text-xs text-gray-500">{t('agreements.employeePaysAutoCalculated')}</p>
                 </div>
               </div>
 
@@ -345,85 +279,6 @@ export default function Create() {
                   </AlertDescription>
                 </Alert>
               )}
-
-              {/* Payment Method and Credit Terms */}
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label htmlFor="payment_method">{t('agreements.paymentMethod')}</Label>
-                  <Select value={data.payment_method} onValueChange={(value) => setData('payment_method', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="direct_billing">{t('agreements.directBilling')}</SelectItem>
-                      <SelectItem value="reimbursement">{t('agreements.reimbursement')}</SelectItem>
-                      <SelectItem value="mixed">{t('agreements.mixed')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="credit_months">
-                    {t('agreements.creditMonths')} <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="credit_months"
-                    type="number"
-                    min="1"
-                    max="60"
-                    value={data.credit_months}
-                    onChange={(e) => setData('credit_months', e.target.value)}
-                    required
-                  />
-                  {errors.credit_months && <p className="mt-1 text-sm text-red-600">{errors.credit_months}</p>}
-                  <p className="mt-1 text-xs text-gray-500">{t('agreements.creditMonthsExample')}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Services and Conditions */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                {t('agreements.servicesAndConditions')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="included_services">{t('agreements.includedServices')}</Label>
-                <Textarea
-                  id="included_services"
-                  value={data.included_services}
-                  onChange={(e) => setData('included_services', e.target.value)}
-                  placeholder={t('agreements.includedServicesPlaceholder')}
-                  rows={4}
-                />
-                <p className="mt-1 text-xs text-gray-500">{t('agreements.includedServicesHint')}</p>
-              </div>
-
-              <div>
-                <Label htmlFor="special_conditions">{t('agreements.specialConditions')}</Label>
-                <Textarea
-                  id="special_conditions"
-                  value={data.special_conditions}
-                  onChange={(e) => setData('special_conditions', e.target.value)}
-                  placeholder={t('agreements.specialConditionsPlaceholder')}
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="notes">{t('common.notes')}</Label>
-                <Textarea
-                  id="notes"
-                  value={data.notes}
-                  onChange={(e) => setData('notes', e.target.value)}
-                  placeholder={t('agreements.notesPlaceholder')}
-                  rows={2}
-                />
-              </div>
             </CardContent>
           </Card>
 

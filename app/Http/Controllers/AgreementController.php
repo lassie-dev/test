@@ -57,20 +57,11 @@ class AgreementController extends Controller
             'company_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:255',
             'contact_phone' => 'required|string|max:20',
-            'contact_email' => 'nullable|email|max:255',
-            'address' => 'nullable|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'covered_employees' => 'required|integer|min:0',
             'status' => 'required|in:active,expired,suspended',
-            'discount_percentage' => 'required|numeric|min:0|max:100',
             'company_pays_percentage' => 'required|numeric|min:0|max:100',
             'employee_pays_percentage' => 'required|numeric|min:0|max:100',
-            'payment_method' => 'nullable|string',
-            'credit_months' => 'required|integer|min:1|max:60',
-            'included_services' => 'nullable|string',
-            'special_conditions' => 'nullable|string',
-            'notes' => 'nullable|string',
         ]);
 
         Agreement::create($validated);
@@ -126,20 +117,11 @@ class AgreementController extends Controller
             'company_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:255',
             'contact_phone' => 'required|string|max:20',
-            'contact_email' => 'nullable|email|max:255',
-            'address' => 'nullable|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'covered_employees' => 'required|integer|min:0',
             'status' => 'required|in:active,expired,suspended',
-            'discount_percentage' => 'required|numeric|min:0|max:100',
             'company_pays_percentage' => 'required|numeric|min:0|max:100',
             'employee_pays_percentage' => 'required|numeric|min:0|max:100',
-            'payment_method' => 'nullable|string',
-            'credit_months' => 'required|integer|min:1|max:60',
-            'included_services' => 'nullable|string',
-            'special_conditions' => 'nullable|string',
-            'notes' => 'nullable|string',
         ]);
 
         $agreement->update($validated);
