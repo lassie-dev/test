@@ -132,6 +132,25 @@ export function formatearFecha(date: Date | string): string {
   });
 }
 
+/**
+ * Formats a datetime to Chilean locale format with time
+ * @param datetime - Date object or ISO string
+ * @returns Formatted datetime string (e.g., "15 ene 2024, 14:30")
+ */
+export function formatearFechaHora(datetime: Date | string): string {
+  const date = new Date(datetime);
+  const fechaParte = date.toLocaleDateString('es-CL', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+  const horaParte = date.toLocaleTimeString('es-CL', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  return `${fechaParte}, ${horaParte}`;
+}
+
 // ============================================================================
 // Badge and Label Helper Functions
 // ============================================================================

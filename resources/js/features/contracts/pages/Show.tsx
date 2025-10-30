@@ -35,6 +35,7 @@ import type { Contrato } from '@/features/contracts/types';
 import {
   formatearMoneda,
   formatearFecha,
+  formatearFechaHora,
   obtenerVarianteBadgeEstado,
   obtenerEtiquetaEstado,
   obtenerEtiquetaTipo,
@@ -268,6 +269,20 @@ export default function Show({ contract }: ShowProps) {
                       <p className="mt-1 text-base">{contract.cliente.direccion}</p>
                     </div>
                   )}
+
+                  {contract.cliente.parentesco && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{t('contracts.clientRelationship')}</p>
+                      <p className="mt-1 text-base">{contract.cliente.parentesco}</p>
+                    </div>
+                  )}
+
+                  {contract.cliente.ocupacion && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{t('contracts.clientOccupation')}</p>
+                      <p className="mt-1 text-base">{contract.cliente.ocupacion}</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -317,6 +332,34 @@ export default function Show({ contract }: ShowProps) {
                         <p className="mt-1 text-base">{contract.difunto.causa_fallecimiento}</p>
                       </div>
                     )}
+
+                    {contract.difunto.nivel_estudio && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">{t('contracts.deceasedEducationLevel')}</p>
+                        <p className="mt-1 text-base">{contract.difunto.nivel_estudio}</p>
+                      </div>
+                    )}
+
+                    {contract.difunto.profesion && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">{t('contracts.deceasedProfession')}</p>
+                        <p className="mt-1 text-base">{contract.difunto.profesion}</p>
+                      </div>
+                    )}
+
+                    {contract.difunto.estado_civil && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">{t('contracts.deceasedMaritalStatus')}</p>
+                        <p className="mt-1 text-base">{contract.difunto.estado_civil}</p>
+                      </div>
+                    )}
+
+                    {contract.difunto.religion && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">{t('contracts.deceasedReligion')}</p>
+                        <p className="mt-1 text-base">{contract.difunto.religion}</p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -346,9 +389,9 @@ export default function Show({ contract }: ShowProps) {
                       <TableRow key={index}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{item.servicio.name}</p>
-                            {item.servicio.description && (
-                              <p className="text-sm text-gray-500">{item.servicio.description}</p>
+                            <p className="font-medium">{item.servicio.nombre}</p>
+                            {item.servicio.descripcion && (
+                              <p className="text-sm text-gray-500">{item.servicio.descripcion}</p>
                             )}
                           </div>
                         </TableCell>
@@ -376,7 +419,7 @@ export default function Show({ contract }: ShowProps) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t('inventory.product')}</TableHead>
+                        <TableHead>{t('common.product')}</TableHead>
                         <TableHead className="text-center">{t('common.quantity')}</TableHead>
                         <TableHead className="text-right">{t('contracts.unitPrice')}</TableHead>
                         <TableHead className="text-right">{t('contracts.subtotal')}</TableHead>
@@ -387,9 +430,9 @@ export default function Show({ contract }: ShowProps) {
                         <TableRow key={index}>
                           <TableCell>
                             <div>
-                              <p className="font-medium">{item.producto.name}</p>
-                              {item.producto.description && (
-                                <p className="text-sm text-gray-500">{item.producto.description}</p>
+                              <p className="font-medium">{item.producto.nombre}</p>
+                              {item.producto.descripcion && (
+                                <p className="text-sm text-gray-500">{item.producto.descripcion}</p>
                               )}
                             </div>
                           </TableCell>
@@ -430,7 +473,7 @@ export default function Show({ contract }: ShowProps) {
                         <Clock className="h-4 w-4" />
                         {t('contracts.serviceDatetime')}
                       </p>
-                      <p className="mt-1 text-base">{formatearFecha(contract.fecha_hora_servicio)}</p>
+                      <p className="mt-1 text-base">{formatearFechaHora(contract.fecha_hora_servicio)}</p>
                     </div>
                   )}
 
@@ -447,8 +490,62 @@ export default function Show({ contract }: ShowProps) {
               </Card>
             )}
 
+            {/* Additional Service Details */}
+            {(contract.ubicacion_recepcion || contract.modelo_ataud || contract.sector_cementerio || contract.detalles_cortejo || contract.notas_personal_adicional) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    {t('contracts.additionalDetails')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {contract.ubicacion_recepcion && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        {t('contracts.receptionLocation')}
+                      </p>
+                      <p className="mt-1 text-base">{contract.ubicacion_recepcion}</p>
+                    </div>
+                  )}
+
+                  {contract.modelo_ataud && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{t('contracts.coffinModel')}</p>
+                      <p className="mt-1 text-base">{contract.modelo_ataud}</p>
+                    </div>
+                  )}
+
+                  {contract.sector_cementerio && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{t('contracts.cemeterySector')}</p>
+                      <p className="mt-1 text-base">{contract.sector_cementerio}</p>
+                    </div>
+                  )}
+
+                  {contract.detalles_cortejo && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{t('contracts.processionDetails')}</p>
+                      <p className="mt-1 text-base">{contract.detalles_cortejo}</p>
+                    </div>
+                  )}
+
+                  {contract.notas_personal_adicional && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        {t('contracts.additionalStaffNotes')}
+                      </p>
+                      <p className="mt-1 text-base">{contract.notas_personal_adicional}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Staff Assignments */}
-            {(contract.conductor_asignado || contract.auxiliar_asignado) && (
+            {(contract.conductor_asignado || contract.auxiliar_asignado || contract.vehiculo_asignado) && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -471,6 +568,14 @@ export default function Show({ contract }: ShowProps) {
                         <p className="text-sm font-medium text-gray-500">{t('contracts.assignedAssistant')}</p>
                         <p className="mt-1 text-base font-semibold">{contract.auxiliar_asignado.nombre}</p>
                         <p className="text-sm text-gray-500">{contract.auxiliar_asignado.email}</p>
+                      </div>
+                    )}
+
+                    {contract.vehiculo_asignado && (
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">{t('contracts.assignedVehicle')}</p>
+                        <p className="mt-1 text-base font-semibold">{contract.vehiculo_asignado.nombre}</p>
+                        <p className="text-sm text-gray-500">{contract.vehiculo_asignado.email}</p>
                       </div>
                     )}
                   </div>

@@ -10,6 +10,10 @@ interface DeceasedInformationCardProps {
   deceased_death_time: string;
   deceased_death_place: string;
   deceased_cause_of_death: string;
+  deceased_education_level: string;
+  deceased_profession: string;
+  deceased_marital_status: string;
+  deceased_religion: string;
   contractType: string;
   onNameChange: (value: string) => void;
   onAgeChange: (value: string) => void;
@@ -17,6 +21,10 @@ interface DeceasedInformationCardProps {
   onDeathTimeChange: (value: string) => void;
   onDeathPlaceChange: (value: string) => void;
   onCauseOfDeathChange: (value: string) => void;
+  onEducationLevelChange: (value: string) => void;
+  onProfessionChange: (value: string) => void;
+  onMaritalStatusChange: (value: string) => void;
+  onReligionChange: (value: string) => void;
   errors?: {
     deceased_name?: string;
     deceased_age?: string;
@@ -24,6 +32,10 @@ interface DeceasedInformationCardProps {
     deceased_death_time?: string;
     deceased_death_place?: string;
     deceased_cause_of_death?: string;
+    deceased_education_level?: string;
+    deceased_profession?: string;
+    deceased_marital_status?: string;
+    deceased_religion?: string;
   };
 }
 
@@ -34,6 +46,10 @@ export default function DeceasedInformationCard({
   deceased_death_time,
   deceased_death_place,
   deceased_cause_of_death,
+  deceased_education_level,
+  deceased_profession,
+  deceased_marital_status,
+  deceased_religion,
   contractType,
   onNameChange,
   onAgeChange,
@@ -41,6 +57,10 @@ export default function DeceasedInformationCard({
   onDeathTimeChange,
   onDeathPlaceChange,
   onCauseOfDeathChange,
+  onEducationLevelChange,
+  onProfessionChange,
+  onMaritalStatusChange,
+  onReligionChange,
   errors,
 }: DeceasedInformationCardProps) {
   const { t } = useTranslation();
@@ -124,6 +144,50 @@ export default function DeceasedInformationCard({
               placeholder="Optional cause of death"
             />
             {errors?.deceased_cause_of_death && <p className="text-sm text-destructive">{errors.deceased_cause_of_death}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deceased_education_level">{t('contracts.deceasedEducationLevel')}</Label>
+            <Input
+              id="deceased_education_level"
+              value={deceased_education_level}
+              onChange={(e) => onEducationLevelChange(e.target.value)}
+              placeholder={t('contracts.deceasedEducationLevelPlaceholder')}
+            />
+            {errors?.deceased_education_level && <p className="text-sm text-destructive">{errors.deceased_education_level}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deceased_profession">{t('contracts.deceasedProfession')}</Label>
+            <Input
+              id="deceased_profession"
+              value={deceased_profession}
+              onChange={(e) => onProfessionChange(e.target.value)}
+              placeholder={t('contracts.deceasedProfessionPlaceholder')}
+            />
+            {errors?.deceased_profession && <p className="text-sm text-destructive">{errors.deceased_profession}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deceased_marital_status">{t('contracts.deceasedMaritalStatus')}</Label>
+            <Input
+              id="deceased_marital_status"
+              value={deceased_marital_status}
+              onChange={(e) => onMaritalStatusChange(e.target.value)}
+              placeholder={t('contracts.deceasedMaritalStatusPlaceholder')}
+            />
+            {errors?.deceased_marital_status && <p className="text-sm text-destructive">{errors.deceased_marital_status}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deceased_religion">{t('contracts.deceasedReligion')}</Label>
+            <Input
+              id="deceased_religion"
+              value={deceased_religion}
+              onChange={(e) => onReligionChange(e.target.value)}
+              placeholder={t('contracts.deceasedReligionPlaceholder')}
+            />
+            {errors?.deceased_religion && <p className="text-sm text-destructive">{errors.deceased_religion}</p>}
           </div>
         </div>
       </CardContent>

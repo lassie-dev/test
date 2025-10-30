@@ -93,7 +93,7 @@ export default function ServiceSelectionCard({
                     {categoryServices.map((service) => (
                       <SelectItem key={service.id} value={service.id.toString()}>
                         <div className="flex items-center justify-between w-full">
-                          <span>{service.name} - {formatearMoneda(service.price)}</span>
+                          <span>{service.nombre} - {formatearMoneda(service.precio)}</span>
                           <span className="ml-2 text-xs text-green-600 font-semibold">Available</span>
                         </div>
                       </SelectItem>
@@ -135,7 +135,7 @@ export default function ServiceSelectionCard({
 
                     return (
                       <tr key={item.service_id} className="border-t">
-                        <td className="px-4 py-2 text-sm">{service?.name}</td>
+                        <td className="px-4 py-2 text-sm">{service?.nombre}</td>
                         <td className="px-4 py-2 text-right text-sm font-medium">
                           {formatearMoneda(item.unit_price)}
                         </td>

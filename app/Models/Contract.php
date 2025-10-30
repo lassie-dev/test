@@ -36,10 +36,16 @@ class Contract extends Model
         'special_requests',
         'assigned_driver_id',
         'assigned_assistant_id',
+        'assigned_vehicle_id',
         'commission_percentage',
         'commission_amount',
         'is_holiday',
         'is_night_shift',
+        'reception_location',
+        'coffin_model',
+        'cemetery_sector',
+        'procession_details',
+        'additional_staff_notes',
     ];
 
     protected $casts = [
@@ -107,6 +113,11 @@ class Contract extends Model
     public function assignedAssistant(): BelongsTo
     {
         return $this->belongsTo(Staff::class, 'assigned_assistant_id');
+    }
+
+    public function assignedVehicle(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'assigned_vehicle_id');
     }
 
     public function agreement(): BelongsTo

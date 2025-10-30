@@ -150,8 +150,29 @@ class ContractController extends Controller
      */
     public function create()
     {
-        $services = Service::where('active', true)->with('category')->get();
-        $products = \App\Models\Product::where('is_active', true)->get();
+        $services = Service::where('active', true)->with('category')->get()->map(function ($service) {
+            return [
+                'id' => $service->id,
+                'nombre' => $service->name,
+                'descripcion' => $service->description,
+                'precio' => (float) $service->price,
+                'category_id' => $service->category_id,
+                'category' => $service->category,
+            ];
+        });
+
+        $products = \App\Models\Product::where('is_active', true)->get()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'nombre' => $product->name,
+                'descripcion' => $product->description,
+                'precio' => (float) $product->price,
+                'category' => $product->category,
+                'stock' => $product->stock,
+                'min_stock' => $product->min_stock,
+                'is_active' => $product->is_active,
+            ];
+        });
 
         // Get active drivers and assistants from staff table
         $drivers = \App\Models\Staff::drivers()->get(['id', 'name', 'email', 'role']);
@@ -205,6 +226,8 @@ class ContractController extends Controller
             'client_phone' => 'required|string|max:20',
             'client_email' => 'nullable|email|max:255',
             'client_address' => 'nullable|string|max:255',
+            'client_relationship_to_deceased' => 'nullable|string|max:255',
+            'client_occupation' => 'nullable|string|max:255',
 
             // Deceased fields (required for immediate need)
             'deceased_name' => 'required_if:type,necesidad_inmediata|string|max:255',
@@ -213,6 +236,10 @@ class ContractController extends Controller
             'deceased_death_place' => 'nullable|string|max:255',
             'deceased_age' => 'nullable|integer|min:0',
             'deceased_cause_of_death' => 'nullable|string|max:255',
+            'deceased_education_level' => 'nullable|string|max:255',
+            'deceased_profession' => 'nullable|string|max:255',
+            'deceased_marital_status' => 'nullable|string|max:255',
+            'deceased_religion' => 'nullable|string|max:255',
 
             // Services
             'services' => 'required|array|min:1',
@@ -237,10 +264,16 @@ class ContractController extends Controller
             'service_location' => 'nullable|string|max:255',
             'service_datetime' => 'nullable|date',
             'special_requests' => 'nullable|string',
+            'reception_location' => 'nullable|string|max:255',
+            'coffin_model' => 'nullable|string|max:255',
+            'cemetery_sector' => 'nullable|string|max:255',
+            'procession_details' => 'nullable|string',
+            'additional_staff_notes' => 'nullable|string',
 
             // Staff assignment
             'assigned_driver_id' => 'nullable|exists:staff,id',
             'assigned_assistant_id' => 'nullable|exists:staff,id',
+            'assigned_vehicle_id' => 'nullable|exists:staff,id',
 
             // Directory references
             'agreement_id' => [
@@ -274,6 +307,8 @@ class ContractController extends Controller
                     'phone' => $validated['client_phone'],
                     'email' => $validated['client_email'] ?? null,
                     'address' => $validated['client_address'] ?? null,
+                    'relationship_to_deceased' => $validated['client_relationship_to_deceased'] ?? null,
+                    'occupation' => $validated['client_occupation'] ?? null,
                 ]
             );
 
@@ -287,6 +322,10 @@ class ContractController extends Controller
                     'death_place' => $validated['deceased_death_place'] ?? null,
                     'age' => $validated['deceased_age'] ?? null,
                     'cause_of_death' => $validated['deceased_cause_of_death'] ?? null,
+                    'education_level' => $validated['deceased_education_level'] ?? null,
+                    'profession' => $validated['deceased_profession'] ?? null,
+                    'marital_status' => $validated['deceased_marital_status'] ?? null,
+                    'religion' => $validated['deceased_religion'] ?? null,
                 ]);
                 $deceasedId = $deceased->id;
             }
@@ -329,9 +368,23 @@ class ContractController extends Controller
                 default => $validated['status']
             };
 
-            // Generate contract number
-            $lastContract = Contract::latest('id')->first();
-            $contractNumber = 'CTR-' . str_pad(($lastContract?->id ?? 0) + 1, 6, '0', STR_PAD_LEFT);
+            // Generate unique contract number (excluding soft-deleted contracts)
+            // Get all existing contract numbers and extract the numeric parts
+            $existingNumbers = Contract::withTrashed()
+                ->pluck('contract_number')
+                ->map(function($number) {
+                    if (preg_match('/CTR-(\d+)/', $number, $matches)) {
+                        return (int) $matches[1];
+                    }
+                    return 0;
+                })
+                ->filter()
+                ->sort()
+                ->values();
+
+            // Find the highest number and increment
+            $nextNumber = $existingNumbers->isEmpty() ? 1 : $existingNumbers->last() + 1;
+            $contractNumber = 'CTR-' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
 
             // Create contract
             $contract = Contract::create([
@@ -356,8 +409,14 @@ class ContractController extends Controller
                 'service_location' => $validated['service_location'] ?? null,
                 'service_datetime' => $validated['service_datetime'] ?? null,
                 'special_requests' => $validated['special_requests'] ?? null,
+                'reception_location' => $validated['reception_location'] ?? null,
+                'coffin_model' => $validated['coffin_model'] ?? null,
+                'cemetery_sector' => $validated['cemetery_sector'] ?? null,
+                'procession_details' => $validated['procession_details'] ?? null,
+                'additional_staff_notes' => $validated['additional_staff_notes'] ?? null,
                 'assigned_driver_id' => $validated['assigned_driver_id'] ?? null,
                 'assigned_assistant_id' => $validated['assigned_assistant_id'] ?? null,
+                'assigned_vehicle_id' => $validated['assigned_vehicle_id'] ?? null,
                 'commission_percentage' => $commissionRate,
                 'commission_amount' => $commissionAmount,
                 'is_holiday' => $validated['is_holiday'] ?? false,
@@ -445,6 +504,7 @@ class ContractController extends Controller
             'user',
             'assignedDriver',
             'assignedAssistant',
+            'assignedVehicle',
             'payments',
             'agreement'
         ]);
@@ -468,6 +528,8 @@ class ContractController extends Controller
                 'telefono' => $contract->client->phone,
                 'email' => $contract->client->email ?? null,
                 'direccion' => $contract->client->address ?? null,
+                'parentesco' => $contract->client->relationship_to_deceased ?? null,
+                'ocupacion' => $contract->client->occupation ?? null,
             ],
             'difunto' => $contract->deceased ? [
                 'id' => $contract->deceased->id,
@@ -477,6 +539,10 @@ class ContractController extends Controller
                 'lugar_fallecimiento' => $contract->deceased->death_place,
                 'edad' => $contract->deceased->age,
                 'causa_fallecimiento' => $contract->deceased->cause_of_death,
+                'nivel_estudio' => $contract->deceased->education_level,
+                'profesion' => $contract->deceased->profession,
+                'estado_civil' => $contract->deceased->marital_status,
+                'religion' => $contract->deceased->religion,
             ] : null,
             'servicios' => $contract->services->map(function ($service) {
                 return [
@@ -514,6 +580,11 @@ class ContractController extends Controller
             'ubicacion_servicio' => $contract->service_location,
             'fecha_hora_servicio' => $contract->service_datetime,
             'solicitudes_especiales' => $contract->special_requests,
+            'ubicacion_recepcion' => $contract->reception_location,
+            'modelo_ataud' => $contract->coffin_model,
+            'sector_cementerio' => $contract->cemetery_sector,
+            'detalles_cortejo' => $contract->procession_details,
+            'notas_personal_adicional' => $contract->additional_staff_notes,
             'conductor_asignado' => $contract->assignedDriver ? [
                 'id' => $contract->assignedDriver->id,
                 'nombre' => $contract->assignedDriver->name,
@@ -523,6 +594,11 @@ class ContractController extends Controller
                 'id' => $contract->assignedAssistant->id,
                 'nombre' => $contract->assignedAssistant->name,
                 'email' => $contract->assignedAssistant->email,
+            ] : null,
+            'vehiculo_asignado' => $contract->assignedVehicle ? [
+                'id' => $contract->assignedVehicle->id,
+                'nombre' => $contract->assignedVehicle->name,
+                'email' => $contract->assignedVehicle->email,
             ] : null,
             'porcentaje_comision' => (float) $contract->commission_percentage,
             'monto_comision' => (float) $contract->commission_amount,
@@ -568,10 +644,11 @@ class ContractController extends Controller
         $contract->load([
             'client',
             'deceased',
-            'services.service',
-            'products.product',
+            'services',
+            'products',
             'assignedDriver',
             'assignedAssistant',
+            'assignedVehicle',
             'agreement',
             'church',
             'cemetery',
@@ -579,8 +656,29 @@ class ContractController extends Controller
         ]);
 
         // Get all available services and products
-        $services = Service::where('active', true)->with('category')->get();
-        $products = \App\Models\Product::where('is_active', true)->get();
+        $services = Service::where('active', true)->with('category')->get()->map(function ($service) {
+            return [
+                'id' => $service->id,
+                'nombre' => $service->name,
+                'descripcion' => $service->description,
+                'precio' => (float) $service->price,
+                'category_id' => $service->category_id,
+                'category' => $service->category,
+            ];
+        });
+
+        $products = \App\Models\Product::where('is_active', true)->get()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'nombre' => $product->name,
+                'descripcion' => $product->description,
+                'precio' => (float) $product->price,
+                'category' => $product->category,
+                'stock' => $product->stock,
+                'min_stock' => $product->min_stock,
+                'is_active' => $product->is_active,
+            ];
+        });
 
         // Get active drivers and assistants from staff table
         $drivers = \App\Models\Staff::drivers()->get(['id', 'name', 'email', 'role']);
@@ -636,6 +734,8 @@ class ContractController extends Controller
             'client_phone' => 'required|string|max:20',
             'client_email' => 'nullable|email|max:255',
             'client_address' => 'nullable|string|max:255',
+            'client_relationship_to_deceased' => 'nullable|string|max:255',
+            'client_occupation' => 'nullable|string|max:255',
 
             // Deceased fields (required for immediate need)
             'deceased_name' => 'required_if:type,necesidad_inmediata|string|max:255',
@@ -644,6 +744,10 @@ class ContractController extends Controller
             'deceased_death_place' => 'nullable|string|max:255',
             'deceased_age' => 'nullable|integer|min:0',
             'deceased_cause_of_death' => 'nullable|string|max:255',
+            'deceased_education_level' => 'nullable|string|max:255',
+            'deceased_profession' => 'nullable|string|max:255',
+            'deceased_marital_status' => 'nullable|string|max:255',
+            'deceased_religion' => 'nullable|string|max:255',
 
             // Services
             'services' => 'required|array|min:1',
@@ -668,10 +772,16 @@ class ContractController extends Controller
             'service_location' => 'nullable|string|max:255',
             'service_datetime' => 'nullable|date',
             'special_requests' => 'nullable|string',
+            'reception_location' => 'nullable|string|max:255',
+            'coffin_model' => 'nullable|string|max:255',
+            'cemetery_sector' => 'nullable|string|max:255',
+            'procession_details' => 'nullable|string',
+            'additional_staff_notes' => 'nullable|string',
 
             // Staff assignment
             'assigned_driver_id' => 'nullable|exists:staff,id',
             'assigned_assistant_id' => 'nullable|exists:staff,id',
+            'assigned_vehicle_id' => 'nullable|exists:staff,id',
 
             // Directory references
             'agreement_id' => [
@@ -705,6 +815,8 @@ class ContractController extends Controller
                     'phone' => $validated['client_phone'],
                     'email' => $validated['client_email'] ?? null,
                     'address' => $validated['client_address'] ?? null,
+                    'relationship_to_deceased' => $validated['client_relationship_to_deceased'] ?? null,
+                    'occupation' => $validated['client_occupation'] ?? null,
                 ]
             );
 
@@ -720,6 +832,10 @@ class ContractController extends Controller
                         'death_place' => $validated['deceased_death_place'] ?? null,
                         'age' => $validated['deceased_age'] ?? null,
                         'cause_of_death' => $validated['deceased_cause_of_death'] ?? null,
+                        'education_level' => $validated['deceased_education_level'] ?? null,
+                        'profession' => $validated['deceased_profession'] ?? null,
+                        'marital_status' => $validated['deceased_marital_status'] ?? null,
+                        'religion' => $validated['deceased_religion'] ?? null,
                     ]);
                     $deceasedId = $contract->deceased_id;
                 } else {
@@ -794,8 +910,14 @@ class ContractController extends Controller
                 'service_location' => $validated['service_location'] ?? null,
                 'service_datetime' => $validated['service_datetime'] ?? null,
                 'special_requests' => $validated['special_requests'] ?? null,
+                'reception_location' => $validated['reception_location'] ?? null,
+                'coffin_model' => $validated['coffin_model'] ?? null,
+                'cemetery_sector' => $validated['cemetery_sector'] ?? null,
+                'procession_details' => $validated['procession_details'] ?? null,
+                'additional_staff_notes' => $validated['additional_staff_notes'] ?? null,
                 'assigned_driver_id' => $validated['assigned_driver_id'] ?? null,
                 'assigned_assistant_id' => $validated['assigned_assistant_id'] ?? null,
+                'assigned_vehicle_id' => $validated['assigned_vehicle_id'] ?? null,
                 'commission_percentage' => $commissionRate,
                 'commission_amount' => $commissionAmount,
                 'is_holiday' => $validated['is_holiday'] ?? false,
@@ -905,9 +1027,22 @@ class ContractController extends Controller
      */
     public function printContract(Contract $contract)
     {
-        $contract->load(['client', 'deceased', 'services', 'products', 'user']);
+        $contract->load([
+            'client',
+            'deceased',
+            'services',
+            'products',
+            'user',
+            'agreement',
+            'church',
+            'cemetery',
+            'wakeRoom',
+            'assignedDriver',
+            'assignedAssistant',
+            'assignedVehicle'
+        ]);
 
-        $pdf = \PDF::loadView('pdf.quotation', [
+        $pdf = \PDF::loadView('pdf.contract', [
             'contract' => $contract
         ]);
 
@@ -1211,6 +1346,108 @@ class ContractController extends Controller
 
         return response()->json($data)
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
+    }
+
+    /**
+     * Generate and download contract document in DOCX format
+     */
+    public function generateDocument(Contract $contract)
+    {
+        $contract->load(['client', 'deceased', 'services', 'products', 'user']);
+
+        // Load the template
+        $templatePath = public_path('contract.docx');
+        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($templatePath);
+
+        // Get contract data
+        $contractNumber = str_replace('CTR-', '', $contract->contract_number);
+        $createdDate = $contract->created_at->format('d-m-Y');
+        $createdTime = $contract->created_at->format('H:i');
+
+        // Replace header values
+        $templateProcessor->setValue('contract_number', $contractNumber);
+        $templateProcessor->setValue('fecha', $createdDate);
+        $templateProcessor->setValue('hora', $createdTime);
+
+        // Client information
+        $templateProcessor->setValue('client_name', $contract->client->name ?? '');
+        $templateProcessor->setValue('client_rut', $contract->client->rut ?? '');
+        $templateProcessor->setValue('client_phone', $contract->client->phone ?? '');
+        $templateProcessor->setValue('client_address', $contract->client->address ?? '');
+        $templateProcessor->setValue('client_occupation', $contract->client->occupation ?? '');
+        $templateProcessor->setValue('client_relationship', $contract->client->relationship_to_deceased ?? '');
+
+        // Agreement information
+        if ($contract->agreement) {
+            $templateProcessor->setValue('company_name', $contract->agreement->company_name ?? '');
+            $templateProcessor->setValue('company_rut', $contract->agreement->code ?? '');
+            $templateProcessor->setValue('company_address', '');
+            $templateProcessor->setValue('company_activity', '');
+            $templateProcessor->setValue('company_email', '');
+        } else {
+            $templateProcessor->setValue('company_name', '');
+            $templateProcessor->setValue('company_rut', '');
+            $templateProcessor->setValue('company_address', '');
+            $templateProcessor->setValue('company_activity', '');
+            $templateProcessor->setValue('company_email', '');
+        }
+
+        // Deceased information
+        if ($contract->deceased) {
+            $templateProcessor->setValue('deceased_name', $contract->deceased->name ?? '');
+            $templateProcessor->setValue('deceased_rut', ''); // Not in deceased table
+            $templateProcessor->setValue('deceased_address', $contract->deceased->death_place ?? '');
+            $templateProcessor->setValue('deceased_education', $contract->deceased->education_level ?? '');
+            $templateProcessor->setValue('deceased_profession', $contract->deceased->profession ?? '');
+            $templateProcessor->setValue('deceased_marital_status', $contract->deceased->marital_status ?? '');
+            $templateProcessor->setValue('deceased_religion', $contract->deceased->religion ?? '');
+        } else {
+            $templateProcessor->setValue('deceased_name', '');
+            $templateProcessor->setValue('deceased_rut', '');
+            $templateProcessor->setValue('deceased_address', '');
+            $templateProcessor->setValue('deceased_education', '');
+            $templateProcessor->setValue('deceased_profession', '');
+            $templateProcessor->setValue('deceased_marital_status', '');
+            $templateProcessor->setValue('deceased_religion', '');
+        }
+
+        // Service details
+        $templateProcessor->setValue('reception_location', $contract->reception_location ?? '');
+        $templateProcessor->setValue('cemetery', $contract->cemetery ? $contract->cemetery->name : '');
+        $templateProcessor->setValue('wake_location', $contract->wakeRoom ? $contract->wakeRoom->name : '');
+        $templateProcessor->setValue('wake_address', $contract->service_location ?? '');
+        $templateProcessor->setValue('coffin_model', $contract->coffin_model ?? '');
+        $templateProcessor->setValue('funeral_date', $contract->service_datetime ? Carbon::parse($contract->service_datetime)->format('d-m-Y') : '');
+        $templateProcessor->setValue('installer', ''); // Not in contract table
+        $templateProcessor->setValue('arrival_time', $contract->service_datetime ? Carbon::parse($contract->service_datetime)->format('H:i') : '');
+        $templateProcessor->setValue('sector', $contract->cemetery_sector ?? '');
+        $templateProcessor->setValue('departure_time', ''); // Not in contract table
+        $templateProcessor->setValue('cortejo', $contract->procession_details ?? '');
+        $templateProcessor->setValue('refuerzo', ''); // Not in contract table
+        $templateProcessor->setValue('auto', $contract->assignedVehicle ? $contract->assignedVehicle->name : '');
+
+        // Observations
+        $observations = $contract->special_requests ?? '';
+        if ($contract->additional_staff_notes) {
+            $observations .= "\n" . $contract->additional_staff_notes;
+        }
+        $templateProcessor->setValue('observations', $observations);
+
+        // Coordinator
+        $templateProcessor->setValue('coordinator', $contract->user->name ?? '');
+
+        // Generate the document
+        $filename = 'contrato_' . $contract->contract_number . '_' . now()->format('Y-m-d') . '.docx';
+        $tempFile = storage_path('app/temp/' . $filename);
+
+        // Create temp directory if it doesn't exist
+        if (!file_exists(storage_path('app/temp'))) {
+            mkdir(storage_path('app/temp'), 0755, true);
+        }
+
+        $templateProcessor->saveAs($tempFile);
+
+        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
     }
 
     /**

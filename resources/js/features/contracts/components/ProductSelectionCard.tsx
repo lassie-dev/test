@@ -95,7 +95,7 @@ export default function ProductSelectionCard({
                           disabled={isOutOfStock}
                         >
                           <div className="flex items-center justify-between w-full">
-                            <span>{product.name} - {formatearMoneda(product.price)}</span>
+                            <span>{product.nombre} - {formatearMoneda(product.precio)}</span>
                             {isOutOfStock ? (
                               <span className="ml-2 text-xs text-red-600 font-semibold">Out of Stock</span>
                             ) : isLowStock ? (
@@ -159,7 +159,7 @@ export default function ProductSelectionCard({
                     return (
                       <tr key={item.product_id} className="border-t">
                         <td className="px-4 py-2 text-sm">
-                          {product?.name}
+                          {product?.nombre}
                           <span className="ml-2 text-xs text-gray-500">({product?.category})</span>
                         </td>
                         <td className="px-4 py-2 text-right text-sm">{item.quantity}</td>

@@ -14,11 +14,14 @@ class Deceased extends Model
         'death_place',
         'age',
         'cause_of_death',
+        'education_level',
+        'profession',
+        'marital_status',
+        'religion',
     ];
 
     protected $casts = [
         'death_date' => 'date',
-        'death_time' => 'datetime:H:i',
         'age' => 'integer',
     ];
 

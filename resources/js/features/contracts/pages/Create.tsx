@@ -27,6 +27,7 @@ import ServiceSelectionCard from '@/features/contracts/components/ServiceSelecti
 import ProductSelectionCard from '@/features/contracts/components/ProductSelectionCard';
 import PaymentConfigurationCard from '@/features/contracts/components/PaymentConfigurationCard';
 import ServiceDetailsCard from '@/features/contracts/components/ServiceDetailsCard';
+import ServiceDetailsExtendedCard from '@/features/contracts/components/ServiceDetailsExtendedCard';
 import StaffAssignmentCard from '@/features/contracts/components/StaffAssignmentCard';
 import TotalsAndCommissionCard from '@/features/contracts/components/TotalsAndCommissionCard';
 import AgreementSelectionCard from '@/features/contracts/components/AgreementSelectionCard';
@@ -138,6 +139,20 @@ export default function Create({
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
   const [productQuantity, setProductQuantity] = useState(1);
 
+  // New state variables for extended fields
+  const [clientRelationshipToDeceased, setClientRelationshipToDeceased] = useState('');
+  const [clientOccupation, setClientOccupation] = useState('');
+  const [deceasedEducationLevel, setDeceasedEducationLevel] = useState('');
+  const [deceasedProfession, setDeceasedProfession] = useState('');
+  const [deceasedMaritalStatus, setDeceasedMaritalStatus] = useState('');
+  const [deceasedReligion, setDeceasedReligion] = useState('');
+  const [receptionLocation, setReceptionLocation] = useState('');
+  const [coffinModel, setCoffinModel] = useState('');
+  const [cemeterySector, setCemeterySector] = useState('');
+  const [processionDetails, setProcessionDetails] = useState('');
+  const [additionalStaffNotes, setAdditionalStaffNotes] = useState('');
+  const [assignedVehicleId, setAssignedVehicleId] = useState<number | null>(null);
+
   // Show flash messages as toasts
   useEffect(() => {
     if (flash?.success) {
@@ -186,7 +201,7 @@ export default function Create({
       {
         service_id: selectedService,
         quantity: 1,
-        unit_price: service.price,
+        unit_price: service.precio,
       },
     ]);
 
@@ -228,7 +243,7 @@ export default function Create({
         {
           product_id: selectedProduct,
           quantity: productQuantity,
-          unit_price: product.price,
+          unit_price: product.precio,
         },
       ]);
     }
@@ -270,7 +285,21 @@ export default function Create({
     }
 
     // Use router.post for submitting because we need to conditionally remove fields
-    const submitData: any = { ...data };
+    const submitData: any = {
+      ...data,
+      client_relationship_to_deceased: clientRelationshipToDeceased,
+      client_occupation: clientOccupation,
+      deceased_education_level: deceasedEducationLevel,
+      deceased_profession: deceasedProfession,
+      deceased_marital_status: deceasedMaritalStatus,
+      deceased_religion: deceasedReligion,
+      reception_location: receptionLocation,
+      coffin_model: coffinModel,
+      cemetery_sector: cemeterySector,
+      procession_details: processionDetails,
+      additional_staff_notes: additionalStaffNotes,
+      assigned_vehicle_id: assignedVehicleId,
+    };
 
     // For Future Need contracts, remove deceased fields (not required)
     if (data.type === 'necesidad_futura') {
@@ -350,6 +379,8 @@ export default function Create({
             client_phone={data.client_phone}
             client_email={data.client_email}
             client_address={data.client_address}
+            client_relationship_to_deceased={clientRelationshipToDeceased}
+            client_occupation={clientOccupation}
             rutError={rutError}
             onNameChange={(value) => setData('client_name', value)}
             onRutChange={handleRutChange}
@@ -357,6 +388,8 @@ export default function Create({
             onPhoneChange={(value) => setData('client_phone', value)}
             onEmailChange={(value) => setData('client_email', value)}
             onAddressChange={(value) => setData('client_address', value)}
+            onRelationshipChange={setClientRelationshipToDeceased}
+            onOccupationChange={setClientOccupation}
             errors={{
               client_name: errors.client_name,
               client_rut: errors.client_rut,
@@ -374,6 +407,10 @@ export default function Create({
             deceased_death_time={data.deceased_death_time}
             deceased_death_place={data.deceased_death_place}
             deceased_cause_of_death={data.deceased_cause_of_death}
+            deceased_education_level={deceasedEducationLevel}
+            deceased_profession={deceasedProfession}
+            deceased_marital_status={deceasedMaritalStatus}
+            deceased_religion={deceasedReligion}
             contractType={data.type}
             onNameChange={(value) => setData('deceased_name', value)}
             onAgeChange={(value) => setData('deceased_age', value)}
@@ -381,6 +418,10 @@ export default function Create({
             onDeathTimeChange={(value) => setData('deceased_death_time', value)}
             onDeathPlaceChange={(value) => setData('deceased_death_place', value)}
             onCauseOfDeathChange={(value) => setData('deceased_cause_of_death', value)}
+            onEducationLevelChange={setDeceasedEducationLevel}
+            onProfessionChange={setDeceasedProfession}
+            onMaritalStatusChange={setDeceasedMaritalStatus}
+            onReligionChange={setDeceasedReligion}
             errors={{
               deceased_name: errors.deceased_name,
               deceased_age: errors.deceased_age,
@@ -446,15 +487,33 @@ export default function Create({
             }}
           />
 
+          {/* Service Details Extended */}
+          <ServiceDetailsExtendedCard
+            reception_location={receptionLocation}
+            coffin_model={coffinModel}
+            cemetery_sector={cemeterySector}
+            procession_details={processionDetails}
+            additional_staff_notes={additionalStaffNotes}
+            onReceptionLocationChange={setReceptionLocation}
+            onCoffinModelChange={setCoffinModel}
+            onCemeterySectorChange={setCemeterySector}
+            onProcessionDetailsChange={setProcessionDetails}
+            onAdditionalStaffNotesChange={setAdditionalStaffNotes}
+            errors={errors as any}
+          />
+
           {/* Staff Assignment - Only for immediate need */}
           <StaffAssignmentCard
             drivers={drivers}
             assistants={assistants}
+            vehicles={drivers}
             assigned_driver_id={data.assigned_driver_id}
             assigned_assistant_id={data.assigned_assistant_id}
+            assigned_vehicle_id={assignedVehicleId}
             contractType={data.type}
             onDriverChange={(value) => setData('assigned_driver_id', value)}
             onAssistantChange={(value) => setData('assigned_assistant_id', value)}
+            onVehicleChange={setAssignedVehicleId}
             errors={{
               assigned_driver_id: errors.assigned_driver_id,
               assigned_assistant_id: errors.assigned_assistant_id,

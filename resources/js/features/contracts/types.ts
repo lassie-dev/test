@@ -23,6 +23,8 @@ export interface Cliente {
   telefono: Telefono;
   email?: string;
   direccion?: string;
+  parentesco?: string;
+  ocupacion?: string;
 }
 
 export interface Difunto {
@@ -33,6 +35,10 @@ export interface Difunto {
   lugar_fallecimiento?: string;
   edad?: number;
   causa_fallecimiento?: string;
+  nivel_estudio?: string;
+  profesion?: string;
+  estado_civil?: string;
+  religion?: string;
 }
 
 export interface Category {
@@ -46,9 +52,9 @@ export interface Category {
 
 export interface Servicio {
   id: number;
-  name: string;
-  description: string;
-  price: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
   category_id?: number;
   category?: Category;
 }
@@ -97,8 +103,14 @@ export interface Contrato {
   ubicacion_servicio?: string;
   fecha_hora_servicio?: string | Date;
   solicitudes_especiales?: string;
+  ubicacion_recepcion?: string;
+  modelo_ataud?: string;
+  sector_cementerio?: string;
+  detalles_cortejo?: string;
+  notas_personal_adicional?: string;
   conductor_asignado?: Usuario;
   auxiliar_asignado?: Usuario;
+  vehiculo_asignado?: Usuario;
   porcentaje_comision?: number;
   monto_comision?: number;
   secretaria?: Usuario;
@@ -111,10 +123,10 @@ export interface Contrato {
 // Product types (for contract items)
 export interface Product {
   id: number;
-  name: string;
-  description: string;
+  nombre: string;
+  descripcion: string;
   category: string;
-  price: number;
+  precio: number;
   stock: number;
   min_stock: number;
   is_active: boolean;

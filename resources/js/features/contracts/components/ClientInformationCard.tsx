@@ -9,6 +9,8 @@ interface ClientInformationCardProps {
   client_phone: string;
   client_email: string;
   client_address: string;
+  client_relationship_to_deceased: string;
+  client_occupation: string;
   rutError: string;
   onNameChange: (value: string) => void;
   onRutChange: (value: string) => void;
@@ -16,12 +18,16 @@ interface ClientInformationCardProps {
   onPhoneChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onAddressChange: (value: string) => void;
+  onRelationshipChange: (value: string) => void;
+  onOccupationChange: (value: string) => void;
   errors?: {
     client_name?: string;
     client_rut?: string;
     client_phone?: string;
     client_email?: string;
     client_address?: string;
+    client_relationship_to_deceased?: string;
+    client_occupation?: string;
   };
 }
 
@@ -31,6 +37,8 @@ export default function ClientInformationCard({
   client_phone,
   client_email,
   client_address,
+  client_relationship_to_deceased,
+  client_occupation,
   rutError,
   onNameChange,
   onRutChange,
@@ -38,6 +46,8 @@ export default function ClientInformationCard({
   onPhoneChange,
   onEmailChange,
   onAddressChange,
+  onRelationshipChange,
+  onOccupationChange,
   errors,
 }: ClientInformationCardProps) {
   const { t } = useTranslation();
@@ -112,6 +122,30 @@ export default function ClientInformationCard({
             placeholder={t('contracts.clientAddressPlaceholder')}
           />
           {errors?.client_address && <p className="text-sm text-destructive">{errors.client_address}</p>}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="client_relationship_to_deceased">{t('contracts.clientRelationship')}</Label>
+            <Input
+              id="client_relationship_to_deceased"
+              value={client_relationship_to_deceased}
+              onChange={(e) => onRelationshipChange(e.target.value)}
+              placeholder={t('contracts.clientRelationshipPlaceholder')}
+            />
+            {errors?.client_relationship_to_deceased && <p className="text-sm text-destructive">{errors.client_relationship_to_deceased}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="client_occupation">{t('contracts.clientOccupation')}</Label>
+            <Input
+              id="client_occupation"
+              value={client_occupation}
+              onChange={(e) => onOccupationChange(e.target.value)}
+              placeholder={t('contracts.clientOccupationPlaceholder')}
+            />
+            {errors?.client_occupation && <p className="text-sm text-destructive">{errors.client_occupation}</p>}
+          </div>
         </div>
       </CardContent>
     </Card>

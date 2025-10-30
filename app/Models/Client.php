@@ -13,6 +13,8 @@ class Client extends Model
         'phone',
         'email',
         'address',
+        'relationship_to_deceased',
+        'occupation',
     ];
 
     public function contracts(): HasMany

@@ -36,6 +36,7 @@ Route::middleware('auth')->group(callback: function () {
     Route::get('/contracts/{contract}/print-contract', [ContractController::class, 'printContract'])->name('contracts.print-contract');
     Route::get('/contracts/{contract}/print-social-media-auth', [ContractController::class, 'printSocialMediaAuth'])->name('contracts.print-social-media-auth');
     Route::get('/contracts/{contract}/print-receipt/{payment?}', [ContractController::class, 'printReceipt'])->name('contracts.print-receipt');
+    Route::get('/contracts/{contract}/generate-document', [ContractController::class, 'generateDocument'])->name('contracts.generate-document');
 
     // Contract bulk actions and export
     Route::post('/contracts/bulk-update-status', [ContractController::class, 'bulkUpdateStatus'])->name('contracts.bulk-update-status');
