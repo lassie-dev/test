@@ -46,79 +46,6 @@ class CategoryController extends Controller
                 'search' => $request->search,
                 'type' => $request->type,
             ],
-            'categoryType' => 'all',
-        ]);
-    }
-
-    /**
-     * Display product categories only.
-     */
-    public function products(Request $request)
-    {
-        $query = Category::query()->where('type', 'product')->withCount(['products']);
-
-        // Search filter
-        if ($request->has('search') && $request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        // Get categories with pagination
-        $categories = $query->orderBy('name')->paginate(15)->withQueryString();
-
-        // Calculate stats (product-only)
-        $stats = [
-            'total' => Category::where('type', 'product')->count(),
-            'product' => Category::where('type', 'product')->count(),
-            'service' => 0,
-        ];
-
-        return Inertia::render('features/categories/pages/Index', [
-            'categories' => $categories,
-            'stats' => $stats,
-            'filters' => [
-                'search' => $request->search,
-                'type' => 'product',
-            ],
-            'categoryType' => 'product',
-        ]);
-    }
-
-    /**
-     * Display service categories only.
-     */
-    public function services(Request $request)
-    {
-        $query = Category::query()->where('type', 'service')->withCount(['services']);
-
-        // Search filter
-        if ($request->has('search') && $request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        // Get categories with pagination
-        $categories = $query->orderBy('name')->paginate(15)->withQueryString();
-
-        // Calculate stats (service-only)
-        $stats = [
-            'total' => Category::where('type', 'service')->count(),
-            'product' => 0,
-            'service' => Category::where('type', 'service')->count(),
-        ];
-
-        return Inertia::render('features/categories/pages/Index', [
-            'categories' => $categories,
-            'stats' => $stats,
-            'filters' => [
-                'search' => $request->search,
-                'type' => 'service',
-            ],
-            'categoryType' => 'service',
         ]);
     }
 
@@ -127,14 +54,7 @@ class CategoryController extends Controller
      */
     public function create(Request $request)
     {
-        $categoryType = $request->query('type'); // Get type from URL query parameter
-
-        $parentCategories = Category::parents()->active()->orderBy('name')->get();
-
-        return Inertia::render('features/categories/pages/Create', [
-            'parentCategories' => $parentCategories,
-            'categoryType' => $categoryType, // Pass to frontend
-        ]);
+        return Inertia::render('features/categories/pages/Create');
     }
 
     /**
@@ -146,9 +66,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:service,product',
-            'icon' => 'nullable|string|max:50',
             'is_active' => 'boolean',
-            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
         // Auto-generate slug from name
@@ -165,15 +83,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        $parentCategories = Category::parents()
-            ->where('id', '!=', $category->id)
-            ->active()
-            ->orderBy('name')
-            ->get();
-
         return Inertia::render('features/categories/pages/Edit', [
             'category' => $category,
-            'parentCategories' => $parentCategories,
         ]);
     }
 
@@ -186,9 +97,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:service,product',
-            'icon' => 'nullable|string|max:50',
             'is_active' => 'boolean',
-            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
         // Auto-generate slug from name
@@ -203,14 +112,24 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
         // Check if category has associated products or services
         $itemsCount = $category->products()->count() + $category->services()->count();
+        $forceDelete = $request->query('force') === 'true';
 
-        if ($itemsCount > 0) {
+        if ($itemsCount > 0 && !$forceDelete) {
             return redirect()->route('categories.index')
                 ->with('error', 'No se puede eliminar la categoría porque tiene ' . $itemsCount . ' elemento(s) asociado(s).');
+        }
+
+        // If force delete, detach all associated products and services
+        if ($forceDelete && $itemsCount > 0) {
+            // Detach products (set category_id to null)
+            $category->products()->update(['category_id' => null]);
+
+            // Detach services (set category_id to null)
+            $category->services()->update(['category_id' => null]);
         }
 
         $category->delete();

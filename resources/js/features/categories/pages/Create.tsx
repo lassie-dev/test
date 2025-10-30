@@ -16,25 +16,12 @@ import {
 } from '@/components/ui/select';
 import { ArrowLeft, Save } from 'lucide-react';
 
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-interface Props {
-  parentCategories: Category[];
-  categoryType?: 'product' | 'service';
-}
-
-export default function Create({ parentCategories, categoryType }: Props) {
+export default function Create() {
   const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     name: '',
     description: '',
-    type: categoryType || '',
-    icon: '',
-    parent_id: '',
+    type: '',
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -90,29 +77,27 @@ export default function Create({ parentCategories, categoryType }: Props) {
                 )}
               </div>
 
-              {/* Type - Only show if not pre-set */}
-              {!categoryType && (
-                <div className="space-y-2">
-                  <Label htmlFor="type">
-                    {t('categories.type')} <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={data.type}
-                    onValueChange={(value) => setData('type', value)}
-                  >
-                    <SelectTrigger className={errors.type ? 'border-red-500' : ''}>
-                      <SelectValue placeholder={t('categories.selectType')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="product">{t('categories.product')}</SelectItem>
-                      <SelectItem value="service">{t('categories.service')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.type && (
-                    <p className="text-sm text-red-500">{errors.type}</p>
-                  )}
-                </div>
-              )}
+              {/* Type */}
+              <div className="space-y-2">
+                <Label htmlFor="type">
+                  {t('categories.type')} <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={data.type}
+                  onValueChange={(value) => setData('type', value)}
+                >
+                  <SelectTrigger className={errors.type ? 'border-red-500' : ''}>
+                    <SelectValue placeholder={t('categories.selectType')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="product">{t('categories.product')}</SelectItem>
+                    <SelectItem value="service">{t('categories.service')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.type && (
+                  <p className="text-sm text-red-500">{errors.type}</p>
+                )}
+              </div>
 
               {/* Description */}
               <div className="space-y-2">
@@ -129,57 +114,6 @@ export default function Create({ parentCategories, categoryType }: Props) {
                   <p className="text-sm text-red-500">{errors.description}</p>
                 )}
               </div>
-
-              {/* Icon */}
-              <div className="space-y-2">
-                <Label htmlFor="icon">
-                  {t('categories.icon')}
-                </Label>
-                <Input
-                  id="icon"
-                  type="text"
-                  value={data.icon}
-                  onChange={(e) => setData('icon', e.target.value)}
-                  placeholder={t('categories.iconPlaceholder')}
-                  maxLength={10}
-                  className={errors.icon ? 'border-red-500' : ''}
-                />
-                {errors.icon && (
-                  <p className="text-sm text-red-500">{errors.icon}</p>
-                )}
-                <p className="text-xs text-gray-500">
-                  {t('categories.iconHint')}
-                </p>
-              </div>
-
-              {/* Parent Category */}
-              {parentCategories.length > 0 && (
-                <div className="space-y-2">
-                  <Label htmlFor="parent_id">{t('categories.parentCategory')}</Label>
-                  <Select
-                    value={data.parent_id || undefined}
-                    onValueChange={(value) => setData('parent_id', value === 'none' ? '' : value)}
-                  >
-                    <SelectTrigger className={errors.parent_id ? 'border-red-500' : ''}>
-                      <SelectValue placeholder={t('categories.noParent')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{t('categories.noParent')}</SelectItem>
-                      {parentCategories.map((category) => (
-                        <SelectItem key={category.id} value={category.id.toString()}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.parent_id && (
-                    <p className="text-sm text-red-500">{errors.parent_id}</p>
-                  )}
-                  <p className="text-xs text-gray-500">
-                    {t('categories.parentHint')}
-                  </p>
-                </div>
-              )}
 
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-4 pt-4 border-t">

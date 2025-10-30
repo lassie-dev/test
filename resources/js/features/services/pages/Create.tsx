@@ -30,36 +30,34 @@ interface Props {
 export default function Create({ categories }: Props) {
   const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
-    name: '',
-    description: '',
+    nombre: '',
+    descripcion: '',
     category_id: '',
-    price: '',
-    stock: '',
-    min_stock: '',
-    is_active: true,
+    precio: '',
+    activo: true,
   });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    post('/inventory');
+    post('/services');
   };
 
   return (
     <MainLayout>
-      <Head title={t('inventory.addProduct')} />
+      <Head title={t('services.createService')} />
 
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{t('inventory.addProduct')}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('services.createService')}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              {t('inventory.addProductSubtitle')}
+              {t('services.createServiceSubtitle')}
             </p>
           </div>
           <Button
             variant="outline"
-            onClick={() => router.visit('/inventory')}
+            onClick={() => router.visit('/services')}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -71,54 +69,52 @@ export default function Create({ categories }: Props) {
         <form onSubmit={handleSubmit}>
           <Card>
             <CardHeader>
-              <CardTitle>{t('inventory.productDetails')}</CardTitle>
+              <CardTitle>{t('services.serviceDetails')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Product Name */}
+              {/* Service Name */}
               <div className="space-y-2">
-                <Label htmlFor="name">
-                  {t('inventory.productName')} <span className="text-red-500">*</span>
+                <Label htmlFor="nombre">
+                  {t('services.serviceName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="name"
+                  id="nombre"
                   type="text"
-                  value={data.name}
-                  onChange={(e) => setData('name', e.target.value)}
-                  placeholder={t('inventory.productNamePlaceholder')}
-                  className={errors.name ? 'border-red-500' : ''}
+                  value={data.nombre}
+                  onChange={(e) => setData('nombre', e.target.value)}
+                  placeholder={t('services.serviceNamePlaceholder')}
+                  className={errors.nombre ? 'border-red-500' : ''}
                 />
-                {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name}</p>
+                {errors.nombre && (
+                  <p className="text-sm text-red-500">{errors.nombre}</p>
                 )}
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">{t('inventory.description')}</Label>
+                <Label htmlFor="descripcion">{t('services.description')}</Label>
                 <Textarea
-                  id="description"
-                  value={data.description}
-                  onChange={(e) => setData('description', e.target.value)}
-                  placeholder={t('inventory.descriptionPlaceholder')}
+                  id="descripcion"
+                  value={data.descripcion}
+                  onChange={(e) => setData('descripcion', e.target.value)}
+                  placeholder={t('services.descriptionPlaceholder')}
                   rows={4}
-                  className={errors.description ? 'border-red-500' : ''}
+                  className={errors.descripcion ? 'border-red-500' : ''}
                 />
-                {errors.description && (
-                  <p className="text-sm text-red-500">{errors.description}</p>
+                {errors.descripcion && (
+                  <p className="text-sm text-red-500">{errors.descripcion}</p>
                 )}
               </div>
 
               {/* Category */}
               <div className="space-y-2">
-                <Label htmlFor="category_id">
-                  {t('inventory.category')} <span className="text-red-500">*</span>
-                </Label>
+                <Label htmlFor="category_id">{t('services.category')}</Label>
                 <Select
-                  value={data.category_id}
+                  value={data.category_id || undefined}
                   onValueChange={(value) => setData('category_id', value)}
                 >
                   <SelectTrigger className={errors.category_id ? 'border-red-500' : ''}>
-                    <SelectValue placeholder={t('inventory.selectCategory')} />
+                    <SelectValue placeholder={t('services.selectCategory')} />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
@@ -135,75 +131,36 @@ export default function Create({ categories }: Props) {
 
               {/* Price */}
               <div className="space-y-2">
-                <Label htmlFor="price">
-                  {t('inventory.price')} (CLP) <span className="text-red-500">*</span>
+                <Label htmlFor="precio">
+                  {t('services.price')} (CLP) <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="price"
+                  id="precio"
                   type="number"
                   step="0.01"
                   min="0"
-                  value={data.price}
-                  onChange={(e) => setData('price', e.target.value)}
+                  value={data.precio}
+                  onChange={(e) => setData('precio', e.target.value)}
                   placeholder="0.00"
-                  className={errors.price ? 'border-red-500' : ''}
+                  className={errors.precio ? 'border-red-500' : ''}
                 />
-                {errors.price && (
-                  <p className="text-sm text-red-500">{errors.price}</p>
+                {errors.precio && (
+                  <p className="text-sm text-red-500">{errors.precio}</p>
                 )}
-              </div>
-
-              {/* Stock and Min Stock */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="stock">
-                    {t('inventory.stock')} <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    min="0"
-                    value={data.stock}
-                    onChange={(e) => setData('stock', e.target.value)}
-                    placeholder="0"
-                    className={errors.stock ? 'border-red-500' : ''}
-                  />
-                  {errors.stock && (
-                    <p className="text-sm text-red-500">{errors.stock}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="min_stock">
-                    {t('inventory.minStock')} <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="min_stock"
-                    type="number"
-                    min="0"
-                    value={data.min_stock}
-                    onChange={(e) => setData('min_stock', e.target.value)}
-                    placeholder="0"
-                    className={errors.min_stock ? 'border-red-500' : ''}
-                  />
-                  {errors.min_stock && (
-                    <p className="text-sm text-red-500">{errors.min_stock}</p>
-                  )}
-                </div>
               </div>
 
               {/* Active Status */}
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="is_active"
-                  checked={data.is_active}
-                  onCheckedChange={(checked) => setData('is_active', checked as boolean)}
+                  id="activo"
+                  checked={data.activo}
+                  onCheckedChange={(checked) => setData('activo', checked as boolean)}
                 />
                 <Label
-                  htmlFor="is_active"
+                  htmlFor="activo"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  {t('inventory.active')}
+                  {t('services.active')}
                 </Label>
               </div>
 
@@ -212,7 +169,7 @@ export default function Create({ categories }: Props) {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => router.visit('/inventory')}
+                  onClick={() => router.visit('/services')}
                   disabled={processing}
                 >
                   {t('common.cancel')}

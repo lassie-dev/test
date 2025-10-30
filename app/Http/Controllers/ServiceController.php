@@ -81,7 +81,15 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('features/services/pages/Create');
+        // Get service categories for the form
+        $categories = Category::where('type', 'service')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
+        return Inertia::render('features/services/pages/Create', [
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -90,13 +98,23 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'price' => 'required|numeric|min:0',
-            'active' => 'boolean',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string|max:1000',
+            'precio' => 'required|numeric|min:0',
+            'category_id' => 'nullable|exists:categories,id',
+            'activo' => 'boolean',
         ]);
 
-        Service::create($validated);
+        // Map frontend field names to database field names
+        $serviceData = [
+            'name' => $validated['nombre'],
+            'description' => $validated['descripcion'] ?? null,
+            'price' => $validated['precio'],
+            'category_id' => $validated['category_id'] ?? null,
+            'active' => $validated['activo'] ?? true,
+        ];
+
+        Service::create($serviceData);
 
         return redirect()->route('services.index')
             ->with('success', 'Servicio creado exitosamente.');
@@ -107,6 +125,8 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
+        $service->load('category');
+
         return Inertia::render('features/services/pages/Show', [
             'service' => [
                 'id' => $service->id,
@@ -114,6 +134,11 @@ class ServiceController extends Controller
                 'descripcion' => $service->description,
                 'precio' => (float) $service->price,
                 'activo' => $service->active,
+                'category' => $service->category ? [
+                    'id' => $service->category->id,
+                    'name' => $service->category->name,
+                    'slug' => $service->category->slug,
+                ] : null,
                 'created_at' => $service->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $service->updated_at->format('Y-m-d H:i:s'),
             ],
@@ -125,6 +150,14 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
+        $service->load('category');
+
+        // Get service categories for the form
+        $categories = Category::where('type', 'service')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
         return Inertia::render('features/services/pages/Edit', [
             'service' => [
                 'id' => $service->id,
@@ -132,7 +165,13 @@ class ServiceController extends Controller
                 'descripcion' => $service->description,
                 'precio' => (float) $service->price,
                 'activo' => $service->active,
+                'category' => $service->category ? [
+                    'id' => $service->category->id,
+                    'name' => $service->category->name,
+                    'slug' => $service->category->slug,
+                ] : null,
             ],
+            'categories' => $categories,
         ]);
     }
 
@@ -142,13 +181,23 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'price' => 'required|numeric|min:0',
-            'active' => 'boolean',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string|max:1000',
+            'precio' => 'required|numeric|min:0',
+            'category_id' => 'nullable|exists:categories,id',
+            'activo' => 'boolean',
         ]);
 
-        $service->update($validated);
+        // Map frontend field names to database field names
+        $serviceData = [
+            'name' => $validated['nombre'],
+            'description' => $validated['descripcion'] ?? null,
+            'price' => $validated['precio'],
+            'category_id' => $validated['category_id'] ?? null,
+            'active' => $validated['activo'] ?? $service->active,
+        ];
+
+        $service->update($serviceData);
 
         return redirect()->route('services.index')
             ->with('success', 'Servicio actualizado exitosamente.');

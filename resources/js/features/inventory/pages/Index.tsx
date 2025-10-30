@@ -14,6 +14,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 interface Category {
   id: number;
@@ -71,6 +82,10 @@ export default function Index({ products, stats, categories, filters }: Props) {
   const [search, setSearch] = useState(filters.search || '');
   const [categoryFilter, setCategoryFilter] = useState(filters.category || 'all');
   const [stockStatusFilter, setStockStatusFilter] = useState(filters.stock_status || 'all');
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; product: Product | null }>({
+    open: false,
+    product: null,
+  });
 
   const handleSearch = () => {
     router.get(
@@ -84,12 +99,30 @@ export default function Index({ products, stats, categories, filters }: Props) {
     );
   };
 
-  const handleDelete = (id: number, name: string) => {
-    if (confirm(`${t('inventory.deleteConfirm')}\n\n${name}\n\n${t('inventory.deleteWarning')}`)) {
-      router.delete(`/inventory/${id}`, {
-        preserveScroll: true,
-      });
-    }
+  const handleDelete = (product: Product) => {
+    setDeleteDialog({ open: true, product });
+  };
+
+  const confirmDelete = () => {
+    if (!deleteDialog.product) return;
+
+    router.delete(`/inventory/${deleteDialog.product.id}`, {
+      preserveScroll: true,
+      onSuccess: (page: any) => {
+        if (page.props.flash?.success) {
+          toast.success(page.props.flash.success);
+        }
+        if (page.props.flash?.error) {
+          toast.error(page.props.flash.error);
+        }
+        setDeleteDialog({ open: false, product: null });
+      },
+      onError: (errors: any) => {
+        const errorMessage = errors.message || 'Error al eliminar el producto';
+        toast.error(errorMessage);
+        setDeleteDialog({ open: false, product: null });
+      },
+    });
   };
 
   const formatCurrency = (amount: number) => {
@@ -387,7 +420,7 @@ export default function Index({ products, stats, categories, filters }: Props) {
                             variant="outline"
                             size="sm"
                             className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => handleDelete(product.id, product.name)}
+                            onClick={() => handleDelete(product)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -401,6 +434,30 @@ export default function Index({ products, stats, categories, filters }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, product: null })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro de eliminar este producto?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Estás a punto de eliminar el producto <strong>{deleteDialog.product?.name}</strong>.
+              <span className="block mt-2">
+                Esta acción no se puede deshacer.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }

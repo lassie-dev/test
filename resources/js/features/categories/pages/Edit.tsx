@@ -22,21 +22,17 @@ interface Category {
   description: string | null;
   type: 'service' | 'product';
   icon: string | null;
-  parent_id: number | null;
 }
 
 interface Props {
   category: Category;
-  parentCategories: Category[];
 }
 
-export default function Edit({ category, parentCategories }: Props) {
+export default function Edit({ category }: Props) {
   const { data, setData, put, processing, errors } = useForm({
     name: category.name || '',
     description: category.description || '',
     type: category.type || '',
-    icon: category.icon || '',
-    parent_id: category.parent_id ? category.parent_id.toString() : '',
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -122,57 +118,6 @@ export default function Edit({ category, parentCategories }: Props) {
                   <p className="text-sm text-red-500">{errors.description}</p>
                 )}
               </div>
-
-              {/* Icon */}
-              <div className="space-y-2">
-                <Label htmlFor="icon">
-                  Icono (Emoji)
-                </Label>
-                <Input
-                  id="icon"
-                  type="text"
-                  value={data.icon}
-                  onChange={(e) => setData('icon', e.target.value)}
-                  placeholder="Ej: ⚰️ 🌹 🕯️"
-                  maxLength={10}
-                  className={errors.icon ? 'border-red-500' : ''}
-                />
-                {errors.icon && (
-                  <p className="text-sm text-red-500">{errors.icon}</p>
-                )}
-                <p className="text-xs text-gray-500">
-                  Puedes usar cualquier emoji para representar la categoría
-                </p>
-              </div>
-
-              {/* Parent Category */}
-              {parentCategories.length > 0 && (
-                <div className="space-y-2">
-                  <Label htmlFor="parent_id">Categoría Padre (opcional)</Label>
-                  <Select
-                    value={data.parent_id || undefined}
-                    onValueChange={(value) => setData('parent_id', value === 'none' ? '' : value)}
-                  >
-                    <SelectTrigger className={errors.parent_id ? 'border-red-500' : ''}>
-                      <SelectValue placeholder="Sin categoría padre" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Sin categoría padre</SelectItem>
-                      {parentCategories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id.toString()}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.parent_id && (
-                    <p className="text-sm text-red-500">{errors.parent_id}</p>
-                  )}
-                  <p className="text-xs text-gray-500">
-                    Selecciona una categoría padre para crear una subcategoría
-                  </p>
-                </div>
-              )}
 
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-4 pt-4 border-t">

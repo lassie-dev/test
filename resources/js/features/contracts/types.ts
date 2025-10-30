@@ -125,7 +125,12 @@ export interface Product {
   id: number;
   nombre: string;
   descripcion: string;
-  category: string;
+  category?: {
+    id: number;
+    name: string;
+    slug: string;
+    icon?: string | null;
+  } | null;
   precio: number;
   stock: number;
   min_stock: number;

@@ -596,6 +596,7 @@
     "status": "Status",
     "allStatuses": "All Statuses",
     "category": "Category",
+    "selectCategory": "Select a category",
     "allCategories": "All Categories",
     "searchPlaceholder": "Search services...",
     "showingResults": "Showing {{count}} of {{total}} services",

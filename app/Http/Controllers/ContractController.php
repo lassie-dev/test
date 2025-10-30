@@ -161,13 +161,21 @@ class ContractController extends Controller
             ];
         });
 
-        $products = \App\Models\Product::where('is_active', true)->get()->map(function ($product) {
+        $products = \App\Models\Product::where('is_active', true)->with('category')->get()->map(function ($product) {
+            // Use getRelation() to access the category relationship (not the enum column)
+            $categoryRelation = $product->getRelation('category');
+
             return [
                 'id' => $product->id,
                 'nombre' => $product->name,
                 'descripcion' => $product->description,
                 'precio' => (float) $product->price,
-                'category' => $product->category,
+                'category' => $categoryRelation ? [
+                    'id' => $categoryRelation->id,
+                    'name' => $categoryRelation->name,
+                    'slug' => $categoryRelation->slug,
+                    'icon' => $categoryRelation->icon,
+                ] : null,
                 'stock' => $product->stock,
                 'min_stock' => $product->min_stock,
                 'is_active' => $product->is_active,
@@ -667,13 +675,21 @@ class ContractController extends Controller
             ];
         });
 
-        $products = \App\Models\Product::where('is_active', true)->get()->map(function ($product) {
+        $products = \App\Models\Product::where('is_active', true)->with('category')->get()->map(function ($product) {
+            // Use getRelation() to access the category relationship (not the enum column)
+            $categoryRelation = $product->getRelation('category');
+
             return [
                 'id' => $product->id,
                 'nombre' => $product->name,
                 'descripcion' => $product->description,
                 'precio' => (float) $product->price,
-                'category' => $product->category,
+                'category' => $categoryRelation ? [
+                    'id' => $categoryRelation->id,
+                    'name' => $categoryRelation->name,
+                    'slug' => $categoryRelation->slug,
+                    'icon' => $categoryRelation->icon,
+                ] : null,
                 'stock' => $product->stock,
                 'min_stock' => $product->min_stock,
                 'is_active' => $product->is_active,

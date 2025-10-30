@@ -596,6 +596,7 @@
     "status": "Estado",
     "allStatuses": "Todos los Estados",
     "category": "Categoría",
+    "selectCategory": "Seleccionar una categoría",
     "allCategories": "Todas las Categorías",
     "searchPlaceholder": "Buscar servicios...",
     "showingResults": "Mostrando {{count}} de {{total}} servicios",

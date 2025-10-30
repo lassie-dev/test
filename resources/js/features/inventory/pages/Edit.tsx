@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ArrowLeft, Save } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Category {
   id: number;
@@ -202,6 +203,21 @@ export default function Edit({ product, categories }: Props) {
                     <p className="text-sm text-red-500">{errors.min_stock}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Active Status */}
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="is_active"
+                  checked={data.is_active}
+                  onCheckedChange={(checked) => setData('is_active', checked as boolean)}
+                />
+                <Label
+                  htmlFor="is_active"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  {t('inventory.active')}
+                </Label>
               </div>
 
               {/* Action Buttons */}

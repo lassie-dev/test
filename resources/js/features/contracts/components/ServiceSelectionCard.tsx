@@ -8,6 +8,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
 } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatearMoneda } from '@/features/contracts/functions';
@@ -40,21 +43,6 @@ export default function ServiceSelectionCard({
     return services.find(s => s.id === serviceId);
   };
 
-  // Get emoji for category icon
-  const getCategoryEmoji = (icon?: string): string => {
-    const iconMap: Record<string, string> = {
-      'truck': '🚗',
-      'heart-pulse': '💐',
-      'home': '🕯️',
-      'users': '⛪',
-      'cross': '⚱️',
-      'flame': '🔥',
-      'plus-circle': '✨',
-      'file-check': '📄',
-    };
-    return icon && iconMap[icon] ? iconMap[icon] : '📦';
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -82,22 +70,26 @@ export default function ServiceSelectionCard({
                     acc[categoryName].services.push(service);
                     return acc;
                   }, {} as Record<string, { icon?: string, services: Servicio[] }>)
-                ).map(([categoryName, { icon, services: categoryServices }]) => (
+                ).map(([categoryName, { icon, services: categoryServices }], index) => (
                   <div key={categoryName}>
-                    {/* Category Header */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase bg-gray-50 sticky top-0">
-                      {getCategoryEmoji(icon)} {categoryName}
-                    </div>
-
-                    {/* Category Services */}
-                    {categoryServices.map((service) => (
-                      <SelectItem key={service.id} value={service.id.toString()}>
-                        <div className="flex items-center justify-between w-full">
-                          <span>{service.nombre} - {formatearMoneda(service.precio)}</span>
-                          <span className="ml-2 text-xs text-green-600 font-semibold">Available</span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {/* Separator between groups */}
+                    {index > 0 && <SelectSeparator />}
+                    <SelectGroup>
+                      {/* Category Label */}
+                      <SelectLabel className="flex items-center gap-2">
+                        {icon && <span>{icon}</span>}
+                        <span className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">{categoryName}</span>
+                      </SelectLabel>
+                      {/* Category Services */}
+                      {categoryServices.map((service) => (
+                        <SelectItem key={service.id} value={service.id.toString()}>
+                          <div className="flex items-center justify-between w-full">
+                            <span>{service.nombre} - {formatearMoneda(service.precio)}</span>
+                            <span className="ml-2 text-xs text-green-600 font-semibold">Available</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   </div>
                 ))}
               </SelectContent>

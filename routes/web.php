@@ -53,9 +53,7 @@ Route::middleware('auth')->group(callback: function () {
     // Services
     Route::resource('services', ServiceController::class);
 
-    // Categories - Separate routes for product and service categories (must come before resource)
-    Route::get('/categories/products', [CategoryController::class, 'products'])->name('categories.products');
-    Route::get('/categories/services', [CategoryController::class, 'services'])->name('categories.services');
+    // Categories
     Route::resource('categories', CategoryController::class);
 
     // Inventory

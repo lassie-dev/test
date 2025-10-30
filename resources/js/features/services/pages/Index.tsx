@@ -7,6 +7,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Filter, Briefcase, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 import type { Service, ServiceFilters } from '@/features/services/types';
 import type { PaginatedData } from '@/types/common';
 import {
@@ -32,6 +43,10 @@ export default function Index({ services, categories, filters }: Props) {
   const [search, setSearch] = useState(filters.search || '');
   const [categoryFilter, setCategoryFilter] = useState(filters.category || 'all');
   const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; service: Service | null }>({
+    open: false,
+    service: null,
+  });
 
   const handleSearch = () => {
     router.get(
@@ -45,12 +60,30 @@ export default function Index({ services, categories, filters }: Props) {
     );
   };
 
-  const handleDelete = (id: number, name: string) => {
-    if (confirm(`${t('services.deleteConfirm')}\n\n${name}\n\n${t('services.deleteWarning')}`)) {
-      router.delete(`/services/${id}`, {
-        preserveScroll: true,
-      });
-    }
+  const handleDelete = (service: Service) => {
+    setDeleteDialog({ open: true, service });
+  };
+
+  const confirmDelete = () => {
+    if (!deleteDialog.service) return;
+
+    router.delete(`/services/${deleteDialog.service.id}`, {
+      preserveScroll: true,
+      onSuccess: (page: any) => {
+        if (page.props.flash?.success) {
+          toast.success(page.props.flash.success);
+        }
+        if (page.props.flash?.error) {
+          toast.error(page.props.flash.error);
+        }
+        setDeleteDialog({ open: false, service: null });
+      },
+      onError: (errors: any) => {
+        const errorMessage = errors.message || 'Error al eliminar el servicio';
+        toast.error(errorMessage);
+        setDeleteDialog({ open: false, service: null });
+      },
+    });
   };
 
   const stats = calculateServiceStats(services.data);
@@ -325,7 +358,7 @@ export default function Index({ services, categories, filters }: Props) {
                             variant="outline"
                             size="sm"
                             className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => handleDelete(service.id, service.nombre)}
+                            onClick={() => handleDelete(service)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -339,6 +372,30 @@ export default function Index({ services, categories, filters }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, service: null })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro de eliminar este servicio?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Estás a punto de eliminar el servicio <strong>{deleteDialog.service?.nombre}</strong>.
+              <span className="block mt-2">
+                Esta acción no se puede deshacer.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }

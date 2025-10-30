@@ -16,12 +16,23 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Filter, Edit, Trash2, Package, Briefcase, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 interface Category {
   id: number;
@@ -60,7 +71,6 @@ interface Props {
   categories: PaginatedCategories;
   stats: Stats;
   filters: Filters;
-  categoryType?: 'all' | 'product' | 'service';
 }
 
 const TYPE_OPTIONS = [
@@ -69,35 +79,68 @@ const TYPE_OPTIONS = [
   { value: 'service', label: 'Servicios' },
 ];
 
-export default function Index({ categories, stats, filters, categoryType = 'all' }: Props) {
+export default function Index({ categories, stats, filters }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState(filters.search || '');
   const [typeFilter, setTypeFilter] = useState(filters.type || 'all');
-
-  // Determine the base URL based on categoryType
-  const getBaseUrl = () => {
-    if (categoryType === 'product') return '/categories/products';
-    if (categoryType === 'service') return '/categories/services';
-    return '/categories';
-  };
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; category: Category | null }>({
+    open: false,
+    category: null,
+  });
 
   const handleSearch = () => {
     router.get(
-      getBaseUrl(),
+      '/categories',
       {
         search,
-        ...(categoryType === 'all' && typeFilter !== 'all' ? { type: typeFilter } : {}),
+        ...(typeFilter !== 'all' ? { type: typeFilter } : {}),
       },
       { preserveState: true, preserveScroll: true }
     );
   };
 
-  const handleDelete = (id: number, name: string) => {
-    if (confirm(`¿Estás seguro de eliminar la categoría "${name}"?\n\nEsta acción no se puede deshacer.`)) {
-      router.delete(`/categories/${id}`, {
-        preserveScroll: true,
-      });
-    }
+  const handleTypeChange = (value: string) => {
+    setTypeFilter(value);
+    router.get(
+      '/categories',
+      {
+        search,
+        ...(value !== 'all' ? { type: value } : {}),
+      },
+      { preserveState: true, preserveScroll: true }
+    );
+  };
+
+  const handleDelete = (category: Category) => {
+    setDeleteDialog({ open: true, category });
+  };
+
+  const confirmDelete = (force: boolean = false) => {
+    if (!deleteDialog.category) return;
+
+    const url = force
+      ? `/categories/${deleteDialog.category.id}?force=true`
+      : `/categories/${deleteDialog.category.id}`;
+
+    router.delete(url, {
+      preserveScroll: true,
+      onSuccess: (page: any) => {
+        // Check for flash messages in the response
+        if (page.props.flash?.success) {
+          toast.success(page.props.flash.success);
+        }
+        if (page.props.flash?.error) {
+          toast.error(page.props.flash.error);
+        }
+        setDeleteDialog({ open: false, category: null });
+      },
+      onError: (errors: any) => {
+        // Handle validation or other errors
+        const errorMessage = errors.message || 'Error al eliminar la categoría';
+        toast.error(errorMessage);
+        setDeleteDialog({ open: false, category: null });
+      },
+    });
   };
 
 
@@ -112,33 +155,20 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
     return type === 'product' ? 'default' : 'secondary';
   };
 
-  // Get page title and subtitle based on category type
-  const getPageTitle = () => {
-    if (categoryType === 'product') return 'Categorías de Productos';
-    if (categoryType === 'service') return 'Categorías de Servicios';
-    return 'Categorías';
-  };
-
-  const getPageSubtitle = () => {
-    if (categoryType === 'product') return 'Gestiona las categorías de productos';
-    if (categoryType === 'service') return 'Gestiona las categorías de servicios';
-    return 'Gestiona las categorías de servicios y productos';
-  };
-
   return (
     <MainLayout>
-      <Head title={getPageTitle()} />
+      <Head title="Categorías" />
 
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{getPageTitle()}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Categorías</h1>
             <p className="mt-2 text-sm text-gray-600">
-              {getPageSubtitle()}
+              Gestiona las categorías de servicios y productos
             </p>
           </div>
-          <Link href={categoryType !== 'all' ? `/categories/create?type=${categoryType}` : '/categories/create'}>
+          <Link href="/categories/create">
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
               Nueva Categoría
@@ -196,21 +226,18 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
-              {/* Only show type filter on "all categories" page */}
-              {categoryType === 'all' && (
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TYPE_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+              <Select value={typeFilter} onValueChange={handleTypeChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TYPE_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Button onClick={handleSearch} className="gap-2">
                 <Filter className="h-4 w-4" />
                 Filtrar
@@ -236,7 +263,7 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                 <p className="text-sm text-gray-500 mb-4">
                   Comienza creando tu primera categoría
                 </p>
-                <Link href={categoryType !== 'all' ? `/categories/create?type=${categoryType}` : '/categories/create'}>
+                <Link href="/categories/create">
                   <Button className="gap-2">
                     <Plus className="h-4 w-4" />
                     Nueva Categoría
@@ -248,7 +275,6 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[50px]">ID</TableHead>
                       <TableHead>Nombre</TableHead>
                       <TableHead>Tipo</TableHead>
                       <TableHead>Descripción</TableHead>
@@ -259,16 +285,8 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                   <TableBody>
                     {categories.data.map((category) => (
                       <TableRow key={category.id} className="hover:bg-muted/50">
-                        <TableCell className="font-medium">{category.id}</TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
-                            {category.icon ? (
-                              <span className="text-lg">{category.icon}</span>
-                            ) : (
-                              <Tag className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <div className="font-medium">{category.name}</div>
-                          </div>
+                          <div className="font-medium">{category.name}</div>
                         </TableCell>
                         <TableCell>
                           <Badge variant={getTypeBadgeVariant(category.type) as any} className="gap-1">
@@ -312,7 +330,7 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                               variant="outline"
                               size="sm"
                               className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => handleDelete(category.id, category.name)}
+                              onClick={() => handleDelete(category)}
                             >
                               <Trash2 className="h-3 w-3" />
                             </Button>
@@ -336,7 +354,7 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                     variant="outline"
                     size="sm"
                     disabled={categories.current_page === 1}
-                    onClick={() => router.get(`${getBaseUrl()}?page=${categories.current_page - 1}`)}
+                    onClick={() => router.get(`/categories?page=${categories.current_page - 1}`)}
                   >
                     Anterior
                   </Button>
@@ -346,7 +364,7 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                         key={page}
                         variant={page === categories.current_page ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => router.get(`${getBaseUrl()}?page=${page}`)}
+                        onClick={() => router.get(`/categories?page=${page}`)}
                       >
                         {page}
                       </Button>
@@ -356,7 +374,7 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
                     variant="outline"
                     size="sm"
                     disabled={categories.current_page === categories.last_page}
-                    onClick={() => router.get(`${getBaseUrl()}?page=${categories.current_page + 1}`)}
+                    onClick={() => router.get(`/categories?page=${categories.current_page + 1}`)}
                   >
                     Siguiente
                   </Button>
@@ -366,6 +384,50 @@ export default function Index({ categories, stats, filters, categoryType = 'all'
           </CardContent>
         </Card>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, category: null })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro de eliminar esta categoría?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Estás a punto de eliminar la categoría <strong>{deleteDialog.category?.name}</strong>.
+              {deleteDialog.category && getItemsCount(deleteDialog.category) > 0 ? (
+                <>
+                  <span className="block mt-3 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 font-medium">
+                    ⚠️ Esta categoría tiene {getItemsCount(deleteDialog.category)} elemento(s) asociado(s).
+                  </span>
+                  <span className="block mt-3 text-red-600 font-semibold">
+                    Al eliminar esta categoría, los {getItemsCount(deleteDialog.category)} elemento(s) asociado(s) quedarán sin categoría.
+                  </span>
+                </>
+              ) : (
+                <span className="block mt-2">
+                  Esta acción no se puede deshacer.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            {deleteDialog.category && getItemsCount(deleteDialog.category) > 0 ? (
+              <AlertDialogAction
+                onClick={() => confirmDelete(true)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Eliminar de todas formas
+              </AlertDialogAction>
+            ) : (
+              <AlertDialogAction
+                onClick={() => confirmDelete(false)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Eliminar
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }

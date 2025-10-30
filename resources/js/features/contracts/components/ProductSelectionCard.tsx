@@ -9,6 +9,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
 } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatearMoneda, calculateProductSubtotal } from '@/features/contracts/functions';
@@ -67,46 +70,46 @@ export default function ProductSelectionCard({
                 {/* Group products by category */}
                 {Object.entries(
                   products.reduce((acc, product) => {
-                    const category = product.category || 'other';
-                    if (!acc[category]) acc[category] = [];
-                    acc[category].push(product);
+                    const categoryName = product.category?.name || 'Uncategorized';
+                    if (!acc[categoryName]) acc[categoryName] = { icon: product.category?.icon, products: [] };
+                    acc[categoryName].products.push(product);
                     return acc;
-                  }, {} as Record<string, Product[]>)
-                ).map(([category, categoryProducts]) => (
-                  <div key={category}>
-                    {/* Category Header */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase bg-gray-50 sticky top-0">
-                      {category === 'coffin' && '⚰️ Coffins'}
-                      {category === 'urn' && '🏺 Urns'}
-                      {category === 'flower' && '🌸 Flowers'}
-                      {category === 'memorial_item' && '🕯️ Memorial Items'}
-                      {category === 'other' && '📦 Other'}
-                    </div>
+                  }, {} as Record<string, { icon?: string | null, products: Product[] }>)
+                ).map(([categoryName, { icon, products: categoryProducts }], index) => (
+                  <div key={categoryName}>
+                    {/* Separator between groups */}
+                    {index > 0 && <SelectSeparator />}
+                    <SelectGroup>
+                      {/* Category Label */}
+                      <SelectLabel className="flex items-center gap-2">
+                        {icon && <span>{icon}</span>}
+                        <span className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">{categoryName}</span>
+                      </SelectLabel>
+                      {/* Category Products */}
+                      {categoryProducts.map((product) => {
+                        const isLowStock = product.stock <= product.min_stock;
+                        const isOutOfStock = product.stock <= 0;
 
-                    {/* Category Products */}
-                    {categoryProducts.map((product) => {
-                      const isLowStock = product.stock <= product.min_stock;
-                      const isOutOfStock = product.stock <= 0;
-
-                      return (
-                        <SelectItem
-                          key={product.id}
-                          value={product.id.toString()}
-                          disabled={isOutOfStock}
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <span>{product.nombre} - {formatearMoneda(product.precio)}</span>
-                            {isOutOfStock ? (
-                              <span className="ml-2 text-xs text-red-600 font-semibold">Out of Stock</span>
-                            ) : isLowStock ? (
-                              <span className="ml-2 text-xs text-yellow-600 font-semibold">Low Stock ({product.stock})</span>
-                            ) : (
-                              <span className="ml-2 text-xs text-gray-500">Stock: {product.stock}</span>
-                            )}
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+                        return (
+                          <SelectItem
+                            key={product.id}
+                            value={product.id.toString()}
+                            disabled={isOutOfStock}
+                          >
+                            <div className="flex items-center justify-between w-full">
+                              <span>{product.nombre} - {formatearMoneda(product.precio)}</span>
+                              {isOutOfStock ? (
+                                <span className="ml-2 text-xs text-red-600 font-semibold">Out of Stock</span>
+                              ) : isLowStock ? (
+                                <span className="ml-2 text-xs text-yellow-600 font-semibold">Low Stock ({product.stock})</span>
+                              ) : (
+                                <span className="ml-2 text-xs text-gray-500">Stock: {product.stock}</span>
+                              )}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
                   </div>
                 ))}
               </SelectContent>
@@ -160,7 +163,9 @@ export default function ProductSelectionCard({
                       <tr key={item.product_id} className="border-t">
                         <td className="px-4 py-2 text-sm">
                           {product?.nombre}
-                          <span className="ml-2 text-xs text-gray-500">({product?.category})</span>
+                          {product?.category && (
+                            <span className="ml-2 text-xs text-gray-500">({product.category.name})</span>
+                          )}
                         </td>
                         <td className="px-4 py-2 text-right text-sm">{item.quantity}</td>
                         <td className="px-4 py-2 text-right text-sm">

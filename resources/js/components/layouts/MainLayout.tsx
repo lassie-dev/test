@@ -83,7 +83,7 @@ interface MenuItem {
 export default function MainLayout({ children }: MainLayoutProps) {
   const { t } = useTranslation();
   const page = usePage<any>();
-  const { auth, navigation: dbNavigation } = page.props;
+  const { auth, navigation: dbNavigation, counts } = page.props;
   const currentUrl = page.url;
 
   const navigationSections: NavigationSection[] = [
@@ -123,6 +123,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           href: '/services',
           icon: FileSignature,
           permissions: ['view_services'],
+          badge: counts?.services || 0,
         },
         {
           name: t('nav.categories'),
@@ -130,10 +131,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
           href: '/categories',
           icon: FolderTree,
           permissions: ['view_categories'],
-          children: [
-            { name: t('nav.productCategories'), nameKey: 'nav.productCategories', href: '/categories/products', icon: Package },
-            { name: t('nav.serviceCategories'), nameKey: 'nav.serviceCategories', href: '/categories/services', icon: FileSignature },
-          ]
         },
         {
           name: t('nav.products'),
@@ -141,7 +138,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           href: '/inventory',
           icon: Archive,
           permissions: ['view_inventory'],
-          badge: 5,
+          badge: counts?.products || 0,
         },
         {
           name: t('nav.payments'),
@@ -149,7 +146,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
           href: '/payments',
           icon: Wallet,
           permissions: ['view_payments'],
-          badge: 12,
         },
         {
           name: t('nav.staff'),
